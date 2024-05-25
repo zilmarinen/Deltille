@@ -21,9 +21,9 @@ extension Vector: Identifiable {
 
 extension Vector {
     
-    public static let forward = Vector(0, 0, -1)
-    public static let up = Vector(0, 1, 0)
-    public static let right = Vector(1, 0, 0)
+    public static let forward = Vector(0.0, 0.0, 1.0)
+    public static let up = Vector(0.0, 1.0, 0.0)
+    public static let right = Vector(1.0, 0.0, 0.0)
 }
 
 extension Vector {
@@ -39,7 +39,7 @@ extension Vector {
         
         return Coordinate(Int(floor(j / scale.edgeLength)),
                           Int(floor(i / scale.edgeLength)),
-                          Int(ceil(k / scale.edgeLength) - 1))
+                          Int(ceil(k / scale.edgeLength) - 1.0))
     }
     
     public func mid(_ other: Vector) -> Vector { lerp(other, 0.5) }
