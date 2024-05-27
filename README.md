@@ -26,10 +26,10 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 # Implementation
-Deltille is a lightweight wrapper for the base utility data structures required to get started working with triangular grids. By constraining triangles to a fixed `Grid`, it is possible to generate triangle vertices for an given `Scale` using the natural geometric properties of triangle subdivision. 
+Deltille is a lightweight wrapper for the base utility data structures required to get started working with triangular grids. By constraining triangles to a fixed `Grid`, it is possible to generate triangle vertices for any given `Scale` by leveraging the natural geometric properties of triangle subdivision. 
 
 ## Triangles
-The basic building blocks are both the `Coordinate` and `Triangle` types which are used together to model equilateral triangle vertex positions along a plane.
+The basic building blocks of Deltille are both the `Coordinate` and `Triangle` types which are used together to model equilateral triangle vertex positions along a plane.
 
 ```swift
 //create a triangle at the world origin
