@@ -9,7 +9,7 @@
 - [Credits](#credits)
 
 # Deltille
-Deltille is a utility framework designed to encapsulate the mathmatical principles and concepts of a coordinate system defined within a regular tiling of a triangular grid. 
+Deltille is a utility framework designed to encapsulate the mathematical principles and concepts of a coordinate system defined within a regular tiling of a triangular grid. 
 
 # Installation
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
@@ -23,7 +23,7 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 # Implementation
 Deltille is a lightweight wrapper for the base utility data structures required to get started working with triangular grids. By constraining triangles to a fixed `Grid`, it is possible to generate triangle vertices for any given `Scale` by leveraging the natural geometric properties of triangle subdivision. 
@@ -72,11 +72,11 @@ let rotated = footprint.rotate(rotation: .clockwise)
 
 # Credits
 
-The Deltille framework is primarily the work of [Zack Brown](https://github.com/zilmarinen)
+The Deltille framework is primarily the work of [Zack Brown](https://github.com/zilmarinen).
 
 Special thanks go to;
 
 - [Boris the Brave](https://www.boristhebrave.com) for his extensive articles on grid systems, dual contouring, marching cubes, ortho-tiling and so much more.
 - [Oskar Stalberg](https://t.co/qakKgmxfai) for inspiring posts on procedural generation and wave function collapse.
-- [Amit Patel](https://www.redblobgames.com) for stimulating deep dives into hexagonal grids, coordinate systems and 
-grid edge classifications.
+- [Amit Patel](https://www.redblobgames.com) for stimulating deep dives into hexagonal grids, coordinate systems, 
+grid edge classifications and graph theory.
