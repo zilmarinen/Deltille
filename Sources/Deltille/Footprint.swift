@@ -12,12 +12,12 @@ import Euclid
 
 public struct Footprint {
     
-    let origin: Grid.Triangle
+    public let origin: Grid.Triangle
     
-    let coordinates: [Coordinate]
+    public let coordinates: [Coordinate]
     
-    init(origin: Grid.Triangle,
-         coordinates: [Coordinate]) {
+    public init(origin: Grid.Triangle,
+                coordinates: [Coordinate]) {
         
         self.origin = origin
         self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }

@@ -21,7 +21,7 @@ extension Grid {
             
             switch self {
                 
-            case .sierpinski: return 0.5
+            case .sierpinski: return 0.5 //TODO: determine tile subdivision edge length
             case .tile: return 1.0
             case .chunk: return 7.0
             case .region: return 28.0
