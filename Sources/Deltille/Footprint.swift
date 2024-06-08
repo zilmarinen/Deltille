@@ -55,11 +55,12 @@ public extension Grid.Triangle.Footprint {
 
 public extension Grid.Triangle.Footprint {
     
-    func center(at scale: Grid.Scale) -> Vector {
+    func center(at scale: Grid.Triangle.Scale) -> Vector {
         
         let vector = coordinates.reduce(into: Vector.zero) { result, coordinate in
             
-            result += coordinate.convert(to: scale)
+            result += Vector(coordinate,
+                             scale)
         }
         
         return vector / Double(coordinates.count)

@@ -15,7 +15,7 @@ Deltille is a utility framework designed to encapsulate the mathematical princip
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/zilmarinen/Deltille.git", .upToNextMinor(from: "0.1.0")),
+.package(url: "https://github.com/zilmarinen/Deltille.git", branch: "main"),
 ```
 
 ## Dependencies
@@ -32,11 +32,19 @@ Deltille is a lightweight wrapper for the base utility data structures required 
 The basic building blocks of Deltille are both the `Coordinate` and `Triangle` types which are used together to model equilateral triangle vertex positions along a plane.
 
 ```swift
-//create a triangle at the world origin
 let triangle = Grid.Triangle(.zero)
     
 //generate triangle vertices for the desired scale
 let vertices = triangle.corners(for: .chunk)
+```
+
+## Hexagons
+Complimentary to the `Triangle` grid is the dual `Hexagon` and `Coordinate` types which can be used to model regular hexagon vertex positions along a plane.
+
+```swift
+let hexagon = Grid.Hexagon(.unitZ)
+
+//generate hexagon vertices
 ```
 
 ## Stencils

@@ -4,7 +4,7 @@
 //  Created by Zack Brown on 23/05/2024.
 //
 
-extension Grid {
+extension Grid.Triangle {
     
     ///
     /// Scale represents the edge length for a triangle of a given size.

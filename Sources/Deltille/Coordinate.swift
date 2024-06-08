@@ -5,6 +5,7 @@
 //
 
 import Euclid
+import Foundation
 
 // MARK: Grid.Triangle.Coordinate
 
@@ -48,6 +49,21 @@ extension Grid.Triangle {
             self.y = y
             self.z = z
         }
+        
+        init(_ vector: Vector,
+             _ scale: Grid.Triangle.Scale) {
+            
+            let offset = Double.sqrt3d6 * scale.edgeLength
+            let slope = (.sqrt3d3 * vector.z)
+            
+            let j = (2.0 * slope) + offset
+            let i = (vector.x - slope) + offset
+            let k = (-vector.x - slope) + offset
+            
+            self.init(Int(floor(j / scale.edgeLength)),
+                       Int(floor(i / scale.edgeLength)),
+                       Int(ceil(k / scale.edgeLength) - 1.0))
+        }
     }
 }
 
@@ -73,23 +89,14 @@ public extension Grid.Triangle.Coordinate {
 
 public extension Grid.Triangle.Coordinate {
     
-    func convert(from: Grid.Scale,
-                 to: Grid.Scale) -> Self {
+    func transpose(from: Grid.Triangle.Scale,
+                   to: Grid.Triangle.Scale) -> Self {
         
         guard from != to else { return self }
         
-        return convert(to: from).convert(to: to)
-    }
-    
-    func convert(to scale: Grid.Scale) -> Vector {
-        
-        let dx = Double(y)
-        let dy = Double(x)
-        let dz = Double(z)
-            
-        return .init((0.5 * dx + -0.5 * dz) * scale.edgeLength,
-                      0.0,
-                      ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
+        return Self(Vector(self,
+                           from),
+                    to)
     }
 }
 
@@ -134,6 +141,25 @@ extension Grid.Hexagon {
             self.x = x
             self.y = y
             self.z = z
+        }
+        
+        init(_ vector: Vector) {
+            
+            let edgeLength = 1.0
+            
+            let offset = Double.sqrt3d6 * edgeLength
+            let slope = (.sqrt3d3 * vector.z)
+            
+            let j = (2.0 * slope) + offset
+            let i = (vector.x - slope) + offset
+            let k = (-vector.x - slope) + offset
+            
+            self.init(Int(floor(j / edgeLength)),
+                       Int(floor(i / edgeLength)),
+                       Int(ceil(k / edgeLength) - 1.0))
+            
+//            return ((             a +                                -c) * edge_length,
+//                        (-sqrt3 / 3 * a + sqrt3 * 2 / 3 * b - sqrt3 / 3 * c) * edge_length)
         }
     }
 }

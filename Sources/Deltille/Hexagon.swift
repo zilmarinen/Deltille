@@ -26,10 +26,11 @@ extension Grid {
 
 public extension Grid.Hexagon {
     
-    static let zero = Self(.zero)
+    static let unitX = Self(.init(1, 0, 0))
+    static let unitY = Self(.init(0, 1, 0))
+    static let unitZ = Self(.init(0, 0, 1))
 }
 
 public extension Grid.Hexagon {
- 
-    var corners: [Vertex] { [] }
+    
 }

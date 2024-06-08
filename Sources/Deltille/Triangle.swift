@@ -46,7 +46,8 @@ public extension Grid.Triangle {
         return position + (isPointy ? -unit : unit)
     }
     
-    func corners(for scale: Grid.Scale) -> [Vector] { corners.map { $0.convert(to: scale) } }
+    func corners(for scale: Scale) -> [Vector] { corners.map { Vector($0,
+                                                                      scale) } }
 
     func index(of vertex: Coordinate) -> Corner? { Corner.allCases.first { self.corner($0) == vertex } }
 }

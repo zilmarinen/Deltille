@@ -64,7 +64,7 @@ extension Grid.Triangle {
         // Outer subdivisions
         public let v3, v4, v8, v11, v12, v14: Vector
         
-        public let scale: Grid.Scale
+        public let scale: Scale
         
         public var center: Vector { (v0 + v1 + v2) / 3.0 }
         
@@ -92,11 +92,14 @@ extension Grid.Triangle {
         }
     }
     
-    public func stencil(for scale: Grid.Scale) -> Stencil {
+    public func stencil(for scale: Scale) -> Stencil {
         
-        let v0 = corner(.c0).convert(to: scale)
-        let v1 = corner(.c1).convert(to: scale)
-        let v2 = corner(.c2).convert(to: scale)
+        let v0 = Vector(corner(.c0),
+                        scale)
+        let v1 = Vector(corner(.c1), 
+                        scale)
+        let v2 = Vector(corner(.c2), 
+                        scale)
         
         let v5 = v0.mid(v1)
         let v7 = v0.mid(v2)

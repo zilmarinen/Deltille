@@ -11,18 +11,29 @@ extension Vector: Identifiable {
     
     public var id: String { "[\(x), \(y), \(z)]" }
     
-    public init(_ coordinate: Grid.Triangle.Coordinate) {
+    public init(_ coordinate: Grid.Triangle.Coordinate,
+                _ scale: Grid.Triangle.Scale) {
         
-        self.init(Double(coordinate.x),
-                  Double(coordinate.y),
-                  Double(coordinate.z))
+        let dx = Double(coordinate.y)
+        let dy = Double(coordinate.x)
+        let dz = Double(coordinate.z)
+            
+        self.init((0.5 * dx + -0.5 * dz) * scale.edgeLength,
+                  0.0,
+                  ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
     }
     
     public init(_ coordinate: Grid.Hexagon.Coordinate) {
         
-        self.init(Double(coordinate.x),
-                  Double(coordinate.y),
-                  Double(coordinate.z))
+        let dx = Double(coordinate.y)
+        let dy = Double(coordinate.x)
+        let dz = Double(coordinate.z)
+        
+        let edgeLength = 1.0
+            
+        self.init((0.5 * dx + -0.5 * dz) * edgeLength,
+                  0.0,
+                  ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * edgeLength)
     }
 }
 
@@ -33,21 +44,4 @@ public extension Vector {
     static let right = Self(1.0, 0.0, 0.0)
     
     func mid(_ other: Self) -> Self { lerp(other, 0.5) }
-}
-
-public extension Vector {
-    
-    func convert(to scale: Grid.Scale) -> Grid.Triangle.Coordinate {
-        
-        let offset = Double.sqrt3d6 * scale.edgeLength
-        let slope = (.sqrt3d3 * z)
-        
-        let j = (2.0 * slope) + offset
-        let i = (x - slope) + offset
-        let k = (-x - slope) + offset
-        
-        return .init(Int(floor(j / scale.edgeLength)),
-                     Int(floor(i / scale.edgeLength)),
-                     Int(ceil(k / scale.edgeLength) - 1.0))
-    }
 }

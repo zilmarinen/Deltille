@@ -22,8 +22,8 @@ final class CoordinateTests: XCTestCase {
         let regions = [zero,
                        x,
                        y,
-                       z].map { $0.position.convert(from: .region,
-                                                    to: .tile) }
+                       z].map { $0.position.transpose(from: .region,
+                                                      to: .tile) }
         
         let coordinates = [Coordinate(0, 0, 0),
                            Coordinate(-19, 9, 9),
@@ -39,8 +39,8 @@ final class CoordinateTests: XCTestCase {
         let regions = [zero,
                        x,
                        y,
-                       z].map { $0.position.convert(from: .region,
-                                                    to: .chunk) }
+                       z].map { $0.position.transpose(from: .region,
+                                                      to: .chunk) }
         
         let coordinates = [Coordinate(0, 0, 0),
                            Coordinate(-3, 1, 1),
@@ -59,8 +59,8 @@ final class CoordinateTests: XCTestCase {
                        z.position,
                        Coordinate(-3, 1, 1),
                        Coordinate(1, -3, 1),
-                       Coordinate(1, 1, -3)].map { $0.convert(from: .chunk,
-                                                              to: .region) }
+                       Coordinate(1, 1, -3)].map { $0.transpose(from: .chunk,
+                                                                to: .region) }
         
         let coordinates = [zero,
                            zero,
@@ -73,24 +73,24 @@ final class CoordinateTests: XCTestCase {
         XCTAssertEqual(regions, coordinates)
         
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(2, -1, -1).convert(from: .chunk,
-                                                     to: .region))
+                       Coordinate(2, -1, -1).transpose(from: .chunk,
+                                                       to: .region))
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(-1, 2, -1).convert(from: .chunk,
-                                                     to: .region))
+                       Coordinate(-1, 2, -1).transpose(from: .chunk,
+                                                       to: .region))
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(-1, -1, 2).convert(from: .chunk,
-                                                     to: .region))
+                       Coordinate(-1, -1, 2).transpose(from: .chunk,
+                                                       to: .region))
         
         XCTAssertEqual(Coordinate(-1, -1, 1),
-                       Coordinate(-2, -2, 3).convert(from: .chunk,
-                                                     to: .region))
+                       Coordinate(-2, -2, 3).transpose(from: .chunk,
+                                                       to: .region))
         XCTAssertEqual(Coordinate(-1, 1, -1),
-                       Coordinate(-2, 3, -2).convert(from: .chunk,
-                                                     to: .region))
+                       Coordinate(-2, 3, -2).transpose(from: .chunk,
+                                                       to: .region))
         XCTAssertEqual(Coordinate(1, -1, -1),
-                       Coordinate(3, -2, -2).convert(from: .chunk,
-                                                     to: .region))
+                       Coordinate(3, -2, -2).transpose(from: .chunk,
+                                                       to: .region))
     }
     
     func testCoordinateChunkToTile() throws {
@@ -98,8 +98,8 @@ final class CoordinateTests: XCTestCase {
         let chunks = [zero,
                       x,
                       y,
-                      z].map { $0.position.convert(from: .chunk,
-                                                   to: .tile) }
+                      z].map { $0.position.transpose(from: .chunk,
+                                                     to: .tile) }
         
         let coordinates = [Coordinate(0, 0, 0),
                            Coordinate(-5, 2, 2),
@@ -118,8 +118,8 @@ final class CoordinateTests: XCTestCase {
                      z.position,
                      Coordinate(-5, 2, 2),
                      Coordinate(2, -5, 2),
-                     Coordinate(2, 2, -5)].map { $0.convert(from: .tile,
-                                                            to: .chunk) }
+                     Coordinate(2, 2, -5)].map { $0.transpose(from: .tile,
+                                                              to: .chunk) }
         
         let coordinates = [zero,
                            zero,
@@ -132,24 +132,24 @@ final class CoordinateTests: XCTestCase {
         XCTAssertEqual(tiles, coordinates)
         
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(2, -1, -1).convert(from: .tile,
-                                                     to: .chunk))
+                       Coordinate(2, -1, -1).transpose(from: .tile,
+                                                       to: .chunk))
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(-1, 2, -1).convert(from: .tile,
-                                                     to: .chunk))
+                       Coordinate(-1, 2, -1).transpose(from: .tile,
+                                                       to: .chunk))
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(-1, -1, 2).convert(from: .tile,
-                                                     to: .chunk))
+                       Coordinate(-1, -1, 2).transpose(from: .tile,
+                                                       to: .chunk))
         
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(-2, -2, 4).convert(from: .tile,
-                                                     to: .chunk))
+                       Coordinate(-2, -2, 4).transpose(from: .tile,
+                                                       to: .chunk))
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(-2, 4, -2).convert(from: .tile,
-                                                     to: .chunk))
+                       Coordinate(-2, 4, -2).transpose(from: .tile,
+                                                       to: .chunk))
         XCTAssertEqual(Coordinate.zero,
-                       Coordinate(4, -2, -2).convert(from: .tile,
-                                                     to: .chunk))
+                       Coordinate(4, -2, -2).transpose(from: .tile,
+                                                       to: .chunk))
     }
     
     func testCoordinateTileToRegion() throws {
@@ -160,8 +160,8 @@ final class CoordinateTests: XCTestCase {
                      z.position,
                      Coordinate(-19, 9, 9),
                      Coordinate(9, -19, 9),
-                     Coordinate(9, 9, -19)].map { $0.convert(from: .tile,
-                                                             to: .region) }
+                     Coordinate(9, 9, -19)].map { $0.transpose(from: .tile,
+                                                               to: .region) }
         
         let coordinates = [zero,
                            zero,
@@ -244,7 +244,7 @@ final class CoordinateTests: XCTestCase {
 
 extension CoordinateTests {
     
-    private func testVertices(at scale: Grid.Scale) -> Bool {
+    private func testVertices(at scale: Grid.Triangle.Scale) -> Bool {
         
         let edgeLength = scale.edgeLength
         let halfEdgeLength = edgeLength / 2.0
@@ -263,30 +263,46 @@ extension CoordinateTests {
         let py = Vector(-halfEdgeLength, 0.0, sqrt3d6)
         let pz = Vector(halfEdgeLength, 0.0, sqrt3d6)
         
-        guard zero.position.convert(to: scale).isEqual(to: .zero),
-              zero.corner(.c0).convert(to: scale).isEqual(to: v0),
-              zero.corner(.c1).convert(to: scale).isEqual(to: v1),
-              zero.corner(.c2).convert(to: scale).isEqual(to: v2),
+        guard   Vector(zero.position, 
+                       scale).isEqual(to: .zero),
+                Vector(zero.corner(.c0), 
+                       scale).isEqual(to: v0),
+                Vector(zero.corner(.c1), 
+                       scale).isEqual(to: v1),
+                Vector(zero.corner(.c2), 
+                       scale).isEqual(to: v2),
               
-              x.position.convert(to: scale).isEqual(to: px),
-              x.corner(.c0).convert(to: scale).isEqual(to: v3),
-              x.corner(.c1).convert(to: scale).isEqual(to: v2),
-              x.corner(.c2).convert(to: scale).isEqual(to: v1),
+                Vector(x.position, 
+                       scale).isEqual(to: px),
+                Vector(x.corner(.c0), 
+                       scale).isEqual(to: v3),
+                Vector(x.corner(.c1), 
+                       scale).isEqual(to: v2),
+                Vector(x.corner(.c2), 
+                       scale).isEqual(to: v1),
         
-              y.position.convert(to: scale).isEqual(to: py),
-              y.corner(.c0).convert(to: scale).isEqual(to: v2),
-              y.corner(.c1).convert(to: scale).isEqual(to: v4),
-              y.corner(.c2).convert(to: scale).isEqual(to: v0),
+                Vector(y.position, 
+                       scale).isEqual(to: py),
+                Vector(y.corner(.c0), 
+                       scale).isEqual(to: v2),
+                Vector(y.corner(.c1), 
+                       scale).isEqual(to: v4),
+                Vector(y.corner(.c2), 
+                       scale).isEqual(to: v0),
         
-              z.position.convert(to: scale).isEqual(to: pz),
-              z.corner(.c0).convert(to: scale).isEqual(to: v1),
-              z.corner(.c1).convert(to: scale).isEqual(to: v0),
-              z.corner(.c2).convert(to: scale).isEqual(to: v5) else { return false }
+                Vector(z.position, 
+                       scale).isEqual(to: pz),
+                Vector(z.corner(.c0), 
+                       scale).isEqual(to: v1),
+                Vector(z.corner(.c1), 
+                       scale).isEqual(to: v0),
+                Vector(z.corner(.c2), 
+                       scale).isEqual(to: v5) else { return false }
         
         return true
     }
     
-    private func testCoordinateToVector(at scale: Grid.Scale) -> Bool {
+    private func testCoordinateToVector(at scale: Grid.Triangle.Scale) -> Bool {
         
         let triangles = [zero,
                          x,
@@ -298,22 +314,25 @@ extension CoordinateTests {
         
         for triangle in triangles {
             
-            let position = triangle.position.convert(to: scale)
+            let position = Vector(triangle.position,
+                                  scale)
             
             for corner in Grid.Triangle.Corner.allCases {
                 
-                let vertex = triangle.corner(corner).convert(to: scale)
+                let vertex = Vector(triangle.corner(corner),
+                                    scale)
                 
                 let vector = position.lerp(vertex, delta)
                 
-                if vector.convert(to: scale) != triangle.position { return false }
+                if Coordinate(vector,
+                              scale) != triangle.position { return false }
             }
         }
         
         return true
     }
     
-    private func testVectorToCoordinate(at scale: Grid.Scale) -> Bool {
+    private func testVectorToCoordinate(at scale: Grid.Triangle.Scale) -> Bool {
         
         let edgeLength = scale.edgeLength
         
@@ -332,13 +351,13 @@ extension CoordinateTests {
         let v4 = Vector(edgeLength * 4.5, 0.0, -.sqrt3 * edgeLength * 1.5)
         let v5 = Vector(0.0, 0.0, .sqrt3 * edgeLength * 3.0)
         
-        guard v0.convert(to: scale) == c0,
-              v1.convert(to: scale) == c1,
-              v2.convert(to: scale) == c2,
+        guard   Coordinate(v0, scale) == c0,
+                Coordinate(v1, scale) == c1,
+                Coordinate(v2, scale) == c2,
         
-              v3.convert(to: scale) == c3,
-              v4.convert(to: scale) == c4,
-              v5.convert(to: scale) == c5 else { return false }
+                Coordinate(v3, scale) == c3,
+                Coordinate(v4, scale) == c4,
+                Coordinate(v5, scale) == c5 else { return false }
         
         return true
     }
