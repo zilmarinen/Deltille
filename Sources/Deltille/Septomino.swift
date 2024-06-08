@@ -4,7 +4,7 @@
 //  Created by Zack Brown on 24/05/2024.
 //
 
-extension Grid {
+extension Grid.Triangle {
     
     ///
     /// A septomino is a plane geometric figure formed by joining
@@ -28,7 +28,7 @@ extension Grid {
         
         public var id: String { rawValue.capitalized }
         
-        public var coordinates: [Coordinate] {
+        public var coordinates: [Grid.Triangle.Coordinate] {
             
             switch self {
                 

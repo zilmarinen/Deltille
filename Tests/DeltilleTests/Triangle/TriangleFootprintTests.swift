@@ -1,5 +1,5 @@
 //
-//  FootprintTests.swift
+//  TriangleFootprintTests.swift
 //
 //  Created by Zack Brown on 25/05/2024.
 //
@@ -8,7 +8,10 @@ import Euclid
 import XCTest
 @testable import Deltille
 
-final class FootprintTests: XCTestCase {
+final class TriangleFootprintTests: XCTestCase {
+    
+    typealias Coordinate = Grid.Triangle.Coordinate
+    typealias Footprint = Grid.Triangle.Footprint
     
     let coordinates = [Coordinate(0, 0, 0),
                        Coordinate(-1, 0, 0),
@@ -20,7 +23,7 @@ final class FootprintTests: XCTestCase {
     
     func testFootprintCanopy() throws {
         
-        let canopy = Grid.Canopy.escher
+        let canopy = Grid.Triangle.Canopy.escher
         
         let footprint = Footprint(origin: .zero,
                                   coordinates: canopy.coordinates)
@@ -31,7 +34,7 @@ final class FootprintTests: XCTestCase {
     
     func testFootprintSeptomino() throws {
         
-        let septomino = Grid.Septomino.asterope
+        let septomino = Grid.Triangle.Septomino.asterope
         
         let footprint = Footprint(origin: .zero,
                                   coordinates: septomino.coordinates)

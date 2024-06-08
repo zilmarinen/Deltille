@@ -6,25 +6,28 @@
 
 import Euclid
 
-///
-///  Footprint defines a grouping of coordinates centered around its origin.
-///
-
-public struct Footprint {
+extension Grid.Triangle {
     
-    public let origin: Grid.Triangle
+    ///
+    ///  Footprint defines a grouping of triangle coordinates centered around its origin.
+    ///
     
-    public let coordinates: [Coordinate]
-    
-    public init(origin: Grid.Triangle,
-                coordinates: [Coordinate]) {
+    public struct Footprint {
         
-        self.origin = origin
-        self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }
+        public let origin: Grid.Triangle
+        
+        public let coordinates: [Grid.Triangle.Coordinate]
+        
+        public init(origin: Grid.Triangle,
+                    coordinates: [Grid.Triangle.Coordinate]) {
+            
+            self.origin = origin
+            self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }
+        }
     }
 }
 
-public extension Footprint {
+public extension Grid.Triangle.Footprint {
     
     func intersects(rhs: Self) -> Bool {
         
@@ -36,12 +39,12 @@ public extension Footprint {
         return false
     }
     
-    func intersects(rhs: Coordinate) -> Bool { coordinates.contains(rhs) }
+    func intersects(rhs: Grid.Triangle.Coordinate) -> Bool { coordinates.contains(rhs) }
 }
 
-public extension Footprint {
+public extension Grid.Triangle.Footprint {
     
-    func rotate(rotation: Coordinate.Rotation) -> Self {
+    func rotate(rotation: Grid.Triangle.Coordinate.Rotation) -> Self {
 
         let footprint = coordinates.map { ($0 - origin.position) * (origin.isPointy ? 1 : -1) }
         
@@ -50,7 +53,7 @@ public extension Footprint {
     }
 }
 
-public extension Footprint {
+public extension Grid.Triangle.Footprint {
     
     func center(at scale: Grid.Scale) -> Vector {
         

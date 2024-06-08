@@ -4,7 +4,7 @@
 //  Created by Zack Brown on 23/05/2024.
 //
 
-extension Grid {
+extension Grid.Triangle {
     
     ///
     /// Axis defines the three degrees of freedom used to represent
@@ -16,7 +16,7 @@ extension Grid {
         
         case x, y, z
         
-        public var unit: Coordinate {
+        public var unit: Grid.Triangle.Coordinate {
             
             switch self {
                 

@@ -30,30 +30,30 @@ extension Grid {
     }
 }
 
-extension Grid.Triangle {
+public extension Grid.Triangle {
     
-    public static let zero = Grid.Triangle(.zero)
+    static let zero = Self(.zero)
 }
 
-extension Grid.Triangle {
+public extension Grid.Triangle {
 
-    public var corners: [Coordinate] { Corner.allCases.map { corner($0) } }
+    var corners: [Coordinate] { Corner.allCases.map { corner($0) } }
 
-    public func corner(_ corner: Corner) -> Coordinate {
+    func corner(_ corner: Corner) -> Coordinate {
         
         let unit = (corner.axis.unit * -1) + (isPointy ? .zero : .one)
 
         return position + (isPointy ? -unit : unit)
     }
     
-    public func corners(for scale: Grid.Scale) -> [Vector] { corners.map { $0.convert(to: scale) } }
+    func corners(for scale: Grid.Scale) -> [Vector] { corners.map { $0.convert(to: scale) } }
 
-    public func index(of vertex: Coordinate) -> Grid.Triangle.Corner? { Corner.allCases.first { self.corner($0) == vertex } }
+    func index(of vertex: Coordinate) -> Corner? { Corner.allCases.first { self.corner($0) == vertex } }
 }
 
-extension Grid.Triangle {
+public extension Grid.Triangle {
     
-    public var perimeter: [Coordinate] { adjacent + diagonals + touching }
+    var perimeter: [Coordinate] { adjacent + diagonals + touching }
     
     ///
     ///  Directly connected adjacent triangles that share an edge.
@@ -67,9 +67,9 @@ extension Grid.Triangle {
     ///              :-------:-------:
     ///
  
-    public var adjacent: [Coordinate] { Grid.Axis.allCases.map { adjacent(along: $0) } }
+    var adjacent: [Coordinate] { Axis.allCases.map { adjacent(along: $0) } }
     
-    public func adjacent(along axis: Grid.Axis) -> Coordinate { position + (axis.unit * delta) }
+    func adjacent(along axis: Axis) -> Coordinate { position + (axis.unit * delta) }
     
     ///
     ///  Indirectly connected diagonal triangles that are opposite an edge.
@@ -83,9 +83,9 @@ extension Grid.Triangle {
     ///              :-------:-------:
     ///
     
-    public var diagonals: [Coordinate] { Grid.Axis.allCases.map { diagonal(along: $0) } }
+    var diagonals: [Coordinate] { Axis.allCases.map { diagonal(along: $0) } }
     
-    public func diagonal(along axis: Grid.Axis) -> Coordinate {
+    func diagonal(along axis: Axis) -> Coordinate {
         
         switch axis {
             
@@ -107,9 +107,9 @@ extension Grid.Triangle {
     ///              :-------:-------:
     ///
     
-    public var touching: [Coordinate] { Grid.Axis.allCases.flatMap { touching(along: $0) } }
+    var touching: [Coordinate] { Axis.allCases.flatMap { touching(along: $0) } }
     
-    public func touching(along axis: Grid.Axis) -> [Coordinate] {
+    func touching(along axis: Axis) -> [Coordinate] {
         
         switch axis {
             

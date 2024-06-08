@@ -7,23 +7,13 @@
 extension Grid.Triangle {
     
     ///
-    /// An edge defines one of three sides that make up a triangle.
+    /// An edge defines one of three sides of a triangle.
     ///
     
     public enum Edge: Int,
                       CaseIterable {
         
         case e0, e1, e2
-        
-        public var axis: Grid.Axis {
-            
-            switch self {
-                
-            case .e0: return .x
-            case .e1: return .y
-            case .e2: return .z
-            }
-        }
         
         public var connected: [Edge] {
             

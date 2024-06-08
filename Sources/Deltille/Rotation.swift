@@ -4,7 +4,7 @@
 //  Created by Zack Brown on 24/05/2024.
 //
 
-extension Coordinate {
+extension Grid.Triangle.Coordinate {
     
     public enum Rotation {
         
@@ -15,5 +15,5 @@ extension Coordinate {
         case counterClockwise
     }
     
-    public func rotate(rotation: Rotation) -> Self { rotation == .clockwise ? Coordinate(z, x, y) : Coordinate(y, z, x) }
+    public func rotate(rotation: Rotation) -> Self { rotation == .clockwise ? .init(z, x, y) : .init(y, z, x) }
 }

@@ -7,7 +7,7 @@
 extension Grid {
     
     ///
-    /// Scale represents the edge length of a triangle of a given size.
+    /// Scale represents the edge length for a triangle of a given size.
     ///
     
     public enum Scale {

@@ -10,6 +10,8 @@ import XCTest
 
 final class CoordinateTests: XCTestCase {
     
+    typealias Coordinate = Grid.Triangle.Coordinate
+    
     let zero = Grid.Triangle(.zero)
     let x = Grid.Triangle(-.unitX)
     let y = Grid.Triangle(-.unitY)

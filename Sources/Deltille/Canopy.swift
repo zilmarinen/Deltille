@@ -7,7 +7,7 @@
 import Euclid
 import Foundation
 
-extension Grid {
+extension Grid.Triangle {
     
     ///
     /// Canopy defines a series of coordinates wound in a closed loop
@@ -29,7 +29,7 @@ extension Grid {
 
         public var id: String { rawValue.capitalized }
 
-        public var coordinates: [Coordinate] {
+        public var coordinates: [Grid.Triangle.Coordinate] {
 
             switch self {
 

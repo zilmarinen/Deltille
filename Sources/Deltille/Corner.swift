@@ -7,7 +7,7 @@
 extension Grid.Triangle {
     
     ///
-    /// A corner defines one of three vertices that make up a triangle.
+    /// A corner defines one of three vertices of a triangle.
     ///
     
     public enum Corner: Int,
@@ -15,7 +15,7 @@ extension Grid.Triangle {
         
         case c0, c1, c2
         
-        public var axis: Grid.Axis {
+        public var axis: Grid.Triangle.Axis {
             
             switch self {
                 
