@@ -28,11 +28,11 @@ extension Vector: Identifiable {
 
 public extension Vector {
     
-    static let forward = Vector(0.0, 0.0, 1.0)
-    static let up = Vector(0.0, 1.0, 0.0)
-    static let right = Vector(1.0, 0.0, 0.0)
+    static let forward = Self(0.0, 0.0, 1.0)
+    static let up = Self(0.0, 1.0, 0.0)
+    static let right = Self(1.0, 0.0, 0.0)
     
-    func mid(_ other: Vector) -> Vector { lerp(other, 0.5) }
+    func mid(_ other: Self) -> Self { lerp(other, 0.5) }
 }
 
 public extension Vector {

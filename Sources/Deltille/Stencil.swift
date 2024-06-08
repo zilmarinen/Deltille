@@ -102,21 +102,21 @@ extension Grid.Triangle {
         let v7 = v0.mid(v2)
         let v13 = v1.mid(v2)
         
-        return Stencil(v0: v0,
-                       v1: v1,
-                       v2: v2,
-                       v5: v5,
-                       v7: v7,
-                       v13: v13,
-                       v6: v5.mid(v7),
-                       v9: v5.mid(v13),
-                       v10: v7.mid(v13),
-                       v3: v0.mid(v5),
-                       v4: v0.mid(v7),
-                       v8: v1.mid(v5),
-                       v11: v2.mid(v7),
-                       v12: v1.mid(v13),
-                       v14: v2.mid(v13),
-                       scale: scale)
+        return .init(v0: v0,
+                     v1: v1,
+                     v2: v2,
+                     v5: v5,
+                     v7: v7,
+                     v13: v13,
+                     v6: v5.mid(v7),
+                     v9: v5.mid(v13),
+                     v10: v7.mid(v13),
+                     v3: v0.mid(v5),
+                     v4: v0.mid(v7),
+                     v8: v1.mid(v5),
+                     v11: v2.mid(v7),
+                     v12: v1.mid(v13),
+                     v14: v2.mid(v13),
+                     scale: scale)
     }
 }

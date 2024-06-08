@@ -87,7 +87,7 @@ public extension Grid.Triangle.Coordinate {
         let dy = Double(x)
         let dz = Double(z)
             
-        return Vector((0.5 * dx + -0.5 * dz) * scale.edgeLength,
+        return .init((0.5 * dx + -0.5 * dz) * scale.edgeLength,
                       0.0,
                       ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
     }
@@ -125,7 +125,7 @@ extension Grid.Hexagon {
         
         public var equalToZero: Bool { sum == 0 }
         public var equalToOne: Bool { sum == 1 }
-        public var equalToNegativeOne: Bool { sum == -1 }
+        public var equalToTwo: Bool { sum == 2 }
         
         public init(_ x: Int,
                     _ y: Int,

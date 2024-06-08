@@ -48,8 +48,8 @@ public extension Grid.Triangle.Footprint {
 
         let footprint = coordinates.map { ($0 - origin.position) * (origin.isPointy ? 1 : -1) }
         
-        return Self(origin: origin,
-                    coordinates: footprint.map { $0.rotate(rotation: rotation) })
+        return .init(origin: origin,
+                     coordinates: footprint.map { $0.rotate(rotation: rotation) })
     }
 }
 
