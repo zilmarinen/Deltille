@@ -18,8 +18,8 @@ extension Grid.Triangle {
         
         public let coordinates: [Grid.Triangle.Coordinate]
         
-        public init(origin: Grid.Triangle,
-                    coordinates: [Grid.Triangle.Coordinate]) {
+        public init(_ origin: Grid.Triangle,
+                    _ coordinates: [Grid.Triangle.Coordinate]) {
             
             self.origin = origin
             self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }
@@ -29,7 +29,7 @@ extension Grid.Triangle {
 
 public extension Grid.Triangle.Footprint {
     
-    func intersects(rhs: Self) -> Bool {
+    func intersects(_ rhs: Self) -> Bool {
         
         for coordinate in rhs.coordinates {
             
@@ -44,18 +44,18 @@ public extension Grid.Triangle.Footprint {
 
 public extension Grid.Triangle.Footprint {
     
-    func rotate(rotation: Grid.Triangle.Coordinate.Rotation) -> Self {
+    func rotate(_ rotation: Grid.Triangle.Coordinate.Rotation) -> Self {
 
         let footprint = coordinates.map { ($0 - origin.position) * (origin.isPointy ? 1 : -1) }
         
-        return .init(origin: origin,
-                     coordinates: footprint.map { $0.rotate(rotation: rotation) })
+        return .init(origin,
+                     footprint.map { $0.rotate(rotation) })
     }
 }
 
 public extension Grid.Triangle.Footprint {
     
-    func center(at scale: Grid.Triangle.Scale) -> Vector {
+    func center(_ scale: Grid.Triangle.Scale) -> Vector {
         
         let vector = coordinates.reduce(into: Vector.zero) { result, coordinate in
             

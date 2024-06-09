@@ -26,7 +26,7 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 # Implementation
-Deltille is a lightweight wrapper for the base utility data structures required to get started working with triangular grids. By constraining triangles to a fixed `Grid`, it is possible to generate triangle vertices for any given `Scale` by leveraging the natural geometric properties of triangle subdivision. 
+Deltille is a lightweight wrapper for the base utility data structures required to get started working with triangular grids. By constraining triangles to a fixed grid, it is possible to generate triangle vertices for any given scale by leveraging the natural geometric properties of triangle subdivision. 
 
 ## Triangles
 The basic building blocks of Deltille are both the `Coordinate` and `Triangle` types which are used together to model equilateral triangle vertex positions along a plane.
@@ -35,7 +35,7 @@ The basic building blocks of Deltille are both the `Coordinate` and `Triangle` t
 let triangle = Grid.Triangle(.zero)
     
 //generate triangle vertices for the desired scale
-let vertices = triangle.corners(for: .chunk)
+let vertices = triangle.vertices(.tile)
 ```
 
 ## Hexagons
@@ -44,7 +44,8 @@ Complimentary to the `Triangle` grid is the dual `Hexagon` and `Coordinate` type
 ```swift
 let hexagon = Grid.Hexagon(.unitZ)
 
-//generate hexagon vertices
+//generate hexagon vertices for the desired scale
+let vertices = hexagon.vertices(.chunk)
 ```
 
 ## Stencils
@@ -52,10 +53,10 @@ A `Stencil` can be used to subdivide a triangle into individual sub-triangles ma
 
 ```swift    
 //subdivide into stencil components
-let stencil = triangle.stencil(for: .tile)
+let stencil = triangle.stencil(.tile)
     
 //grab the stencil center
-let vertex = stencil.vertex(for: .center)
+let vertex = stencil.vertex(.center)
 ```
 
 ## Footprints

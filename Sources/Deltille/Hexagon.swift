@@ -33,4 +33,12 @@ public extension Grid.Hexagon {
 
 public extension Grid.Hexagon {
     
+    var corners: [Coordinate] { Corner.allCases.map { corner($0) } }
+
+    func corner(_ corner: Corner) -> Coordinate { position + corner.axis.unit }
+    
+    func corner(_ vertex: Coordinate) -> Corner? { Corner.allCases.first { corner($0) == vertex } }
+    
+    func vertices(_ scale: Scale) -> [Vector] { corners.map { Vector($0,
+                                                                     scale) } }
 }

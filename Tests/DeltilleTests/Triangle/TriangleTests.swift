@@ -25,7 +25,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyAdjacentAlongAxisX() throws {
         
-        let adjacent = pointyTriangle.adjacent(along: .x)
+        let adjacent = pointyTriangle.adjacent(.x)
         
         let coordinate = pointyTriangle.position + Coordinate(-1, 0, 0)
         
@@ -34,7 +34,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyAdjacentAlongAxisY() throws {
         
-        let adjacent = pointyTriangle.adjacent(along: .y)
+        let adjacent = pointyTriangle.adjacent(.y)
         
         let coordinate = pointyTriangle.position + Coordinate(0, -1, 0)
         
@@ -43,7 +43,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyAdjacentAlongAxisZ() throws {
         
-        let adjacent = pointyTriangle.adjacent(along: .z)
+        let adjacent = pointyTriangle.adjacent(.z)
         
         let coordinate = pointyTriangle.position + Coordinate(0, 0, -1)
         
@@ -52,7 +52,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatAdjacentAlongAxisX() throws {
         
-        let adjacent = flatTriangle.adjacent(along: .x)
+        let adjacent = flatTriangle.adjacent(.x)
         
         let coordinate = flatTriangle.position + Coordinate(1, 0, 0)
         
@@ -61,7 +61,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatAdjacentAlongAxisY() throws {
         
-        let adjacent = flatTriangle.adjacent(along: .y)
+        let adjacent = flatTriangle.adjacent(.y)
         
         let coordinate = flatTriangle.position + Coordinate(0, 1, 0)
         
@@ -70,7 +70,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatAdjacentAlongAxisZ() throws {
         
-        let adjacent = flatTriangle.adjacent(along: .z)
+        let adjacent = flatTriangle.adjacent(.z)
         
         let coordinate = flatTriangle.position + Coordinate(0, 0, 1)
         
@@ -81,7 +81,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyDiagonalAlongAxisX() throws {
         
-        let diagonal = pointyTriangle.diagonal(along: .x)
+        let diagonal = pointyTriangle.diagonal(.x)
         
         let coordinate = pointyTriangle.position + Coordinate(1, -1, -1)
         
@@ -90,7 +90,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyDiagonalAlongAxisY() throws {
         
-        let diagonal = pointyTriangle.diagonal(along: .y)
+        let diagonal = pointyTriangle.diagonal(.y)
         
         let coordinate = pointyTriangle.position + Coordinate(-1, 1, -1)
         
@@ -99,7 +99,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyDiagonalAlongAxisZ() throws {
         
-        let diagonal = pointyTriangle.diagonal(along: .z)
+        let diagonal = pointyTriangle.diagonal(.z)
         
         let coordinate = pointyTriangle.position + Coordinate(-1, -1, 1)
         
@@ -108,7 +108,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatDiagonalAlongAxisX() throws {
         
-        let diagonal = flatTriangle.diagonal(along: .x)
+        let diagonal = flatTriangle.diagonal(.x)
         
         let coordinate = flatTriangle.position + Coordinate(-1, 1, 1)
         
@@ -117,7 +117,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatDiagonalAlongAxisY() throws {
         
-        let diagonal = flatTriangle.diagonal(along: .y)
+        let diagonal = flatTriangle.diagonal(.y)
         
         let coordinate = flatTriangle.position + Coordinate(1, -1, 1)
         
@@ -126,7 +126,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatDiagonalAlongAxisZ() throws {
         
-        let diagonal = flatTriangle.diagonal(along: .z)
+        let diagonal = flatTriangle.diagonal(.z)
         
         let coordinate = flatTriangle.position + Coordinate(1, 1, -1)
         
@@ -137,7 +137,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyTouchingAlongAxisX() throws {
         
-        let touching = pointyTriangle.touching(along: .x)
+        let touching = pointyTriangle.touching(.x)
         
         let coordinates = [pointyTriangle.position + Coordinate(1, 0, -1),
                            pointyTriangle.position + Coordinate(1, -1, 0)]
@@ -148,7 +148,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyTouchingAlongAxisY() throws {
         
-        let touching = pointyTriangle.touching(along: .y)
+        let touching = pointyTriangle.touching(.y)
         
         let coordinates = [pointyTriangle.position + Coordinate(0, 1, -1),
                            pointyTriangle.position + Coordinate(-1, 1, 0)]
@@ -159,7 +159,7 @@ final class TriangleTests: XCTestCase {
     
     func testPointyTouchingAlongAxisZ() throws {
         
-        let touching = pointyTriangle.touching(along: .z)
+        let touching = pointyTriangle.touching(.z)
         
         let coordinates = [pointyTriangle.position + Coordinate(0, -1, 1),
                            pointyTriangle.position + Coordinate(-1, 0, 1)]
@@ -170,7 +170,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatTouchingAlongAxisX() throws {
         
-        let touching = flatTriangle.touching(along: .x)
+        let touching = flatTriangle.touching(.x)
         
         let coordinates = [flatTriangle.position + Coordinate(-1, 0, 1),
                            flatTriangle.position + Coordinate(-1, 1, 0)]
@@ -181,7 +181,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatTouchingAlongAxisY() throws {
         
-        let touching = flatTriangle.touching(along: .y)
+        let touching = flatTriangle.touching(.y)
         
         let coordinates = [flatTriangle.position + Coordinate(0, -1, 1),
                            flatTriangle.position + Coordinate(1, -1, 0)]
@@ -192,7 +192,7 @@ final class TriangleTests: XCTestCase {
     
     func testFlatTouchingAlongAxisZ() throws {
         
-        let touching = flatTriangle.touching(along: .z)
+        let touching = flatTriangle.touching(.z)
         
         let coordinates = [flatTriangle.position + Coordinate(0, 1, -1),
                            flatTriangle.position + Coordinate(1, 0, -1)]
@@ -231,10 +231,10 @@ final class TriangleTests: XCTestCase {
         let v1 = pointyTriangle.position + Coordinate(0, 1, 0)
         let v2 = pointyTriangle.position + Coordinate(0, 0, 1)
         
-        XCTAssertEqual(.c0, pointyTriangle.index(of: v0))
-        XCTAssertEqual(.c1, pointyTriangle.index(of: v1))
-        XCTAssertEqual(.c2, pointyTriangle.index(of: v2))
-        XCTAssertEqual(nil, pointyTriangle.index(of: .zero))
+        XCTAssertEqual(.c0, pointyTriangle.corner(v0))
+        XCTAssertEqual(.c1, pointyTriangle.corner(v1))
+        XCTAssertEqual(.c2, pointyTriangle.corner(v2))
+        XCTAssertEqual(nil, pointyTriangle.corner(.zero))
     }
     
     func testFlatVertexIndices() throws {
@@ -243,9 +243,9 @@ final class TriangleTests: XCTestCase {
         let v1 = flatTriangle.position + Coordinate(1, 0, 1)
         let v2 = flatTriangle.position + Coordinate(1, 1, 0)
         
-        XCTAssertEqual(.c0, flatTriangle.index(of: v0))
-        XCTAssertEqual(.c1, flatTriangle.index(of: v1))
-        XCTAssertEqual(.c2, flatTriangle.index(of: v2))
-        XCTAssertEqual(nil, flatTriangle.index(of: .zero))
+        XCTAssertEqual(.c0, flatTriangle.corner(v0))
+        XCTAssertEqual(.c1, flatTriangle.corner(v1))
+        XCTAssertEqual(.c2, flatTriangle.corner(v2))
+        XCTAssertEqual(nil, flatTriangle.corner(.zero))
     }
 }

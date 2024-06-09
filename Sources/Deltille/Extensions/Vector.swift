@@ -23,17 +23,16 @@ extension Vector: Identifiable {
                   ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
     }
     
-    public init(_ coordinate: Grid.Hexagon.Coordinate) {
+    public init(_ coordinate: Grid.Hexagon.Coordinate,
+                _ scale: Grid.Hexagon.Scale) {
         
         let dx = Double(coordinate.y)
         let dy = Double(coordinate.x)
         let dz = Double(coordinate.z)
-        
-        let edgeLength = 1.0
             
-        self.init((0.5 * dx + -0.5 * dz) * edgeLength,
+        self.init((0.5 * dx + -0.5 * dz) * scale.edgeLength,
                   0.0,
-                  ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * edgeLength)
+                  ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
     }
 }
 

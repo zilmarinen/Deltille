@@ -58,6 +58,19 @@ extension Grid.Hexagon {
         
         case c0, c1, c2, c3, c4, c5
         
+        public var axis: Grid.Hexagon.Axis {
+            
+            switch self {
+                
+            case .c0: return .x
+            case .c1: return .negativeZ
+            case .c2: return .y
+            case .c3: return .negativeX
+            case .c4: return .z
+            case .c5: return .negativeY
+            }
+        }
+        
         public var connected: [Corner] {
             
             switch self {

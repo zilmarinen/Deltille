@@ -61,8 +61,8 @@ extension Grid.Triangle {
             let k = (-vector.x - slope) + offset
             
             self.init(Int(floor(j / scale.edgeLength)),
-                       Int(floor(i / scale.edgeLength)),
-                       Int(ceil(k / scale.edgeLength) - 1.0))
+                      Int(floor(i / scale.edgeLength)),
+                      Int( ceil(k / scale.edgeLength) - 1.0))
         }
     }
 }
@@ -143,20 +143,19 @@ extension Grid.Hexagon {
             self.z = z
         }
         
-        init(_ vector: Vector) {
+        init(_ vector: Vector,
+             _ scale: Grid.Hexagon.Scale) {
             
-            let edgeLength = 1.0
-            
-            let offset = Double.sqrt3d6 * edgeLength
+            let offset = Double.sqrt3d6 * scale.edgeLength
             let slope = (.sqrt3d3 * vector.z)
             
             let j = (2.0 * slope) + offset
             let i = (vector.x - slope) + offset
             let k = (-vector.x - slope) + offset
             
-            self.init(Int(floor(j / edgeLength)),
-                       Int(floor(i / edgeLength)),
-                       Int(ceil(k / edgeLength) - 1.0))
+            self.init(Int(floor(j / scale.edgeLength)),
+                      Int(floor(i / scale.edgeLength)),
+                      Int( ceil(k / scale.edgeLength) - 1.0))
             
 //            return ((             a +                                -c) * edge_length,
 //                        (-sqrt3 / 3 * a + sqrt3 * 2 / 3 * b - sqrt3 / 3 * c) * edge_length)
@@ -168,9 +167,12 @@ public extension Grid.Hexagon.Coordinate {
     
     static let zero = Self(0, 0, 0)
     static let one = Self(1, 1, 1)
-    static let unitX = Self(1, -1, 0)
-    static let unitY = Self(0, 1, -1)
-    static let unitZ = Self(-1, 0, 1)
+    static let unitX = Self(1, 0, 0)
+    static let unitY = Self(0, 1, 0)
+    static let unitZ = Self(0, 0, 1)
+    static let translationX = Self(1, -1, 0)
+    static let translationY = Self(0, 1, -1)
+    static let translationZ = Self(-1, 0, 1)
     
     static func -(lhs: Self,
                   rhs: Self) -> Self { .init(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z) }

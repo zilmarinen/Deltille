@@ -68,7 +68,7 @@ extension Grid.Triangle {
         
         public var center: Vector { (v0 + v1 + v2) / 3.0 }
         
-        public func vertex(for vertex: Vertex) -> Vector {
+        public func vertex(_ vertex: Vertex) -> Vector {
             
             switch vertex {
                 
@@ -92,7 +92,7 @@ extension Grid.Triangle {
         }
     }
     
-    public func stencil(for scale: Scale) -> Stencil {
+    public func stencil(_ scale: Scale) -> Stencil {
         
         let v0 = Vector(corner(.c0),
                         scale)

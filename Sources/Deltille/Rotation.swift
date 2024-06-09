@@ -15,5 +15,5 @@ extension Grid.Triangle.Coordinate {
         case counterClockwise
     }
     
-    public func rotate(rotation: Rotation) -> Self { rotation == .clockwise ? .init(z, x, y) : .init(y, z, x) }
+    public func rotate(_ rotation: Rotation) -> Self { rotation == .clockwise ? .init(z, x, y) : .init(y, z, x) }
 }

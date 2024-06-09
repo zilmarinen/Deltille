@@ -1,6 +1,6 @@
-# [CHANGELOG](https://github.com/zilmarinen/Deltille/)
+# CHANGELOG
 
-## [0.1.0](https://github.com/zilmarinen/Deltille/tag/0.1.0) (27/05/2024)
+## [0.1.0](https://github.com/zilmarinen/Deltille/releases/tag/0.1.0) (27/05/2024)
 
 - Introduce `Grid` enum namespace
 	- Add `Axis` enum to define world axis

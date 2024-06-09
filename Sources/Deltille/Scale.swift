@@ -29,3 +29,27 @@ extension Grid.Triangle {
         }
     }
 }
+
+extension Grid.Hexagon {
+    
+    ///
+    /// Scale represents the edge length for a hexagon of a given size.
+    ///
+    
+    public enum Scale {
+        
+        case tile
+        case chunk
+        case region
+        
+        public var edgeLength: Double {
+            
+            switch self {
+                
+            case .tile: return 1.0
+            case .chunk: return 7.0
+            case .region: return 28.0
+            }
+        }
+    }
+}

@@ -46,10 +46,10 @@ public extension Grid.Triangle {
         return position + (isPointy ? -unit : unit)
     }
     
-    func corners(for scale: Scale) -> [Vector] { corners.map { Vector($0,
-                                                                      scale) } }
-
-    func index(of vertex: Coordinate) -> Corner? { Corner.allCases.first { self.corner($0) == vertex } }
+    func corner(_ vertex: Coordinate) -> Corner? { Corner.allCases.first { corner($0) == vertex } }
+    
+    func vertices(_ scale: Scale) -> [Vector] { corners.map { Vector($0,
+                                                                     scale) } }
 }
 
 public extension Grid.Triangle {
@@ -68,9 +68,9 @@ public extension Grid.Triangle {
     ///              :-------:-------:
     ///
  
-    var adjacent: [Coordinate] { Axis.allCases.map { adjacent(along: $0) } }
+    var adjacent: [Coordinate] { Axis.allCases.map { adjacent($0) } }
     
-    func adjacent(along axis: Axis) -> Coordinate { position + (axis.unit * delta) }
+    func adjacent(_ axis: Axis) -> Coordinate { position + (axis.unit * delta) }
     
     ///
     ///  Indirectly connected diagonal triangles that are opposite an edge.
@@ -84,9 +84,9 @@ public extension Grid.Triangle {
     ///              :-------:-------:
     ///
     
-    var diagonals: [Coordinate] { Axis.allCases.map { diagonal(along: $0) } }
+    var diagonals: [Coordinate] { Axis.allCases.map { diagonal($0) } }
     
-    func diagonal(along axis: Axis) -> Coordinate {
+    func diagonal(_ axis: Axis) -> Coordinate {
         
         switch axis {
             
@@ -108,9 +108,9 @@ public extension Grid.Triangle {
     ///              :-------:-------:
     ///
     
-    var touching: [Coordinate] { Axis.allCases.flatMap { touching(along: $0) } }
+    var touching: [Coordinate] { Axis.allCases.flatMap { touching($0) } }
     
-    func touching(along axis: Axis) -> [Coordinate] {
+    func touching(_ axis: Axis) -> [Coordinate] {
         
         switch axis {
             

@@ -27,3 +27,31 @@ extension Grid.Triangle {
         }
     }
 }
+
+extension Grid.Hexagon {
+    
+    ///
+    /// Axis defines the three degrees of freedom used to represent
+    /// the dimensions of translation allowed within a triangular grid.
+    ///
+    
+    public enum Axis: Int,
+                      CaseIterable {
+        
+        case x, y, z
+        case negativeX, negativeY, negativeZ
+        
+        public var unit: Grid.Hexagon.Coordinate {
+            
+            switch self {
+                
+            case .x: return .unitX
+            case .y: return .unitY
+            case .z: return .unitZ
+            case .negativeX: return -.unitX
+            case .negativeY: return -.unitY
+            case .negativeZ: return -.unitZ
+            }
+        }
+    }
+}
