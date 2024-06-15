@@ -10,23 +10,23 @@ import XCTest
 
 final class TriangleFootprintTests: XCTestCase {
     
-    typealias Coordinate = Grid.Triangle.Coordinate
+    typealias Coordinate = Grid.Coordinate
     typealias Footprint = Grid.Triangle.Footprint
     
-    let coordinates = [Coordinate(0, 0, 0),
-                       Coordinate(-1, 0, 0),
-                       Coordinate(-1, 0, 1),
-                       Coordinate(-2, 0, 1),
-                       Coordinate(-2, 1, 1),
-                       Coordinate(-3, 1, 1),
-                       Coordinate(-3, 2, 1)]
+    private let coordinates = [Coordinate(0, 0, 0),
+                               Coordinate(-1, 0, 0),
+                               Coordinate(-1, 0, 1),
+                               Coordinate(-2, 0, 1),
+                               Coordinate(-2, 1, 1),
+                               Coordinate(-3, 1, 1),
+                               Coordinate(-3, 2, 1)]
     
     func testFootprintCanopy() throws {
         
         let canopy = Grid.Triangle.Canopy.escher
         
-        let footprint = Footprint(origin: .zero,
-                                  coordinates: canopy.coordinates)
+        let footprint = Footprint(.zero,
+                                  canopy.coordinates)
         
         XCTAssertEqual(footprint.coordinates,
                        canopy.coordinates)
@@ -36,8 +36,8 @@ final class TriangleFootprintTests: XCTestCase {
         
         let septomino = Grid.Triangle.Septomino.asterope
         
-        let footprint = Footprint(origin: .zero,
-                                  coordinates: septomino.coordinates)
+        let footprint = Footprint(.zero,
+                                  septomino.coordinates)
         
         XCTAssertEqual(footprint.coordinates,
                        septomino.coordinates)
@@ -45,8 +45,8 @@ final class TriangleFootprintTests: XCTestCase {
     
     func testPointyFootprintTranslation() throws {
         
-        let footprint = Footprint(origin: .init(Coordinate(1, -2, 1)),
-                                  coordinates: coordinates)
+        let footprint = Footprint(.init(Coordinate(1, -2, 1)),
+                                  coordinates)
         
         let translatedCoordinates = [Coordinate(1, -2, 1),
                                      Coordinate(0, -2, 1),
@@ -62,8 +62,8 @@ final class TriangleFootprintTests: XCTestCase {
     
     func testFlatFootprintTranslation() throws {
         
-        let footprint = Footprint(origin: .init(Coordinate(2, -1, -2)),
-                                  coordinates: coordinates)
+        let footprint = Footprint(.init(Coordinate(2, -1, -2)),
+                                  coordinates)
         
         let translatedCoordinates = [Coordinate(2, -1, -2),
                                      Coordinate(3, -1, -2),
@@ -79,12 +79,12 @@ final class TriangleFootprintTests: XCTestCase {
     
     func testPointyFootprintRotation() throws {
         
-        let footprint = Footprint(origin: .zero,
-                                  coordinates: coordinates)
+        let footprint = Footprint(.zero,
+                                  coordinates)
         
-        let leftRotation = footprint.rotate(rotation: .clockwise)
-        let rightRotation = footprint.rotate(rotation: .counterClockwise)
-        let inverseRotation = leftRotation.rotate(rotation: .clockwise)
+        let leftRotation = footprint.rotate(.clockwise)
+        let rightRotation = footprint.rotate(.counterClockwise)
+        let inverseRotation = leftRotation.rotate(.clockwise)
         
         let leftCoordinates = [Coordinate(0, 0, 0),
                                Coordinate(0, -1, 0),
@@ -112,10 +112,10 @@ final class TriangleFootprintTests: XCTestCase {
     
     func testPointyFootprintTranslationAndRotation() throws {
         
-        let footprint = Footprint(origin: .init(Coordinate(1, -2, 1)),
-                                  coordinates: coordinates)
+        let footprint = Footprint(.init(Coordinate(1, -2, 1)),
+                                  coordinates)
         
-        let rotatedFootprint = footprint.rotate(rotation: .counterClockwise)
+        let rotatedFootprint = footprint.rotate(.counterClockwise)
         
         let translatedAndRotatedCoordinates = [Coordinate(1, -2, 1),
                                                Coordinate(1, -2, 0),
@@ -131,10 +131,10 @@ final class TriangleFootprintTests: XCTestCase {
     
     func testFlatFootprintTranslationAndRotation() throws {
         
-        let footprint = Footprint(origin: .init(Coordinate(2, -1, -2)),
-                                  coordinates: coordinates)
+        let footprint = Footprint(.init(Coordinate(2, -1, -2)),
+                                  coordinates)
         
-        let rotatedFootprint = footprint.rotate(rotation: .counterClockwise)
+        let rotatedFootprint = footprint.rotate(.counterClockwise)
         
         let translatedAndRotatedCoordinates = [Coordinate(2, -1, -2),
                                      Coordinate(2, -1, -1),
@@ -150,17 +150,17 @@ final class TriangleFootprintTests: XCTestCase {
     
     func testFootprintIntersection() throws {
         
-        let footprint = Footprint(origin: .zero,
-                                  coordinates: coordinates)
+        let footprint = Footprint(.zero,
+                                  coordinates)
         
-        let lhs = Footprint(origin: .init(Coordinate(2, -2, 0)),
-                            coordinates: coordinates).rotate(rotation: .clockwise)
+        let lhs = Footprint(.init(Coordinate(2, -2, 0)),
+                            coordinates).rotate(.clockwise)
         
-        let rhs = Footprint(origin: .init(Coordinate(2, -2, 0)),
-                            coordinates: coordinates)
+        let rhs = Footprint(.init(Coordinate(2, -2, 0)),
+                            coordinates)
         
-        XCTAssertFalse(footprint.intersects(rhs: lhs))
-        XCTAssertTrue(footprint.intersects(rhs: rhs))
+        XCTAssertFalse(footprint.intersects(lhs))
+        XCTAssertTrue(footprint.intersects(rhs))
     }
 }
 
