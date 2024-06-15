@@ -16,7 +16,7 @@ extension Grid.Triangle {
         
         case x, y, z
         
-        public var unit: Grid.Triangle.Coordinate {
+        public var unit: Grid.Coordinate {
             
             switch self {
                 
@@ -39,18 +39,18 @@ extension Grid.Hexagon {
                       CaseIterable {
         
         case x, y, z
-        case negativeX, negativeY, negativeZ
+        case inverseX, inverseY, inverseZ
         
-        public var unit: Grid.Hexagon.Coordinate {
+        public var unit: Grid.Coordinate {
             
             switch self {
                 
             case .x: return .unitX
             case .y: return .unitY
             case .z: return .unitZ
-            case .negativeX: return -.unitX
-            case .negativeY: return -.unitY
-            case .negativeZ: return -.unitZ
+            case .inverseX: return -.unitX
+            case .inverseY: return -.unitY
+            case .inverseZ: return -.unitZ
             }
         }
     }

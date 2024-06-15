@@ -46,9 +46,9 @@ extension Grid.Hexagon {
             
             switch self {
                 
-            case .tile: return 1.0
-            case .chunk: return 7.0
-            case .region: return 28.0
+            case .tile: return 0.5
+            case .chunk: return 3.5
+            case .region: return 14.0
             }
         }
     }

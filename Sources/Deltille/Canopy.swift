@@ -29,7 +29,7 @@ extension Grid.Triangle {
 
         public var id: String { rawValue.capitalized }
 
-        public var coordinates: [Grid.Triangle.Coordinate] {
+        public var coordinates: [Grid.Coordinate] {
 
             switch self {
 

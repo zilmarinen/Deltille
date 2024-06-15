@@ -16,10 +16,10 @@ extension Grid.Triangle {
         
         public let origin: Grid.Triangle
         
-        public let coordinates: [Grid.Triangle.Coordinate]
+        public let coordinates: [Grid.Coordinate]
         
         public init(_ origin: Grid.Triangle,
-                    _ coordinates: [Grid.Triangle.Coordinate]) {
+                    _ coordinates: [Grid.Coordinate]) {
             
             self.origin = origin
             self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }
@@ -39,17 +39,17 @@ public extension Grid.Triangle.Footprint {
         return false
     }
     
-    func intersects(rhs: Grid.Triangle.Coordinate) -> Bool { coordinates.contains(rhs) }
+    func intersects(rhs: Grid.Coordinate) -> Bool { coordinates.contains(rhs) }
 }
 
 public extension Grid.Triangle.Footprint {
     
-    func rotate(_ rotation: Grid.Triangle.Coordinate.Rotation) -> Self {
+    func rotate(_ rotation: Grid.Triangle.Rotation) -> Self {
 
-        let footprint = coordinates.map { ($0 - origin.position) * (origin.isPointy ? 1 : -1) }
+        let footprint = coordinates.map { Grid.Triangle(($0 - origin.position) * (origin.isPointy ? 1 : -1)) }
         
         return .init(origin,
-                     footprint.map { $0.rotate(rotation) })
+                     footprint.map { $0.rotate(rotation).position })
     }
 }
 

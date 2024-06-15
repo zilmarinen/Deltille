@@ -63,11 +63,11 @@ extension Grid.Hexagon {
             switch self {
                 
             case .c0: return .x
-            case .c1: return .negativeZ
+            case .c1: return .inverseZ
             case .c2: return .y
-            case .c3: return .negativeX
+            case .c3: return .inverseX
             case .c4: return .z
-            case .c5: return .negativeY
+            case .c5: return .inverseY
             }
         }
         
