@@ -11,7 +11,7 @@ extension Vector: Identifiable {
     
     public var id: String { "[\(x), \(y), \(z)]" }
     
-    public init(_ coordinate: Grid.Triangle.Coordinate,
+    public init(_ coordinate: Grid.Coordinate,
                 _ scale: Grid.Triangle.Scale) {
         
         let dx = Double(coordinate.y)
@@ -23,16 +23,16 @@ extension Vector: Identifiable {
                   ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
     }
     
-    public init(_ coordinate: Grid.Hexagon.Coordinate,
+    public init(_ coordinate: Grid.Coordinate,
                 _ scale: Grid.Hexagon.Scale) {
         
         let dx = Double(coordinate.y)
         let dy = Double(coordinate.x)
         let dz = Double(coordinate.z)
             
-        self.init((0.5 * dx + -0.5 * dz) * scale.edgeLength,
+        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
                   0.0,
-                  ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
     }
 }
 
