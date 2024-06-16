@@ -58,8 +58,8 @@ extension Grid {
             self.z = z
         }
         
-        init(_ vector: Vector,
-             _ scale: Grid.Triangle.Scale) {
+        public init(_ vector: Vector,
+                    _ scale: Grid.Triangle.Scale) {
             
             let offset = Double.sqrt3d6 * scale.edgeLength
             let slope = (.sqrt3d3 * vector.z)
@@ -73,23 +73,22 @@ extension Grid {
                       Int( ceil(k / scale.edgeLength) - 1.0))
         }
         
-        init(_ vector: Vector,
-             _ scale: Grid.Hexagon.Scale) {
+        public init(_ vector: Vector,
+                    _ scale: Grid.Hexagon.Scale) {
             
-            let offset = Double.sqrt3d6 * scale.edgeLength
             let slope = (.sqrt3d3 * vector.z)
             
-            let j = (2.0 * slope) + offset
-            let i = (vector.x - slope) + offset
-            let k = (-vector.x - slope) + offset
+            let j = 2.0 * slope
+            let i = vector.x - slope
+            let k = -vector.x - slope
             
-            self.init(Int(floor(j / scale.edgeLength)),
-                      Int(floor(i / scale.edgeLength)),
-                      Int( ceil(k / scale.edgeLength) - 1.0))
+            let s = Int(floor(j / scale.edgeLength))
+            let t = Int(floor(i / scale.edgeLength))
+            let u = Int( ceil(k / scale.edgeLength) - 1.0)
             
-            //TODO: Convert vector to coordinate
-//            return ((             a +                                -c) * edge_length,
-//                        (-sqrt3 / 3 * a + sqrt3 * 2 / 3 * b - sqrt3 / 3 * c) * edge_length)
+            self.init(Int(round(Double(s - t) / 3.0)),
+                      Int(round(Double(t - u) / 3.0)),
+                      Int(round(Double(u - s) / 3.0)))
         }
     }
 }
@@ -112,4 +111,51 @@ public extension Grid.Coordinate {
     
     static func *(lhs: Self,
                   rhs: Int) -> Self { .init(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs) }
+}
+
+public extension Grid.Coordinate {
+    
+    ///
+    ///  Directly connected adjacent vertices that share an edge.
+    ///
+    ///                  x-------x
+    ///                /   \   /   \
+    ///              x-------v-------x
+    ///                \   /   \   /
+    ///                  x-------x
+    ///
+
+    var adjacentVertices: [Grid.Coordinate] {
+        
+        guard equalToOne else { return [] }
+        
+        return [self + (.unitX + -.unitZ),
+                self + (.unitX + -.unitY),
+                self + (-.unitY + .unitZ),
+                self + (-.unitX + .unitZ),
+                self + (-.unitX + .unitY),
+                self + (.unitY + -.unitZ)]
+    }
+
+    ///
+    ///  Directly connected adjacent triangles that share an vertex.
+    ///
+    ///                  ---------
+    ///                / x \ x / x \
+    ///               -------v-------
+    ///                \ x / x \ x /
+    ///                  ---------
+    ///
+
+    var vertexTriangles: [Grid.Triangle] {
+        
+        guard equalToOne else { return [] }
+        
+        return [.init(self + -(.unitY + .unitZ)),
+                .init(self + -.unitY),
+                .init(self + -(.unitX + .unitY)),
+                .init(self + -.unitX),
+                .init(self + -(.unitX + .unitZ)),
+                .init(self + -.unitZ)]
+    }
 }
