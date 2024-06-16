@@ -16,43 +16,24 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Adjacency
     
-    func testAdjacentAlongAxisX() throws {
+    func testAdjacentHexagons() throws {
         
-        let x = hexagon.adjacent(.x)
-        let inverseX = hexagon.adjacent(.inverseX)
-        let delta = Coordinate(0, -1, 1)
+        let coordinates: [Coordinate] = [.init(3, -1, -2),
+                                         .init(3, -2, -1),
+                                         .init(2, -2, 0),
+                                         .init(1, -1, 0),
+                                         .init(1, 0, -1),
+                                         .init(2, 0, -2)]
         
-        XCTAssertEqual(x,
-                       hexagon.position + delta)
+        let adjacent = hexagon.perimeter
         
-        XCTAssertEqual(inverseX,
-                       hexagon.position - delta)
-    }
-    
-    func testAdjacentAlongAxisXY() throws {
-        
-        let y = hexagon.adjacent(.y)
-        let inverseY = hexagon.adjacent(.inverseY)
-        let delta = Coordinate(1, 0, -1)
-        
-        XCTAssertEqual(y,
-                       hexagon.position + delta)
-        
-        XCTAssertEqual(inverseY,
-                       hexagon.position - delta)
-    }
-    
-    func testAdjacentAlongAxisZ() throws {
-        
-        let z = hexagon.adjacent(.z)
-        let inverseZ = hexagon.adjacent(.inverseZ)
-        let delta = Coordinate(-1, 1, 0)
-        
-        XCTAssertEqual(z,
-                       hexagon.position + delta)
-        
-        XCTAssertEqual(inverseZ,
-                       hexagon.position - delta)
+        for index in adjacent.indices {
+            
+            let hex = Grid.Hexagon(coordinates[index])
+            
+            XCTAssertEqual(hex.position,
+                           adjacent[index])
+        }
     }
     
     // MARK: Vertices
