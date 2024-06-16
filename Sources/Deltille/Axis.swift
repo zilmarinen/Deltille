@@ -4,7 +4,7 @@
 //  Created by Zack Brown on 23/05/2024.
 //
 
-extension Grid.Triangle {
+extension Grid {
     
     ///
     /// Axis defines the three degrees of freedom used to represent
@@ -23,34 +23,6 @@ extension Grid.Triangle {
             case .x: return .unitX
             case .y: return .unitY
             case .z: return .unitZ
-            }
-        }
-    }
-}
-
-extension Grid.Hexagon {
-    
-    ///
-    /// Axis defines the three degrees of freedom used to represent
-    /// the dimensions of translation allowed within a triangular grid.
-    ///
-    
-    public enum Axis: Int,
-                      CaseIterable {
-        
-        case x, y, z
-        case inverseX, inverseY, inverseZ
-        
-        public var unit: Grid.Coordinate {
-            
-            switch self {
-                
-            case .x: return .unitX
-            case .y: return .unitY
-            case .z: return .unitZ
-            case .inverseX: return -.unitX
-            case .inverseY: return -.unitY
-            case .inverseZ: return -.unitZ
             }
         }
     }

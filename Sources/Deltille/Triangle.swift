@@ -66,13 +66,23 @@ public extension Grid.Triangle {
         
         guard from != to else { return self }
         
-        return Self(Grid.Coordinate(Vector(position,
-                                           from),
-                                    to))
+        return Self(Grid.Coordinate(Vector(position, from), to))
     }
 }
 
 public extension Grid.Triangle {
+    
+    ///
+    ///  All connected triangles that share a corner or an edge.
+    ///
+    ///                  :-------:
+    ///                / t \ t / y \
+    ///              :-------:-------:
+    ///            / t \ t / o \ t / t \
+    ///          :-------:-------:-------:
+    ///            \ t / t \ t / t \ t /
+    ///              :-------:-------:
+    ///
     
     var perimeter: [Grid.Coordinate] { adjacent + diagonals + touching }
     
@@ -88,9 +98,9 @@ public extension Grid.Triangle {
     ///              :-------:-------:
     ///
  
-    var adjacent: [Grid.Coordinate] { Axis.allCases.map { adjacent($0) } }
+    var adjacent: [Grid.Coordinate] { Grid.Axis.allCases.map { adjacent($0) } }
     
-    func adjacent(_ axis: Axis) -> Grid.Coordinate { position + (axis.unit * delta) }
+    func adjacent(_ axis: Grid.Axis) -> Grid.Coordinate { position + (axis.unit * delta) }
     
     ///
     ///  Indirectly connected diagonal triangles that are opposite an edge.
@@ -104,9 +114,9 @@ public extension Grid.Triangle {
     ///              :-------:-------:
     ///
     
-    var diagonals: [Grid.Coordinate] { Axis.allCases.map { diagonal($0) } }
+    var diagonals: [Grid.Coordinate] { Grid.Axis.allCases.map { diagonal($0) } }
     
-    func diagonal(_ axis: Axis) -> Grid.Coordinate {
+    func diagonal(_ axis: Grid.Axis) -> Grid.Coordinate {
         
         switch axis {
             
@@ -120,7 +130,7 @@ public extension Grid.Triangle {
     ///  Indirectly connected triangles that share a corner.
     ///
     ///                  :-------:
-    ///                / z \  /  y \
+    ///                / z \   / y \
     ///              :-------:-------:
     ///            / z \   / o \   / y \
     ///          :-------:-------:-------:
@@ -128,9 +138,9 @@ public extension Grid.Triangle {
     ///              :-------:-------:
     ///
     
-    var touching: [Grid.Coordinate] { Axis.allCases.flatMap { touching($0) } }
+    var touching: [Grid.Coordinate] { Grid.Axis.allCases.flatMap { touching($0) } }
     
-    func touching(_ axis: Axis) -> [Grid.Coordinate] {
+    func touching(_ axis: Grid.Axis) -> [Grid.Coordinate] {
         
         switch axis {
             
@@ -141,5 +151,52 @@ public extension Grid.Triangle {
         case .z: return [.init(position.x, delta + position.y, -delta + position.z),
                          .init(delta + position.x, position.y, -delta + position.z)]
         }
+    }
+}
+
+public extension Grid.Triangle {
+    
+    ///
+    ///  Directly connected adjacent vertices that share an edge.
+    ///
+    ///                  x-------x
+    ///                /   \   /   \
+    ///              x-------v-------x
+    ///                \   /   \   /
+    ///                  x-------x
+    ///
+    
+    static func vertices(_ coordinate: Grid.Coordinate) -> [Grid.Coordinate] {
+        
+        guard coordinate.equalToOne else { return [] }
+        
+        return [coordinate + (.unitX + -.unitZ),
+                coordinate + (.unitX + -.unitY),
+                coordinate + (-.unitY + .unitZ),
+                coordinate + (-.unitX + .unitZ),
+                coordinate + (-.unitX + .unitY),
+                coordinate + (.unitY + -.unitZ)]
+    }
+    
+    ///
+    ///  Directly connected adjacent triangles that share an vertex.
+    ///
+    ///                  ---------
+    ///                / x \ x / x \
+    ///               -------v-------
+    ///                \ x / x \ x /
+    ///                  ---------
+    ///
+
+    static func triangles(_ coordinate: Grid.Coordinate) -> [Grid.Triangle] {
+        
+        guard coordinate.equalToOne else { return [] }
+        
+        return [.init(coordinate - (.unitY + .unitZ)),
+                .init(coordinate - .unitY),
+                .init(coordinate - (.unitX + .unitY)),
+                .init(coordinate - .unitX),
+                .init(coordinate - (.unitX + .unitZ)),
+                .init(coordinate - .unitZ)]
     }
 }
