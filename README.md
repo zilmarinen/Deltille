@@ -39,10 +39,10 @@ let vertices = triangle.vertices(.tile)
 ```
 
 ## Hexagons
-Complimentary to the `Triangle` grid is the dual `Hexagon` and `Coordinate` types which can be used to model regular hexagon vertex positions along a plane.
+Complimentary to the `Triangle` grid, the `Hexagon` type can be used to model regular hexagon vertex positions along a plane.
 
 ```swift
-let hexagon = Grid.Hexagon(.unitZ)
+let hexagon = Grid.Hexagon(.zero)
 
 //generate hexagon vertices for the desired scale
 let vertices = hexagon.vertices(.chunk)

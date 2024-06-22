@@ -42,5 +42,13 @@ public extension Vector {
     static let up = Self(0.0, 1.0, 0.0)
     static let right = Self(1.0, 0.0, 0.0)
     
+    static func normal(v0: Self,
+                       v1: Self,
+                       v2: Self) -> Self { (v2 - v1).cross(v0 - v1).normalized() }
+}
+
+
+public extension Vector {
+    
     func mid(_ other: Self) -> Self { lerp(other, 0.5) }
 }

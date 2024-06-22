@@ -49,7 +49,7 @@ public extension Grid.Triangle {
     func corner(_ corner: Corner) -> Grid.Coordinate {
         
         let unit = (corner.axis.unit * -1) + (isPointy ? .zero : .one)
-
+        
         return position + (isPointy ? -unit : unit)
     }
     
@@ -57,6 +57,10 @@ public extension Grid.Triangle {
     
     func vertices(_ scale: Scale) -> [Vector] { corners.map { Vector($0,
                                                                      scale) } }
+    
+    func vertex(_ corner: Corner,
+                _ scale: Scale) -> Vector { Vector(self.corner(corner),
+                                                   scale) }
 }
 
 public extension Grid.Triangle {
@@ -159,11 +163,11 @@ public extension Grid.Triangle {
     ///
     ///  Directly connected adjacent vertices that share an edge.
     ///
-    ///                  x-------x
+    ///                  v-------v
     ///                /   \   /   \
-    ///              x-------v-------x
+    ///              v-------o-------v
     ///                \   /   \   /
-    ///                  x-------x
+    ///                  v-------v
     ///
     
     static func vertices(_ coordinate: Grid.Coordinate) -> [Grid.Coordinate] {
@@ -182,9 +186,9 @@ public extension Grid.Triangle {
     ///  Directly connected adjacent triangles that share an vertex.
     ///
     ///                  ---------
-    ///                / x \ x / x \
-    ///               -------v-------
-    ///                \ x / x \ x /
+    ///                / t \ t / t \
+    ///               -------o-------
+    ///                \ t / t \ t /
     ///                  ---------
     ///
 

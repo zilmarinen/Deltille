@@ -7,7 +7,7 @@
 extension Grid.Triangle {
     
     ///
-    /// A kite encodes the vertices that form the perimeter of a
+    /// A Kite encodes the vertices that form the perimeter of a
     /// polygon that can be tessellated within a triangle.
     ///
     
@@ -50,8 +50,8 @@ extension Grid.Triangle {
 extension Grid.Triangle.Kite {
     
     ///
-    /// Patterns define the combination of Kites required
-    /// to completely fill the interior of a triangle.
+    /// A Pattern defines the combination of Kites required
+    /// to completely fill the interior of a sub-divided triangle.
     ///
     
     public enum Pattern: String,
