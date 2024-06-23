@@ -231,26 +231,24 @@ final class TriangleTests: XCTestCase {
     
     func testPointyCorners() throws {
         
-        let v0 = pointyTriangle.position + .unitX
-        let v1 = pointyTriangle.position + .unitY
-        let v2 = pointyTriangle.position + .unitZ
+        let c0 = Vector(0.0, 0.0, .sqrt3d3)
+        let c1 = Vector(0.5, 0.0, -.sqrt3d6)
+        let c2 = Vector(-0.5, 0.0, -.sqrt3d6)
         
-        XCTAssertEqual(.c0, pointyTriangle.corner(v0))
-        XCTAssertEqual(.c1, pointyTriangle.corner(v1))
-        XCTAssertEqual(.c2, pointyTriangle.corner(v2))
-        XCTAssertEqual(nil, pointyTriangle.corner(.zero))
+        XCTAssertEqual(c0, zero.vertex(.c0, .tile))
+        XCTAssertEqual(c1, zero.vertex(.c1, .tile))
+        XCTAssertEqual(c2, zero.vertex(.c2, .tile))
     }
     
     func testFlatCorners() throws {
         
-        let v0 = flatTriangle.position + Coordinate(0, 1, 1)
-        let v1 = flatTriangle.position + Coordinate(1, 0, 1)
-        let v2 = flatTriangle.position + Coordinate(1, 1, 0)
+        let c0 = Vector(0.0, 0.0, -(.sqrt3d2 + .sqrt3d6))
+        let c1 = Vector(-0.5, 0.0, -.sqrt3d6)
+        let c2 = Vector(0.5, 0.0, -.sqrt3d6)
         
-        XCTAssertEqual(.c0, flatTriangle.corner(v0))
-        XCTAssertEqual(.c1, flatTriangle.corner(v1))
-        XCTAssertEqual(.c2, flatTriangle.corner(v2))
-        XCTAssertEqual(nil, flatTriangle.corner(.zero))
+        XCTAssertEqual(c0, x.vertex(.c0, .tile))
+        XCTAssertEqual(c1, x.vertex(.c1, .tile))
+        XCTAssertEqual(c2, x.vertex(.c2, .tile))
     }
     
     // MARK: Transposing
