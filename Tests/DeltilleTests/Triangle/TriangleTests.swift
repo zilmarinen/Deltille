@@ -410,4 +410,94 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(tiles,
                        triangles)
     }
+    
+    // MARK: Sieve
+    
+    func testPointySierpinskiSieve() throws {
+        
+        let sieve = pointyTriangle.sieve(for: .sierpinski)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       pointyTriangle.position)
+        XCTAssertEqual(sieve.scale, .sierpinski)
+        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.vertices.count, 3)
+    }
+    
+    func testFlatSierpinskiSieve() throws {
+        
+        let sieve = flatTriangle.sieve(for: .sierpinski)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       flatTriangle.position)
+        XCTAssertEqual(sieve.scale, .sierpinski)
+        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.vertices.count, 3)
+    }
+    
+    func testPointyTileSieve() throws {
+        
+        let sieve = pointyTriangle.sieve(for: .tile)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       pointyTriangle.position)
+        XCTAssertEqual(sieve.scale, .tile)
+        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.vertices.count, 3)
+    }
+    
+    func testFlatTileSieve() throws {
+        
+        let sieve = flatTriangle.sieve(for: .tile)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       flatTriangle.position)
+        XCTAssertEqual(sieve.scale, .tile)
+        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.vertices.count, 3)
+    }
+    
+    func testPointyChunkSieve() throws {
+        
+        let sieve = pointyTriangle.sieve(for: .chunk)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       pointyTriangle.position)
+        XCTAssertEqual(sieve.scale, .chunk)
+        XCTAssertEqual(sieve.triangles.count, 49)
+        XCTAssertEqual(sieve.vertices.count, 36)
+    }
+    
+    func testFlatChunkSieve() throws {
+        
+        let sieve = flatTriangle.sieve(for: .chunk)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       flatTriangle.position)
+        XCTAssertEqual(sieve.scale, .chunk)
+        XCTAssertEqual(sieve.triangles.count, 49)
+        XCTAssertEqual(sieve.vertices.count, 36)
+    }
+    
+    func testPointyRegionSieve() throws {
+        
+        let sieve = pointyTriangle.sieve(for: .region)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       pointyTriangle.position)
+        XCTAssertEqual(sieve.scale, .region)
+        XCTAssertEqual(sieve.triangles.count, 784)
+        XCTAssertEqual(sieve.vertices.count, 435)
+    }
+    
+    func testFlatRegionSieve() throws {
+        
+        let sieve = flatTriangle.sieve(for: .region)
+        
+        XCTAssertEqual(sieve.coordinate,
+                       flatTriangle.position)
+        XCTAssertEqual(sieve.scale, .region)
+        XCTAssertEqual(sieve.triangles.count, 784)
+        XCTAssertEqual(sieve.vertices.count, 435)
+    }
 }
