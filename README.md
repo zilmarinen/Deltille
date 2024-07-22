@@ -1,5 +1,6 @@
 [![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac-lightgray.svg)]()
 [![Swift 5.1](https://img.shields.io/badge/swift-5.1-red.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)](https://www.swift.org/documentation/package-manager/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 
 - [Introduction](#deltille)
@@ -9,7 +10,7 @@
 - [Credits](#credits)
 
 # Deltille
-Deltille is a utility framework designed to encapsulate the mathematical principles and concepts of a coordinate system defined within a regular tiling of a triangular grid. 
+Deltille is a utility framework designed to encapsulate the mathematical principles and concepts of a three dimensional coordinate system defined within a regular tiling of a two dimensional triangular grid. 
 
 # Installation
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
@@ -75,7 +76,7 @@ let rotated = footprint.rotate(rotation: .clockwise)
 ```
 
 # Examples
-[Regolith](https://github.com/zilmarinen/Regolith/) makes usage of the concepts introduced by Deltille to generate meshes for predefined tessellations of a triangle interior using [Ortho-Tiling](https://www.boristhebrave.com/2023/05/31/ortho-tiles/).
+[Regolith](https://github.com/zilmarinen/Regolith/) makes use of the concepts introduced by Deltille to generate meshes for predefined tessellations of a triangle interior using [Ortho-Tiling](https://www.boristhebrave.com/2023/05/31/ortho-tiles/).
 
 [Verdure](https://github.com/zilmarinen/Verdure/) implements additional mesh generation on top of Deltille to create stylised foliage canopies constrained to a triangular grid.
 
