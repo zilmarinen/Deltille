@@ -18,9 +18,12 @@ extension Grid.Triangle {
                         CaseIterable,
                         Identifiable {
 
+        case ammann
+        case conway
         case escher
         case floret
         case penrose
+        case perlin
         case pinwheel
         case snub
         case truchet
@@ -32,19 +35,66 @@ extension Grid.Triangle {
         public var coordinates: [Grid.Coordinate] {
 
             switch self {
+                
+            case .ammann: return [.zero,
+                                  .init(0, -1, 0),
+                                  .init(1, -1, 0),
+                                  .init(1, -2, 0),
+                                  .init(2, -2, 0),
+                                  .init(2, -3, 0),
+                                  .init(3, -3, 0),
+                                  .init(3, -3, -1),
+                                  .init(3, -2, -1),
+                                  .init(3, -2, -2),
+                                  .init(3, -1, -2),
+                                  .init(3, -1, -3),
+                                  .init(3, 0, -3),
+                                  .init(2, 0, -3),
+                                  .init(2, 0, -2),
+                                  .init(1, 0, -2),
+                                  .init(1, 0, -1),
+                                  .init(0, 0, -1)]
 
-            case .escher: return [.init(0, 0, 0),
-                                  .init(-1, 1, 0),
-                                  .init(-1, 0, 1)]
+            case .conway: return [.zero,
+                                  .init(0, -1, 0),
+                                  .init(1, -1, 0),
+                                  .init(1, -2, 0),
+                                  .init(2, -2, 0),
+                                  .init(2, -3, 0),
+                                  .init(3, -3, 0),
+                                  .init(3, -3, -1),
+                                  .init(3, -2, -1),
+                                  .init(3, -2, -2),
+                                  .init(3, -1, -2),
+                                  .init(2, -1, -2),
+                                  .init(2, 0, -2),
+                                  .init(1, 0, -2),
+                                  .init(1, 0, -1),
+                                  .init(0, 0, -1)]
+                
+            case .escher: return [.zero,
+                                  .init(0, -1, 0),
+                                  .init(1, -1, 0),
+                                  .init(1, -2, 0),
+                                  .init(2, -2, 0),
+                                  .init(2, -2, -1),
+                                  .init(3, -2, -1),
+                                  .init(3, -2, -2),
+                                  .init(3, -1, -2),
+                                  .init(2, -1, -2),
+                                  .init(2, -1, -1),
+                                  .init(1, -1, -1),
+                                  .init(1, 0, -1),
+                                  .init(0, 0, -1)]
 
-            case .floret: return [.init(0, 0, 0),
+            case .floret: return [.zero,
                                   .init(0, -1, 0),
                                   .init(1, -1, 0),
                                   .init(1, -1, -1),
                                   .init(1, 0, -1),
                                   .init(0, 0, -1)]
 
-            case .penrose: return [.init(0, 0, 0),
+            case .penrose: return [.zero,
                                    .init(0, -1, 0),
                                    .init(1, -1, 0),
                                    .init(1, -2, 0),
@@ -62,8 +112,12 @@ extension Grid.Triangle {
                                    .init(0, 1, -2),
                                    .init(0, 1, -1),
                                    .init(0, 0, -1)]
+                
+            case .perlin: return [.zero,
+                                  .init(-1, 1, 0),
+                                  .init(-1, 0, 1)]
 
-            case .pinwheel: return [.init(0, 0, 0),
+            case .pinwheel: return [.zero,
                                     .init(0, -1, 0),
                                     .init(1, -1, 0),
                                     .init(1, -1, -1),
@@ -76,7 +130,7 @@ extension Grid.Triangle {
                                     .init(0, 1, -1),
                                     .init(0, 0, -1)]
 
-            case .snub: return [.init(0, 0, 0),
+            case .snub: return [.zero,
                                 .init(0, -1, 0),
                                 .init(1, -1, 0),
                                 .init(1, -2, 0),
@@ -91,7 +145,7 @@ extension Grid.Triangle {
                                 .init(1, 0, -1),
                                 .init(0, 0, -1)]
 
-            case .truchet: return [.init(0, 0, 0),
+            case .truchet: return [.zero,
                                    .init(0, -1, 0),
                                    .init(1, -1, 0),
                                    .init(1, -1, -1),
@@ -102,7 +156,7 @@ extension Grid.Triangle {
                                    .init(1, 0, -1),
                                    .init(0, 0, -1)]
 
-            case .voronoi: return [.init(0, 0, 0),
+            case .voronoi: return [.zero,
                                    .init(0, -1, 0),
                                    .init(0, -1, 1),
                                    .init(0, -2, 1),
@@ -125,7 +179,7 @@ extension Grid.Triangle {
                                    .init(1, 0, -1),
                                    .init(0, 0, -1)]
 
-            case .wang: return [.init(0, 0, 0),
+            case .wang: return [.zero,
                                 .init(0, -1, 0),
                                 .init(1, -1, 0),
                                 .init(1, -2, 0),
@@ -145,5 +199,8 @@ extension Grid.Triangle {
                                 .init(0, 0, -1)]
             }
         }
+        
+        public var footprint: Grid.Triangle.Footprint { .init(.zero,
+                                                              coordinates) }
     }
 }

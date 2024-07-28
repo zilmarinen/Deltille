@@ -7,7 +7,7 @@
 extension Grid.Triangle {
     
     ///
-    /// A septomino is a plane geometric figure formed by joining
+    /// A septomino defines a geometric figure formed by joining
     /// seven triangles edge to edge.
     ///
     
@@ -113,5 +113,8 @@ extension Grid.Triangle {
                                    .init(1, -3, 1)]
             }
         }
+        
+        public var footprint: Grid.Triangle.Footprint { .init(.zero,
+                                                              coordinates) }
     }
 }
