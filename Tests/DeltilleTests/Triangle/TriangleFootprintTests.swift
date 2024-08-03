@@ -21,28 +21,6 @@ final class TriangleFootprintTests: XCTestCase {
                                              .init(-3, 1, 1),
                                              .init(-3, 2, 1)]
     
-    func testFootprintCanopy() throws {
-        
-        let canopy = Grid.Triangle.Canopy.escher
-        
-        let footprint = Footprint(.zero,
-                                  canopy.coordinates)
-        
-        XCTAssertEqual(footprint.coordinates,
-                       canopy.coordinates)
-    }
-    
-    func testFootprintSeptomino() throws {
-        
-        let septomino = Grid.Triangle.Septomino.asterope
-        
-        let footprint = Footprint(.zero,
-                                  septomino.coordinates)
-        
-        XCTAssertEqual(footprint.coordinates,
-                       septomino.coordinates)
-    }
-    
     func testPointyFootprintTranslation() throws {
         
         let footprint = Footprint(.init(1, -2, 1),

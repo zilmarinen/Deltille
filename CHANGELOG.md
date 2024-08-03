@@ -7,11 +7,15 @@
 
 - Introduce `Sieve` type for triangle subdivisions
 
-= Introduce `Array` extension to discover footprint perimeters
+- Introduce `Array` extension to discover footprint perimeters
 
 - Introduce `Polygon` and `Mesh` face wrapping extensions
 
 - Introduce `Hexagon` unit tests
+
+- Remove `Canopy` enum
+
+- Remove `Septomino` enum
 
 ## [0.1.0](https://github.com/zilmarinen/Deltille/releases/tag/0.1.0) (27/05/2024)
 
