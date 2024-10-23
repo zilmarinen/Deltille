@@ -17,7 +17,7 @@ extension Vector: Identifiable {
         let dx = Double(coordinate.y)
         let dy = Double(coordinate.x)
         let dz = Double(coordinate.z)
-            
+        
         self.init((0.5 * dx + -0.5 * dz) * scale.edgeLength,
                   0.0,
                   ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
@@ -29,24 +29,12 @@ extension Vector: Identifiable {
         let dx = Double(coordinate.y)
         let dy = Double(coordinate.x)
         let dz = Double(coordinate.z)
-            
+        
         self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
                   0.0,
                   ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
     }
 }
-
-public extension Vector {
-    
-    static let forward = Self(0.0, 0.0, 1.0)
-    static let up = Self(0.0, 1.0, 0.0)
-    static let right = Self(1.0, 0.0, 0.0)
-    
-    static func normal(v0: Self,
-                       v1: Self,
-                       v2: Self) -> Self { (v2 - v1).cross(v0 - v1).normalized() }
-}
-
 
 public extension Vector {
     

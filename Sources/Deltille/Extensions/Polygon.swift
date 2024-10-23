@@ -23,9 +23,7 @@ public extension Polygon {
         
         guard vectors.count > 2 else { return nil }
         
-        let normal = Vector.normal(v0: vectors[0],
-                                   v1: vectors[1],
-                                   v2: vectors[2])
+        let normal = ((vectors[0] - vectors[1]).cross(vectors[0] - vectors[2])).normalized()
         
         return Self.face(vectors,
                          normal,

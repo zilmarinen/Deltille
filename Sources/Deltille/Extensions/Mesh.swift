@@ -42,7 +42,7 @@ public extension Mesh {
         
         if let surfaceColor,
            let surface = Polygon.face(face,
-                                      .up,
+                                      .unitY,
                                       surfaceColor) {
             
             polygons.append(surface)

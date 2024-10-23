@@ -8,19 +8,18 @@ let package = Package(
     platforms: [.macOS(.v14),
                 .iOS(.v17)],
     products: [
-        .library(
-            name: "Deltille",
-            targets: ["Deltille"]),
+        .library(name: "Deltille",
+                 targets: ["Deltille"]),
     ],
     dependencies: [
-        .package(url: "git@github.com:nicklockwood/Euclid.git", branch: "main"),
+        .package(url: "git@github.com:nicklockwood/Euclid.git",
+                 branch: "develop"),
     ],
     targets: [
-        .target(
-            name: "Deltille",
-            dependencies: ["Euclid"]),
-        .testTarget(
-            name: "DeltilleTests",
-            dependencies: ["Deltille"]),
+        .target(name: "Deltille",
+                dependencies: ["Euclid"]),
+        .testTarget(name: "DeltilleTests",
+                    dependencies: ["Deltille",
+                                  "Euclid"]),
     ]
 )
