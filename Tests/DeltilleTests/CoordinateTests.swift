@@ -14,6 +14,27 @@ final class CoordinateTests: XCTestCase {
     
     // MARK: Triangle Coordinate to Vector
     
+    func testCoordinateConversion() throws {
+        
+        let triangle0 = Grid.Triangle(.init(-3, -2, 4))
+        let triangle1 = Grid.Triangle(.init(-2, -2, 4))
+        
+        let corner0 = triangle0.corner(.c2)
+        let center0 = Vector(triangle0.position, Grid.Triangle.Scale.tile)
+        let target0 = Vector(corner0, Grid.Triangle.Scale.tile)
+        let vector0 = center0.lerp(target0, 0.9)
+        let coordinate0 = Coordinate(vector0, Grid.Triangle.Scale.tile)
+        
+        let corner1 = triangle1.corner(.c1)
+        let center1 = Vector(triangle1.position, Grid.Triangle.Scale.tile)
+        let target1 = Vector(corner1, Grid.Triangle.Scale.tile)
+        let vector1 = center1.lerp(target1, 0.9)
+        let coordinate1 = Coordinate(vector1, Grid.Triangle.Scale.tile)
+        
+        XCTAssertEqual(triangle0.position, coordinate0)
+        XCTAssertEqual(triangle1.position, coordinate1)
+    }
+    
     func testTriangleSierpinskiCoordinateToVector() throws {
         
         XCTAssertTrue(testTriangleCoordinateToVector(.sierpinski))
@@ -220,7 +241,14 @@ extension CoordinateTests {
                 let vector = position.lerp(vertex, delta)
                 
                 if Coordinate(vector,
-                              scale) != triangle.position { return false }
+                              scale) != triangle.position { 
+                    
+                    print("Testing -> \(vector.id)")
+                    print(vertex.id)
+                    print(Coordinate(vector,
+                                     scale).id)
+                    
+                    return false }
             }
         }
         

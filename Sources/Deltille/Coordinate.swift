@@ -43,6 +43,8 @@ extension Grid {
         
         public var id: String { "[\(x), \(y), \(z)]" }
         
+        public var index: Int { (x ^ y) ^ z }
+        
         public var sum: Int { x + y + z }
         
         public var equalToZero: Bool { sum == 0 }
@@ -61,8 +63,8 @@ extension Grid {
         public init(_ vector: Vector,
                     _ scale: Grid.Triangle.Scale) {
             
-            let offset = Double.sqrt3d6 * scale.edgeLength
-            let slope = (.sqrt3d3 * vector.z)
+            let offset = .sqrt3d6 * scale.edgeLength
+            let slope = .sqrt3d3 * vector.z
             
             let j = (2.0 * slope) + offset
             let i = (vector.x - slope) + offset
@@ -70,25 +72,25 @@ extension Grid {
             
             self.init(Int(floor(j / scale.edgeLength)),
                       Int(floor(i / scale.edgeLength)),
-                      Int( ceil(k / scale.edgeLength) - 1.0))
+                      Int(floor(k / scale.edgeLength)))
         }
         
         public init(_ vector: Vector,
                     _ scale: Grid.Hexagon.Scale) {
             
-            let slope = (.sqrt3d3 * vector.z)
+            let slope = .sqrt3d3 * vector.z
             
             let j = 2.0 * slope
             let i = vector.x - slope
             let k = -vector.x - slope
             
-            let s = Int(floor(j / scale.edgeLength))
-            let t = Int(floor(i / scale.edgeLength))
-            let u = Int( ceil(k / scale.edgeLength) - 1.0)
+            let x = Int(floor(j / scale.edgeLength))
+            let y = Int(floor(i / scale.edgeLength))
+            let z = Int( ceil(k / scale.edgeLength) - 1.0)
             
-            self.init(Int(round(Double(s - t) / 3.0)),
-                      Int(round(Double(t - u) / 3.0)),
-                      Int(round(Double(u - s) / 3.0)))
+            self.init(Int(round(Double(x - y) / 3.0)),
+                      Int(round(Double(y - z) / 3.0)),
+                      Int(round(Double(z - x) / 3.0)))
         }
     }
 }
