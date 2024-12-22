@@ -11,10 +11,9 @@ public protocol Tile: Codable,
                       Identifiable,
                       Sendable {
     
-    associatedtype V = Vertex
     associatedtype C = Corner
     associatedtype E = Edge
-    associatedtype S = Scale
+    associatedtype V = Vertex
     
     var vertex: V { get }
     
@@ -24,7 +23,6 @@ public protocol Tile: Codable,
     
     var adjacent: [Self] { get }
     var perimeter: [Self] { get }
-    var winding: [Grid.Coordinate] { get }
     
     func vertex(_ corner: C) -> V
     func corner(_ vertex: V) -> C?
