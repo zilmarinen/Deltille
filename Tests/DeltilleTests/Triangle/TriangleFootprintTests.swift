@@ -11,134 +11,135 @@ import XCTest
 final class TriangleFootprintTests: XCTestCase {
     
     typealias Coordinate = Grid.Coordinate
-    typealias Footprint = Grid.Triangle.Footprint
+    typealias Triangle = Grid.Triangle
+    typealias Footprint = Triangle.Footprint
     
-    private let coordinates: [Coordinate] = [.init(0, 0, 0),
-                                             .init(-1, 0, 0),
-                                             .init(-1, 0, 1),
-                                             .init(-2, 0, 1),
-                                             .init(-2, 1, 1),
-                                             .init(-3, 1, 1),
-                                             .init(-3, 2, 1)]
+    private let pointyTriangle = Triangle(1, -2, 1)
+    private let flatTriangle = Triangle(2, -1, -2)
     
-    func testPointyFootprintTranslation() throws {
+    private let offsets: [Coordinate] = [.init(0, 0, 0),
+                                         .init(0, 0, -1),
+                                         .init(1, 0, -1),
+                                         .init(1, 0, -2),
+                                         .init(1, 1, -2),
+                                         .init(1, 1, -3),
+                                         .init(2, 1, -3)]
+    
+    // MARK: Translation
+    
+    func testFootprintTranslationPointy() throws {
         
-        let footprint = Footprint(.init(1, -2, 1),
-                                  coordinates)
+        let footprint = Footprint(pointyTriangle,
+                                  offsets)
         
-        let translatedCoordinates: [Coordinate] = [.init(1, -2, 1),
-                                                   .init(0, -2, 1),
-                                                   .init(0, -2, 2),
-                                                   .init(-1, -2, 2),
-                                                   .init(-1, -1, 2),
-                                                   .init(-2, -1, 2),
-                                                   .init(-2, 0, 2)]
+        let tiles: [Triangle] = [.init(1, -2, 1),
+                                 .init(1, -2, 0),
+                                 .init(2, -2, 0),
+                                 .init(2, -2, -1),
+                                 .init(2, -1, -1),
+                                 .init(2, -1, -2),
+                                 .init(3, -1, -2)]
         
-        XCTAssertEqual(footprint.coordinates,
-                       translatedCoordinates)
+        XCTAssertEqual(footprint.tiles,
+                       tiles)
     }
     
-    func testFlatFootprintTranslation() throws {
+    func testFootprintTranslationFlat() throws {
         
-        let footprint = Footprint(.init(2, -1, -2),
-                                  coordinates)
+        let footprint = Footprint(flatTriangle,
+                                  offsets)
         
-        let translatedCoordinates: [Coordinate] = [.init(2, -1, -2),
-                                                   .init(3, -1, -2),
-                                                   .init(3, -1, -3),
-                                                   .init(4, -1, -3),
-                                                   .init(4, -2, -3),
-                                                   .init(5, -2, -3),
-                                                   .init(5, -3, -3)]
+        let tiles: [Triangle] = [.init(2, -1, -2),
+                                 .init(2, -1, -1),
+                                 .init(1, -1, -1),
+                                 .init(1, -1, 0),
+                                 .init(1, -2, 0),
+                                 .init(1, -2, 1),
+                                 .init(0, -2, 1)]
         
-        XCTAssertEqual(footprint.coordinates,
-                       translatedCoordinates)
+        XCTAssertEqual(footprint.tiles,
+                       tiles)
     }
     
-    func testPointyFootprintRotation() throws {
+    // MARK: Rotation
+    
+    func testFootprintRotationPointy() throws {
         
-        let footprint = Footprint(.zero,
-                                  coordinates)
+        let footprint = Footprint(pointyTriangle,
+                                  offsets)
         
-        let leftRotation = footprint.rotate(.clockwise)
-        let rightRotation = footprint.rotate(.counterClockwise)
-        let inverseRotation = leftRotation.rotate(.clockwise)
+        let clockwiseRotation = footprint.rotate(.clockwise)
+        let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
-        let leftCoordinates: [Coordinate] = [.init(0, 0, 0),
-                                             .init(0, -1, 0),
-                                             .init(1, -1, 0),
-                                             .init(1, -2, 0),
-                                             .init(1, -2, 1),
-                                             .init(1, -3, 1),
-                                             .init(1, -3, 2)]
+        let clockwiseTiles: [Triangle] = [.init(1, -2, 1),
+                                          .init(1, -3, 1),
+                                          .init(1, -3, 2),
+                                          .init(1, -4, 2),
+                                          .init(2, -4, 2),
+                                          .init(2, -5, 2),
+                                          .init(2, -5, 3)]
         
-        XCTAssertEqual(leftRotation.coordinates, leftCoordinates)
+        let counterClockwiseTiles: [Triangle] = [.init(1, -2, 1),
+                                                 .init(0, -2, 1),
+                                                 .init(0, -1, 1),
+                                                 .init(-1, -1, 1),
+                                                 .init(-1, -1, 2),
+                                                 .init(-2, -1, 2),
+                                                 .init(-2, 0, 2)]
         
-        let rightCoordinates: [Coordinate] = [.init(0, 0, 0),
-                                              .init(0, 0, -1),
-                                              .init(0, 1, -1),
-                                              .init(0, 1, -2),
-                                              .init(1, 1, -2),
-                                              .init(1, 1, -3),
-                                              .init(2, 1, -3)]
-        
-        XCTAssertEqual(rightRotation.coordinates,
-                       rightCoordinates)
-        XCTAssertEqual(inverseRotation.coordinates,
-                       rightCoordinates)
+        XCTAssertEqual(clockwiseRotation.tiles,
+                       clockwiseTiles)
+        XCTAssertEqual(counterClockwiseRotation.tiles,
+                       counterClockwiseTiles)
     }
     
-    func testPointyFootprintTranslationAndRotation() throws {
+    func testFootprintRotationFlat() throws {
         
-        let footprint = Footprint(.init(1, -2, 1),
-                                  coordinates)
+        let footprint = Footprint(flatTriangle,
+                                  offsets)
         
-        let rotatedFootprint = footprint.rotate(.counterClockwise)
+        let clockwiseRotation = footprint.rotate(.clockwise)
+        let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
-        let translatedAndRotatedCoordinates: [Coordinate] = [.init(1, -2, 1),
-                                                             .init(1, -2, 0),
-                                                             .init(1, -1, 0),
-                                                             .init(1, -1, -1),
-                                                             .init(2, -1, -1),
-                                                             .init(2, -1, -2),
-                                                             .init(3, -1, -2)]
+        let clockwiseTiles: [Triangle] = [.init(2, -1, -2),
+                                          .init(2, 0, -2),
+                                          .init(2, 0, -3),
+                                          .init(2, 1, -3),
+                                          .init(1, 1, -3),
+                                          .init(1, 2, -3),
+                                          .init(1, 2, -4)]
         
-        XCTAssertEqual(rotatedFootprint.coordinates,
-                       translatedAndRotatedCoordinates)
+        let counterClockwiseTiles: [Triangle] = [.init(2, -1, -2),
+                                                 .init(3, -1, -2),
+                                                 .init(3, -2, -2),
+                                                 .init(4, -2, -2),
+                                                 .init(4, -2, -3),
+                                                 .init(5, -2, -3),
+                                                 .init(5, -3, -3)]
+        
+        XCTAssertEqual(clockwiseRotation.tiles,
+                       clockwiseTiles)
+        XCTAssertEqual(counterClockwiseRotation.tiles,
+                       counterClockwiseTiles)
     }
     
-    func testFlatFootprintTranslationAndRotation() throws {
-        
-        let footprint = Footprint(.init(2, -1, -2),
-                                  coordinates)
-        
-        let rotatedFootprint = footprint.rotate(.counterClockwise)
-        
-        let translatedAndRotatedCoordinates: [Coordinate] = [.init(2, -1, -2),
-                                                             .init(2, -1, -1),
-                                                             .init(2, -2, -1),
-                                                             .init(2, -2, 0),
-                                                             .init(1, -2, 0),
-                                                             .init(1, -2, 1),
-                                                             .init(0, -2, 1)]
-        
-        XCTAssertEqual(rotatedFootprint.coordinates,
-                       translatedAndRotatedCoordinates)
-    }
+    // MARK: Intersection
     
     func testFootprintIntersection() throws {
         
         let footprint = Footprint(.zero,
-                                  coordinates)
+                                  [Coordinate.zero])
         
-        let lhs = Footprint(.init(2, -2, 0),
-                            coordinates).rotate(.clockwise)
+        let lhs = Footprint(pointyTriangle,
+                            offsets)
         
-        let rhs = Footprint(.init(2, -2, 0),
-                            coordinates)
+        let rhs = Footprint(flatTriangle,
+                            offsets)
         
         XCTAssertFalse(footprint.intersects(lhs))
-        XCTAssertTrue(footprint.intersects(rhs))
+        XCTAssertFalse(footprint.intersects(rhs))
+        XCTAssertTrue(lhs.intersects(rhs))
+        XCTAssertTrue(rhs.intersects(lhs))
     }
 }
 

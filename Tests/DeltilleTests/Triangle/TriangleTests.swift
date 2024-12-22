@@ -11,398 +11,294 @@ import XCTest
 final class TriangleTests: XCTestCase {
     
     typealias Coordinate = Grid.Coordinate
+    typealias Triangle = Grid.Triangle
+    typealias Vertex = Triangle.Vertex
     
-    private let pointyTriangle = Grid.Triangle(4, -2, -2)
-    private let flatTriangle = Grid.Triangle(2, -3, -2)
-    private let zero = Grid.Triangle(.zero)
-    private let x = Grid.Triangle(-.unitX)
-    private let y = Grid.Triangle(-.unitY)
-    private let z = Grid.Triangle(-.unitZ)
+    private let pointyTriangle = Triangle(4, -2, -2)
+    private let flatTriangle = Triangle(-2, -2, 3)
+    private let unitTriangle = Triangle(.zero)
+    private let x = Triangle(-.unitX)
+    private let y = Triangle(-.unitY)
+    private let z = Triangle(-.unitZ)
+    
+    // MARK: Pointy / Flat
     
     func testUnitTriangleIsPointy() throws {
         
+        XCTAssertTrue(unitTriangle.isPointy)
         XCTAssertTrue(pointyTriangle.isPointy)
         XCTAssertFalse(flatTriangle.isPointy)
     }
     
-    // MARK: Adjacency
+    // MARK: Neighbours / Adjacency
     
-    func testPointyAdjacentAlongAxisX() throws {
+    func testPointyNeighboursAdjacency() throws {
         
-        let adjacent = pointyTriangle.adjacent(.x)
+        let tiles: [Triangle] = [.init(3, -2, -2),
+                                 .init(4, -3, -2),
+                                 .init(4, -2, -3)]
         
-        let coordinate = pointyTriangle.position - .unitX
+        let neighbours = pointyTriangle.edges.map { pointyTriangle.neighbour($0) }
         
-        XCTAssertEqual(adjacent, coordinate)
+        XCTAssertEqual(neighbours, tiles)
+        XCTAssertEqual(pointyTriangle.adjacent, tiles)
     }
     
-    func testPointyAdjacentAlongAxisY() throws {
+    func testFlatNeighboursAdjacency() throws {
         
-        let adjacent = pointyTriangle.adjacent(.y)
+        let tiles: [Triangle] = [.init(-1, -2, 3),
+                                 .init(-2, -1, 3),
+                                 .init(-2, -2, 4)]
         
-        let coordinate = pointyTriangle.position - .unitY
+        let neighbours = flatTriangle.edges.map { flatTriangle.neighbour($0) }
         
-        XCTAssertEqual(adjacent, coordinate)
+        XCTAssertEqual(neighbours, tiles)
+        XCTAssertEqual(flatTriangle.adjacent, tiles)
     }
     
-    func testPointyAdjacentAlongAxisZ() throws {
+    // MARK: Perimeter
+    
+    func testPointyPerimeter() throws {
         
-        let adjacent = pointyTriangle.adjacent(.z)
+        let perimeter: [Triangle] = [.init(pointyTriangle.vertex.position + .init(-1, 0, 0)),
+                                     .init(pointyTriangle.vertex.position + .init(-1, 1, 0)),
+                                     .init(pointyTriangle.vertex.position + .init(-1, 1, -1)),
+                                     .init(pointyTriangle.vertex.position + .init(0, 1, -1)),
+                                     .init(pointyTriangle.vertex.position + .init(0, 0, -1)),
+                                     .init(pointyTriangle.vertex.position + .init(1, 0, -1)),
+                                     .init(pointyTriangle.vertex.position + .init(1, -1, -1)),
+                                     .init(pointyTriangle.vertex.position + .init(1, -1, 0)),
+                                     .init(pointyTriangle.vertex.position + .init(0, -1, 0)),
+                                     .init(pointyTriangle.vertex.position + .init(0, -1, 1)),
+                                     .init(pointyTriangle.vertex.position + .init(-1, -1, 1)),
+                                     .init(pointyTriangle.vertex.position + .init(-1, 0, 1))]
         
-        let coordinate = pointyTriangle.position - .unitZ
+        let lhs = Set(perimeter)
+        let rhs = Set(pointyTriangle.perimeter)
         
-        XCTAssertEqual(adjacent, coordinate)
+        XCTAssertTrue(lhs.isSubset(of: rhs))
+        XCTAssertEqual(perimeter.count, pointyTriangle.perimeter.count)
     }
     
-    func testFlatAdjacentAlongAxisX() throws {
+    func testFlatPerimeter() throws {
         
-        let adjacent = flatTriangle.adjacent(.x)
+        let perimeter: [Triangle] = [.init(flatTriangle.vertex.position + .init(1, 0, 0)),
+                                     .init(flatTriangle.vertex.position + .init(1, -1, 0)),
+                                     .init(flatTriangle.vertex.position + .init(1, -1, 1)),
+                                     .init(flatTriangle.vertex.position + .init(0, -1, 1)),
+                                     .init(flatTriangle.vertex.position + .init(0, 0, 1)),
+                                     .init(flatTriangle.vertex.position + .init(-1, 0, 1)),
+                                     .init(flatTriangle.vertex.position + .init(-1, 1, 1)),
+                                     .init(flatTriangle.vertex.position + .init(-1, 1, 0)),
+                                     .init(flatTriangle.vertex.position + .init(0, 1, 0)),
+                                     .init(flatTriangle.vertex.position + .init(0, 1, -1)),
+                                     .init(flatTriangle.vertex.position + .init(1, 1, -1)),
+                                     .init(flatTriangle.vertex.position + .init(1, 0, -1))]
         
-        let coordinate = flatTriangle.position + .unitX
+        let lhs = Set(perimeter)
+        let rhs = Set(flatTriangle.perimeter)
         
-        XCTAssertEqual(adjacent, coordinate)
+        XCTAssertTrue(lhs.isSubset(of: rhs))
+        XCTAssertEqual(perimeter.count, flatTriangle.perimeter.count)
     }
     
-    func testFlatAdjacentAlongAxisY() throws {
-        
-        let adjacent = flatTriangle.adjacent(.y)
-        
-        let coordinate = flatTriangle.position + .unitY
-        
-        XCTAssertEqual(adjacent, coordinate)
-    }
-    
-    func testFlatAdjacentAlongAxisZ() throws {
-        
-        let adjacent = flatTriangle.adjacent(.z)
-        
-        let coordinate = flatTriangle.position + .unitZ
-        
-        XCTAssertEqual(adjacent, coordinate)
-    }
-    
-    // MARK: Diagonal
-    
-    func testPointyDiagonalAlongAxisX() throws {
-        
-        let diagonal = pointyTriangle.diagonal(.x)
-        
-        let coordinate = pointyTriangle.position + Coordinate(1, -1, -1)
-        
-        XCTAssertEqual(diagonal, coordinate)
-    }
-    
-    func testPointyDiagonalAlongAxisY() throws {
-        
-        let diagonal = pointyTriangle.diagonal(.y)
-        
-        let coordinate = pointyTriangle.position + Coordinate(-1, 1, -1)
-        
-        XCTAssertEqual(diagonal, coordinate)
-    }
-    
-    func testPointyDiagonalAlongAxisZ() throws {
-        
-        let diagonal = pointyTriangle.diagonal(.z)
-        
-        let coordinate = pointyTriangle.position + Coordinate(-1, -1, 1)
-        
-        XCTAssertEqual(diagonal, coordinate)
-    }
-    
-    func testFlatDiagonalAlongAxisX() throws {
-        
-        let diagonal = flatTriangle.diagonal(.x)
-        
-        let coordinate = flatTriangle.position + Coordinate(-1, 1, 1)
-        
-        XCTAssertEqual(diagonal, coordinate)
-    }
-    
-    func testFlatDiagonalAlongAxisY() throws {
-        
-        let diagonal = flatTriangle.diagonal(.y)
-        
-        let coordinate = flatTriangle.position + Coordinate(1, -1, 1)
-        
-        XCTAssertEqual(diagonal, coordinate)
-    }
-    
-    func testFlatDiagonalAlongAxisZ() throws {
-        
-        let diagonal = flatTriangle.diagonal(.z)
-        
-        let coordinate = flatTriangle.position + Coordinate(1, 1, -1)
-        
-        XCTAssertEqual(diagonal, coordinate)
-    }
-    
-    // MARK: Touching
-    
-    func testPointyTouchingAlongAxisX() throws {
-        
-        let touching = pointyTriangle.touching(.x)
-        
-        let coordinates = [pointyTriangle.position + Coordinate(1, 0, -1),
-                           pointyTriangle.position + Coordinate(1, -1, 0)]
-        
-        XCTAssertEqual(touching.count, coordinates.count)
-        XCTAssertEqual(touching, coordinates)
-    }
-    
-    func testPointyTouchingAlongAxisY() throws {
-        
-        let touching = pointyTriangle.touching(.y)
-        
-        let coordinates = [pointyTriangle.position + Coordinate(0, 1, -1),
-                           pointyTriangle.position + Coordinate(-1, 1, 0)]
-        
-        XCTAssertEqual(touching.count, coordinates.count)
-        XCTAssertEqual(touching, coordinates)
-    }
-    
-    func testPointyTouchingAlongAxisZ() throws {
-        
-        let touching = pointyTriangle.touching(.z)
-        
-        let coordinates = [pointyTriangle.position + Coordinate(0, -1, 1),
-                           pointyTriangle.position + Coordinate(-1, 0, 1)]
-        
-        XCTAssertEqual(touching.count, coordinates.count)
-        XCTAssertEqual(touching, coordinates)
-    }
-    
-    func testFlatTouchingAlongAxisX() throws {
-        
-        let touching = flatTriangle.touching(.x)
-        
-        let coordinates = [flatTriangle.position + Coordinate(-1, 0, 1),
-                           flatTriangle.position + Coordinate(-1, 1, 0)]
-        
-        XCTAssertEqual(touching.count, coordinates.count)
-        XCTAssertEqual(touching, coordinates)
-    }
-    
-    func testFlatTouchingAlongAxisY() throws {
-        
-        let touching = flatTriangle.touching(.y)
-        
-        let coordinates = [flatTriangle.position + Coordinate(0, -1, 1),
-                           flatTriangle.position + Coordinate(1, -1, 0)]
-        
-        XCTAssertEqual(touching.count, coordinates.count)
-        XCTAssertEqual(touching, coordinates)
-    }
-    
-    func testFlatTouchingAlongAxisZ() throws {
-        
-        let touching = flatTriangle.touching(.z)
-        
-        let coordinates = [flatTriangle.position + Coordinate(0, 1, -1),
-                           flatTriangle.position + Coordinate(1, 0, -1)]
-        
-        XCTAssertEqual(touching.count, coordinates.count)
-        XCTAssertEqual(touching, coordinates)
-    }
-    
-    // MARK: Vertices
+    // MARK: Vertices / Corners
     
     func testPointyVertices() throws {
         
-        let c0 = pointyTriangle.corner(.c0)
-        let c1 = pointyTriangle.corner(.c1)
-        let c2 = pointyTriangle.corner(.c2)
+        let vertices: [Vertex] = [.init(5, -2, -2),
+                                  .init(4, -1, -2),
+                                  .init(4, -2, -1)]
         
-        XCTAssertEqual(c0, pointyTriangle.position + .unitX)
-        XCTAssertEqual(c1, pointyTriangle.position + .unitY)
-        XCTAssertEqual(c2, pointyTriangle.position + .unitZ)
+        let vectors: [Vector] = [.init(0.0, 0.0, 4.0414),
+                                 .init(0.5, 0.0, 3.1754),
+                                 .init(-0.5, 0.0, 3.1754)]
+        
+        let center = Vector(0.0, 0.0, 3.4641)
+        let vertex = Vertex(center, .tile)
+        
+        let triangleCorners = vertices.map { pointyTriangle.corner($0) }
+        let triangleVertices = vectors.map { Vertex($0, .tile) }
+        
+        XCTAssertEqual(triangleCorners, pointyTriangle.corners)
+        XCTAssertEqual(triangleVertices, pointyTriangle.vertices)
+        XCTAssertEqual(vertex, pointyTriangle.vertex)
     }
     
     func testFlatVertices() throws {
         
-        let c0 = flatTriangle.corner(.c0)
-        let c1 = flatTriangle.corner(.c1)
-        let c2 = flatTriangle.corner(.c2)
+        let vertices: [Vertex] = [.init(-2, -1, 4),
+                                  .init(-1, -2, 4),
+                                  .init(-1, -1, 3)]
         
-        XCTAssertEqual(c0, flatTriangle.position + Coordinate(0, 1, 1))
-        XCTAssertEqual(c1, flatTriangle.position + Coordinate(1, 0, 1))
-        XCTAssertEqual(c2, flatTriangle.position + Coordinate(1, 1, 0))
-    }
-    
-    func testPointyCorners() throws {
+        let vectors: [Vector] = [.init(-2.5, 0.0, -2.0207),
+                                 .init(-3.0, 0.0, -1.1547),
+                                 .init(-2.0, 0.0, -1.1547)]
         
-        let c0 = Vector(0.0, 0.0, .sqrt3d3)
-        let c1 = Vector(0.5, 0.0, -.sqrt3d6)
-        let c2 = Vector(-0.5, 0.0, -.sqrt3d6)
+        let center = Vector(-2.5, 0.0, -1.4433)
+        let vertex = Vertex(center, .tile)
         
-        XCTAssertEqual(c0, zero.vertex(.c0, .tile))
-        XCTAssertEqual(c1, zero.vertex(.c1, .tile))
-        XCTAssertEqual(c2, zero.vertex(.c2, .tile))
-    }
-    
-    func testFlatCorners() throws {
+        let triangleCorners = vertices.map { flatTriangle.corner($0) }
+        let triangleVertices = vectors.map { Vertex($0, .tile) }
         
-        let c0 = Vector(0.0, 0.0, -(.sqrt3d2 + .sqrt3d6))
-        let c1 = Vector(-0.5, 0.0, -.sqrt3d6)
-        let c2 = Vector(0.5, 0.0, -.sqrt3d6)
+        XCTAssertEqual(triangleCorners, flatTriangle.corners)
+        XCTAssertEqual(triangleVertices, flatTriangle.vertices)
+        XCTAssertEqual(vertex, flatTriangle.vertex)
         
-        XCTAssertEqual(c0, x.vertex(.c0, .tile))
-        XCTAssertEqual(c1, x.vertex(.c1, .tile))
-        XCTAssertEqual(c2, x.vertex(.c2, .tile))
     }
     
     // MARK: Transposing
     
-    func testCoordinateRegionToTile() throws {
+    func testTransposeRegionToTile() throws {
         
-        let regions = [zero,
+        let regions = [unitTriangle,
                        x,
                        y,
                        z].map { $0.transpose(.region,
                                              .tile) }
         
-        let triangles: [Grid.Triangle] = [.init(0, 0, 0),
-                                          .init(-19, 9, 9),
-                                          .init(9, -19, 9),
-                                          .init(9, 9, -19)]
+        let triangles: [Triangle] = [.init(0, 0, 0),
+                                     .init(-19, 9, 9),
+                                     .init(9, -19, 9),
+                                     .init(9, 9, -19)]
         
         XCTAssertEqual(regions,
                        triangles)
     }
     
-    func testCoordinateRegionToChunk() throws {
+    func testTransposeRegionToChunk() throws {
         
-        let regions = [zero,
+        let regions = [unitTriangle,
                        x,
                        y,
                        z].map { $0.transpose(.region,
                                              .chunk) }
         
-        let triangles: [Grid.Triangle] = [.init(0, 0, 0),
-                                          .init(-3, 1, 1),
-                                          .init(1, -3, 1),
-                                          .init(1, 1, -3)]
+        let triangles: [Triangle] = [.init(0, 0, 0),
+                                     .init(-3, 1, 1),
+                                     .init(1, -3, 1),
+                                     .init(1, 1, -3)]
         
         XCTAssertEqual(regions,
                        triangles)
     }
     
-    func testCoordinateChunkToRegion() throws {
+    func testTransposeChunkToRegion() throws {
         
-        let regions = [Grid.Triangle(0, 0, 0),
+        let regions = [Triangle(0, 0, 0),
                        x,
                        y,
                        z,
-                       Grid.Triangle(-3, 1, 1),
-                       Grid.Triangle(1, -3, 1),
-                       Grid.Triangle(1, 1, -3)].map { $0.transpose(.chunk,
-                                                                   .region) }
+                       Triangle(-3, 1, 1),
+                       Triangle(1, -3, 1),
+                       Triangle(1, 1, -3)].map { $0.transpose(.chunk,
+                                                              .region) }
         
-        let triangles = [zero,
-                         zero,
-                         zero,
-                         zero,
+        let triangles = [unitTriangle,
+                         unitTriangle,
+                         unitTriangle,
+                         unitTriangle,
                          x,
                          y,
                          z]
         
         XCTAssertEqual(regions, triangles)
         
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(2, -1, -1).transpose(.chunk,
-                                                          .region))
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(-1, 2, -1).transpose(.chunk,
-                                                          .region))
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(-1, -1, 2).transpose(.chunk,
-                                                          .region))
+        XCTAssertEqual(.zero,
+                       Triangle(2, -1, -1).transpose(.chunk,
+                                                     .region))
+        XCTAssertEqual(.zero,
+                       Triangle(-1, 2, -1).transpose(.chunk,
+                                                     .region))
+        XCTAssertEqual(.zero,
+                       Triangle(-1, -1, 2).transpose(.chunk,
+                                                     .region))
         
-        XCTAssertEqual(Grid.Triangle(-1, -1, 1),
-                       Grid.Triangle(-2, -2, 3).transpose(.chunk,
-                                                          .region))
-        XCTAssertEqual(Grid.Triangle(-1, 1, -1),
-                       Grid.Triangle(-2, 3, -2).transpose(.chunk,
-                                                          .region))
-        XCTAssertEqual(Grid.Triangle(1, -1, -1),
-                       Grid.Triangle(3, -2, -2).transpose(.chunk,
-                                                          .region))
+        XCTAssertEqual(Triangle(-1, -1, 1),
+                       Triangle(-2, -2, 3).transpose(.chunk,
+                                                     .region))
+        XCTAssertEqual(Triangle(-1, 1, -1),
+                       Triangle(-2, 3, -2).transpose(.chunk,
+                                                     .region))
+        XCTAssertEqual(Triangle(1, -1, -1),
+                       Triangle(3, -2, -2).transpose(.chunk,
+                                                     .region))
     }
     
-    func testCoordinateChunkToTile() throws {
+    func testTransposeChunkToTile() throws {
         
-        let chunks = [zero,
+        let chunks = [unitTriangle,
                       x,
                       y,
                       z].map { $0.transpose(.chunk,
                                             .tile) }
         
-        let triangles = [Grid.Triangle(0, 0, 0),
-                         Grid.Triangle(-5, 2, 2),
-                         Grid.Triangle(2, -5, 2),
-                         Grid.Triangle(2, 2, -5)]
+        let triangles = [Triangle(0, 0, 0),
+                         Triangle(-5, 2, 2),
+                         Triangle(2, -5, 2),
+                         Triangle(2, 2, -5)]
         
         XCTAssertEqual(chunks,
                        triangles)
     }
     
-    func testCoordinateTileToChunk() throws {
+    func testTransposeTileToChunk() throws {
         
-        let tiles = [Grid.Triangle(0, 0, 0),
+        let tiles = [Triangle(0, 0, 0),
                      x,
                      y,
                      z,
-                     Grid.Triangle(-5, 2, 2),
-                     Grid.Triangle(2, -5, 2),
-                     Grid.Triangle(2, 2, -5)].map { $0.transpose(.tile,
+                     Triangle(-5, 2, 2),
+                     Triangle(2, -5, 2),
+                     Triangle(2, 2, -5)].map { $0.transpose(.tile,
                                                                  .chunk) }
         
-        let triangles = [zero,
-                         zero,
-                         zero,
-                         zero,
+        let triangles = [unitTriangle,
+                         unitTriangle,
+                         unitTriangle,
+                         unitTriangle,
                          x,
                          y,
                          z]
         
         XCTAssertEqual(tiles, triangles)
         
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(2, -1, -1).transpose(.tile,
-                                                          .chunk))
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(-1, 2, -1).transpose(.tile,
-                                                          .chunk))
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(-1, -1, 2).transpose(.tile,
-                                                          .chunk))
+        XCTAssertEqual(.zero,
+                       Triangle(2, -1, -1).transpose(.tile,
+                                                     .chunk))
+        XCTAssertEqual(.zero,
+                       Triangle(-1, 2, -1).transpose(.tile,
+                                                     .chunk))
+        XCTAssertEqual(.zero,
+                       Triangle(-1, -1, 2).transpose(.tile,
+                                                     .chunk))
         
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(-2, -2, 4).transpose(.tile,
-                                                          .chunk))
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(-2, 4, -2).transpose(.tile,
-                                                          .chunk))
-        XCTAssertEqual(Grid.Triangle.zero,
-                       Grid.Triangle(4, -2, -2).transpose(.tile,
-                                                          .chunk))
+        XCTAssertEqual(.zero,
+                       Triangle(-2, -2, 4).transpose(.tile,
+                                                     .chunk))
+        XCTAssertEqual(.zero,
+                       Triangle(-2, 4, -2).transpose(.tile,
+                                                     .chunk))
+        XCTAssertEqual(.zero,
+                       Triangle(4, -2, -2).transpose(.tile,
+                                                     .chunk))
     }
     
-    func testCoordinateTileToRegion() throws {
+    func testTransposeTileToRegion() throws {
         
-        let tiles = [Grid.Triangle(0, 0, 0),
+        let tiles = [Triangle(0, 0, 0),
                      x,
                      y,
                      z,
-                     Grid.Triangle(-19, 9, 9),
-                     Grid.Triangle(9, -19, 9),
-                     Grid.Triangle(9, 9, -19)].map { $0.transpose(.tile,
-                                                               .region) }
+                     Triangle(-19, 9, 9),
+                     Triangle(9, -19, 9),
+                     Triangle(9, 9, -19)].map { $0.transpose(.tile,
+                                                             .region) }
         
-        let triangles = [zero,
-                         zero,
-                         zero,
-                         zero,
+        let triangles = [unitTriangle,
+                         unitTriangle,
+                         unitTriangle,
+                         unitTriangle,
                          x,
                          y,
                          z]
@@ -417,8 +313,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = pointyTriangle.sieve(for: .sierpinski)
         
-        XCTAssertEqual(sieve.coordinate,
-                       pointyTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       pointyTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
@@ -428,8 +324,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = flatTriangle.sieve(for: .sierpinski)
         
-        XCTAssertEqual(sieve.coordinate,
-                       flatTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       flatTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
@@ -439,8 +335,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = pointyTriangle.sieve(for: .tile)
         
-        XCTAssertEqual(sieve.coordinate,
-                       pointyTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       pointyTriangle)
         XCTAssertEqual(sieve.scale, .tile)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
@@ -450,8 +346,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = flatTriangle.sieve(for: .tile)
         
-        XCTAssertEqual(sieve.coordinate,
-                       flatTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       flatTriangle)
         XCTAssertEqual(sieve.scale, .tile)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
@@ -461,8 +357,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = pointyTriangle.sieve(for: .chunk)
         
-        XCTAssertEqual(sieve.coordinate,
-                       pointyTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       pointyTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
         XCTAssertEqual(sieve.triangles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
@@ -472,8 +368,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = flatTriangle.sieve(for: .chunk)
         
-        XCTAssertEqual(sieve.coordinate,
-                       flatTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       flatTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
         XCTAssertEqual(sieve.triangles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
@@ -483,8 +379,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = pointyTriangle.sieve(for: .region)
         
-        XCTAssertEqual(sieve.coordinate,
-                       pointyTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       pointyTriangle)
         XCTAssertEqual(sieve.scale, .region)
         XCTAssertEqual(sieve.triangles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
@@ -494,8 +390,8 @@ final class TriangleTests: XCTestCase {
         
         let sieve = flatTriangle.sieve(for: .region)
         
-        XCTAssertEqual(sieve.coordinate,
-                       flatTriangle.position)
+        XCTAssertEqual(sieve.origin,
+                       flatTriangle)
         XCTAssertEqual(sieve.scale, .region)
         XCTAssertEqual(sieve.triangles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)

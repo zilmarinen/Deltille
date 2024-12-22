@@ -11,65 +11,46 @@ import XCTest
 final class HexagonTests: XCTestCase {
     
     typealias Coordinate = Grid.Coordinate
+    typealias Hexagon = Grid.Hexagon
+    typealias Vertex = Hexagon.Vertex
     
-    private let hexagon = Grid.Hexagon(.init(2, -1, -1))
+    private let hexagon = Hexagon(.init(2, -1, -1))
     
-    // MARK: Adjacency
+    // MARK: Neighbours / Adjacency / Perimeter
     
-    func testAdjacentHexagons() throws {
+    func testNeighbours() throws {
         
-        let coordinates: [Coordinate] = [.init(3, -1, -2),
-                                         .init(3, -2, -1),
-                                         .init(2, -2, 0),
-                                         .init(1, -1, 0),
-                                         .init(1, 0, -1),
-                                         .init(2, 0, -2)]
+        let tiles: [Hexagon] = [.init(3, -1, -2),
+                                .init(2, 0, -2),
+                                .init(1, 0, -1),
+                                .init(1, -1, 0),
+                                .init(2, -2, 0),
+                                .init(3, -2, -1)]
         
-        let adjacent = hexagon.perimeter
+        let neighbours = hexagon.edges.map { hexagon.neighbour($0) }
         
-        for index in adjacent.indices {
-            
-            let hex = Grid.Hexagon(coordinates[index])
-            
-            XCTAssertEqual(hex.position,
-                           adjacent[index])
-        }
+        XCTAssertEqual(neighbours, tiles)
+        XCTAssertEqual(hexagon.adjacent, tiles)
+        XCTAssertEqual(hexagon.perimeter, tiles)
     }
     
-    // MARK: Vertices
+    // MARK: Vertices / Corners
     
     func testVertices() throws {
         
-        let c0 = hexagon.corner(.c0)
-        let c1 = hexagon.corner(.c1)
-        let c2 = hexagon.corner(.c2)
-        let c3 = hexagon.corner(.c3)
-        let c4 = hexagon.corner(.c4)
-        let c5 = hexagon.corner(.c5)
+        let vertices: [Vertex] = [.init(3, -1, -1),
+                                  .init(2, -1, -2),
+                                  .init(2, 0, -1),
+                                  .init(1, -1, -1),
+                                  .init(2, -1, 0),
+                                  .init(2, -2, -1)]
         
-        XCTAssertEqual(c0, hexagon.position + .unitX)
-        XCTAssertEqual(c1, hexagon.position - .unitZ)
-        XCTAssertEqual(c2, hexagon.position + .unitY)
-        XCTAssertEqual(c3, hexagon.position - .unitX)
-        XCTAssertEqual(c4, hexagon.position + .unitZ)
-        XCTAssertEqual(c5, hexagon.position - .unitY)
-    }
-    
-    func testCorners() throws {
+        let hexagonCorners = vertices.map { hexagon.corner($0) }
+        let hexagonVertices = hexagon.corners.map { hexagon.vertex($0) }
         
-        let v0 = hexagon.position + .unitX
-        let v1 = hexagon.position - .unitZ
-        let v2 = hexagon.position + .unitY
-        let v3 = hexagon.position - .unitX
-        let v4 = hexagon.position + .unitZ
-        let v5 = hexagon.position - .unitY
-        
-        XCTAssertEqual(.c0, hexagon.corner(v0))
-        XCTAssertEqual(.c1, hexagon.corner(v1))
-        XCTAssertEqual(.c2, hexagon.corner(v2))
-        XCTAssertEqual(.c3, hexagon.corner(v3))
-        XCTAssertEqual(.c4, hexagon.corner(v4))
-        XCTAssertEqual(.c5, hexagon.corner(v5))
+        XCTAssertEqual(hexagonCorners, hexagon.corners)
+        XCTAssertEqual(hexagonVertices, vertices)
+        XCTAssertEqual(hexagonVertices, hexagon.vertices)
         XCTAssertEqual(nil, hexagon.corner(.zero))
     }
 }
