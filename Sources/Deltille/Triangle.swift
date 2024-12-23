@@ -151,7 +151,8 @@ extension Grid.Triangle {
     
     public final class Footprint: Deltille.Footprint<Scale,
                                                      Grid.Triangle,
-                                                     Rotation> {
+                                                     Rotation,
+                                                     Vertex> {
         
         convenience init(_ origin: Grid.Triangle,
                     _ coordinates: [Grid.Coordinate]) {

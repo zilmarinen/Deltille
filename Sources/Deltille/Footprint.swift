@@ -10,11 +10,10 @@ import Euclid
 
 open class Footprint<S: Scale,
                      T: Tile,
-                     R: Rotation>: Codable,
-                                   Hashable,
-                                   Rotatable {
-    
-    open var perimeter: [T] { Array(Set(tiles.flatMap { $0.perimeter })) }
+                     R: Rotation,
+                     V: Vertex>: Codable,
+                                 Hashable,
+                                 Rotatable where T.V == V {
     
     public let origin: T
     public let tiles: [T]
@@ -33,14 +32,21 @@ open class Footprint<S: Scale,
 
 extension Footprint {
     
+    public var perimeter: [T] { Array(Set(tiles.flatMap { $0.perimeter })) }
+    
+    public var vertices: [V] { Array(Set(tiles.flatMap { $0.vertices })) }
+}
+
+extension Footprint {
+    
     public func hash(into hasher: inout Hasher) {
         
         hasher.combine(origin)
         hasher.combine(tiles)
     }
     
-    public static func == (lhs: Footprint<S, T, R>,
-                           rhs: Footprint<S, T, R>) -> Bool {
+    public static func == (lhs: Footprint<S, T, R, V>,
+                           rhs: Footprint<S, T, R, V>) -> Bool {
         
         lhs.origin == rhs.origin &&
         lhs.tiles == rhs.tiles

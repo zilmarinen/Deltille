@@ -157,7 +157,8 @@ extension Grid.Hexagon {
     
     public final class Footprint: Deltille.Footprint<Scale,
                                                      Grid.Hexagon,
-                                                     Rotation> {
+                                                     Rotation,
+                                                     Vertex> {
         
         convenience init(_ origin: Grid.Hexagon,
                     _ coordinates: [Grid.Coordinate]) {
