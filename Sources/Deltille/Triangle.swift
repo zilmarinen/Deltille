@@ -149,29 +149,19 @@ extension Grid.Triangle {
 
 extension Grid.Triangle {
     
-    public struct Footprint: Deltille.Footprint {
+    public final class Footprint: Deltille.Footprint<Scale,
+                                                     Grid.Triangle,
+                                                     Rotation> {
         
-        public let origin: Grid.Triangle
-        public let tiles: [Grid.Triangle]
-        
-        public init(_ origin: Grid.Triangle,
-                    _ tiles: [Grid.Triangle]) {
-         
-            self.origin = origin
-            self.tiles = tiles
-        }
-        
-        public init(_ origin: Grid.Triangle,
+        convenience init(_ origin: Grid.Triangle,
                     _ coordinates: [Grid.Coordinate]) {
             
-            self.origin = origin
-            self.tiles = coordinates.map { .init(origin.vertex.position + (origin.isPointy ? $0 : -$0)) }
+            self.init(origin,
+                      coordinates.map { .init(origin.vertex.position + (origin.isPointy ? $0 : -$0)) })
         }
         
-        public func intersects(_ tile: Grid.Triangle) -> Bool { tiles.contains(tile) || tile == origin }
-        
-        public func center(_ scale: Scale) -> Vector {
-                
+        public override func center(_ scale: Scale) -> Vector {
+            
             let vector = tiles.reduce(into: Vector.zero) { result, tile in
                 
                 result += Vector(tile.vertex,
@@ -181,8 +171,8 @@ extension Grid.Triangle {
             return vector / Double(tiles.count)
         }
         
-        public func rotate(_ rotation: Rotation) -> Self {
-        
+        public override func rotate(_ rotation: Rotation) -> Self {
+            
             let triangles = tiles.map {
                 
                 let triangle = Grid.Triangle($0.vertex.position - origin.vertex.position)

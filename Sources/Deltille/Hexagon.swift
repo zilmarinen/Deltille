@@ -155,28 +155,18 @@ extension Grid.Hexagon {
 
 extension Grid.Hexagon {
     
-    public struct Footprint: Deltille.Footprint {
+    public final class Footprint: Deltille.Footprint<Scale,
+                                                     Grid.Hexagon,
+                                                     Rotation> {
         
-        public let origin: Grid.Hexagon
-        public let tiles: [Grid.Hexagon]
-        
-        public init(_ origin: Grid.Hexagon,
-                    _ tiles: [Grid.Hexagon]) {
-         
-            self.origin = origin
-            self.tiles = tiles
-        }
-        
-        public init(_ origin: Grid.Hexagon,
+        convenience init(_ origin: Grid.Hexagon,
                     _ coordinates: [Grid.Coordinate]) {
             
-            self.origin = origin
-            self.tiles = coordinates.map { .init(origin.vertex.position + $0) }
+            self.init(origin,
+                      coordinates.map { .init(origin.vertex.position + $0) })
         }
         
-        public func intersects(_ tile: Grid.Hexagon) -> Bool { tiles.contains(tile) || tile == origin }
-        
-        public func center(_ scale: Scale) -> Vector {
+        public override func center(_ scale: Scale) -> Vector {
                 
             let vector = tiles.reduce(into: Vector.zero) { result, tile in
                 
@@ -187,7 +177,7 @@ extension Grid.Hexagon {
             return vector / Double(tiles.count)
         }
         
-        public func rotate(_ rotation: Rotation) -> Self {
+        public override func rotate(_ rotation: Rotation) -> Self {
         
             let hexagons = tiles.map {
                 
@@ -234,7 +224,6 @@ extension Grid.Hexagon: Rotatable {
         }
     }
 }
-
 
 // MARK: Scale
 
