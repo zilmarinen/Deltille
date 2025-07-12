@@ -13,19 +13,19 @@ open class Footprint<S: Scale,
                      R: Rotation,
                      V: Vertex>: Codable,
                                  Hashable,
-                                 Rotatable where T.V == V {
+                                 Rotatable where T.R == R,
+                                                 T.S == S,
+                                                 T.V == V {
     
     public let origin: T
     public let tiles: [T]
     
-    public init(_ origin: T,
-                _ tiles: [T]) {
+    public required init(_ origin: T,
+                         _ tiles: [T]) {
      
         self.origin = origin
         self.tiles = tiles
     }
-    
-    open func center(_ scale: S) -> Vector { .zero }
     
     open func rotate(_ rotation: R) -> Self { self }
 }
@@ -50,6 +50,16 @@ extension Footprint {
         
         lhs.origin == rhs.origin &&
         lhs.tiles == rhs.tiles
+    }
+    
+    public func center(_ scale: S) -> Vector {
+        
+        let vector = tiles.reduce(into: Vector.zero) { result, tile in
+            
+            result += tile.position(scale)
+        }
+        
+        return vector / Double(tiles.count)
     }
     
     public func intersects(_ footprint: Footprint) -> Bool {

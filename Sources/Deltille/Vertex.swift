@@ -4,6 +4,8 @@
 //  Created by Zack Brown on 27/11/2024.
 //
 
+import Euclid
+
 // MARK: Vertex
 
 public protocol Vertex: Codable,
@@ -11,12 +13,15 @@ public protocol Vertex: Codable,
                         Identifiable,
                         Sendable {
     
+    associatedtype S = Scale
     associatedtype T = Tile
     
     var position: Grid.Coordinate { get }
     
     var tiles: [T] { get }
     var vertices: [Self] { get }
+    
+    func position(_ scale: S) -> Vector
 }
 
 extension Vertex {

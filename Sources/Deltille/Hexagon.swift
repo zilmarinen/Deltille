@@ -47,6 +47,11 @@ extension Grid.Hexagon {
     
     public var adjacent: [Self] { edges.map { .init(vertex.position + translation($0)) } }
     public var perimeter: [Self] { adjacent }
+}
+
+extension Grid.Hexagon {
+    
+    public func position(_ scale: Scale) -> Vector { vertex.position(scale) }
     
     public func vertex(_ corner: Corner) -> Vertex { vertices[corner.rawValue] }
     
@@ -155,27 +160,16 @@ extension Grid.Hexagon {
 
 extension Grid.Hexagon {
     
-    public final class Footprint: Deltille.Footprint<Scale,
-                                                     Grid.Hexagon,
-                                                     Rotation,
-                                                     Vertex> {
+    open class Footprint: Deltille.Footprint<Scale,
+                                             Grid.Hexagon,
+                                             Rotation,
+                                             Vertex> {
         
-        convenience init(_ origin: Grid.Hexagon,
+        public convenience init(_ origin: Grid.Hexagon,
                     _ coordinates: [Grid.Coordinate]) {
             
             self.init(origin,
                       coordinates.map { .init(origin.vertex.position + $0) })
-        }
-        
-        public override func center(_ scale: Scale) -> Vector {
-                
-            let vector = tiles.reduce(into: Vector.zero) { result, tile in
-                
-                result += Vector(tile.vertex,
-                                 scale)
-            }
-            
-            return vector / Double(tiles.count)
         }
         
         public override func rotate(_ rotation: Rotation) -> Self {
@@ -202,8 +196,8 @@ extension Grid.Hexagon: Rotatable {
     public enum Rotation: String,
                           Deltille.Rotation {
         
-        public static var inverse: Double = .pi
-        public static var step: Double = .tau / 6.0
+        public static let inverse: Double = .pi
+        public static let step: Double = .tau / 6.0
         
         case clockwise
         case counterClockwise
@@ -293,6 +287,9 @@ extension Grid.Hexagon {
                       Int(round(Double(y - z) / 3.0)),
                       Int(round(Double(z - x) / 3.0)))
         }
+        
+        public func position(_ scale: Scale) -> Vector { Vector(self,
+                                                                scale) }
     }
 }
 

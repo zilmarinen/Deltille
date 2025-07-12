@@ -7,9 +7,21 @@
 import Euclid
 import Foundation
 
+// MARK: Vector
+
 extension Vector: @retroactive Identifiable {
     
     public var id: String { "[\(x), \(y), \(z)]" }
+}
+
+extension Vector {
+    
+    public func mid(_ lhs: Self) -> Self { lerp(lhs, 0.5) }
+}
+
+// MARK: Triangle
+
+extension Vector {
     
     public init(_ vertex: Grid.Triangle.Vertex,
                 _ scale: Grid.Triangle.Scale) {
@@ -22,6 +34,11 @@ extension Vector: @retroactive Identifiable {
                   0.0,
                   ((-.sqrt3d6 * dx) + (.sqrt3d3 * dy) - (.sqrt3d6 * dz)) * scale.edgeLength)
     }
+}
+
+// MARK: Hexagon
+
+extension Vector {
     
     public init(_ vertex: Grid.Hexagon.Vertex,
                 _ scale: Grid.Hexagon.Scale) {
@@ -34,9 +51,4 @@ extension Vector: @retroactive Identifiable {
                   0.0,
                   ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
     }
-}
-
-extension Vector {
-    
-    public func mid(_ other: Self) -> Self { lerp(other, 0.5) }
 }

@@ -27,7 +27,8 @@ extension Grid.Triangle {
     
     public struct Stencil {
         
-        public enum Vertex: CaseIterable {
+        public enum Vertex: CaseIterable,
+                            Sendable {
             
             case v0, v1, v2
             case v5, v7, v13

@@ -45,7 +45,7 @@ extension Grid.Triangle {
     
     public var adjacent: [Self] { edges.map { .init(vertex.position + translation($0)) } }
     public var perimeter: [Self] {
-    
+        
         Array(vertices.reduce(into: Set<Self>(), { result, vertex in
             
             for tile in vertex.tiles {
@@ -56,6 +56,11 @@ extension Grid.Triangle {
             }
         }))
     }
+}
+
+extension Grid.Triangle {
+    
+    public func position(_ scale: Scale) -> Vector { vertex.position(scale) }
     
     public func vertex(_ corner: Corner) -> Vertex { vertices[corner.rawValue] }
     
@@ -149,27 +154,16 @@ extension Grid.Triangle {
 
 extension Grid.Triangle {
     
-    public final class Footprint: Deltille.Footprint<Scale,
-                                                     Grid.Triangle,
-                                                     Rotation,
-                                                     Vertex> {
+    open class Footprint: Deltille.Footprint<Scale,
+                                             Grid.Triangle,
+                                             Rotation,
+                                             Vertex> {
         
-        convenience init(_ origin: Grid.Triangle,
-                    _ coordinates: [Grid.Coordinate]) {
+        public convenience init(_ origin: Grid.Triangle,
+                                _ coordinates: [Grid.Coordinate]) {
             
             self.init(origin,
                       coordinates.map { .init(origin.vertex.position + (origin.isPointy ? $0 : -$0)) })
-        }
-        
-        public override func center(_ scale: Scale) -> Vector {
-            
-            let vector = tiles.reduce(into: Vector.zero) { result, tile in
-                
-                result += Vector(tile.vertex,
-                                 scale)
-            }
-            
-            return vector / Double(tiles.count)
         }
         
         public override func rotate(_ rotation: Rotation) -> Self {
@@ -196,8 +190,8 @@ extension Grid.Triangle: Rotatable {
     public enum Rotation: String,
                           Deltille.Rotation {
         
-        public static var inverse: Double = .pi
-        public static var step: Double = .tau / 3.0
+        public static let inverse: Double = .pi
+        public static let step: Double = .tau / 3.0
         
         case clockwise
         case counterClockwise
@@ -308,5 +302,8 @@ extension Grid.Triangle {
                       Int(floor(i / scale.edgeLength)),
                       Int(floor(k / scale.edgeLength)))
         }
+        
+        public func position(_ scale: Scale) -> Vector { Vector(self,
+                                                                scale) }
     }
 }

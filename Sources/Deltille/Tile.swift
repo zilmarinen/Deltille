@@ -4,6 +4,8 @@
 //  Created by Zack Brown on 27/11/2024.
 //
 
+import Euclid
+
 // MARK: Tile
 
 public protocol Tile: Codable,
@@ -13,6 +15,8 @@ public protocol Tile: Codable,
     
     associatedtype C = Corner
     associatedtype E = Edge
+    associatedtype R = Rotation
+    associatedtype S = Scale
     associatedtype V = Vertex
     
     var vertex: V { get }
@@ -23,6 +27,10 @@ public protocol Tile: Codable,
     
     var adjacent: [Self] { get }
     var perimeter: [Self] { get }
+    
+    func position(_ scale: S) -> Vector
+    
+    func rotate(_ rotation: R) -> Self
     
     func vertex(_ corner: C) -> V
     func corner(_ vertex: V) -> C?
