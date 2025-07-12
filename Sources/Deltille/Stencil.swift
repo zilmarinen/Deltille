@@ -6,6 +6,8 @@
 
 import Euclid
 
+// MARK: Stencil
+
 extension Grid.Triangle {
     
     ///
@@ -25,7 +27,8 @@ extension Grid.Triangle {
     
     public struct Stencil {
         
-        public enum Vertex: CaseIterable {
+        public enum Vertex: CaseIterable,
+                            Sendable {
             
             case v0, v1, v2
             case v5, v7, v13
@@ -94,11 +97,11 @@ extension Grid.Triangle {
     
     public func stencil(_ scale: Scale) -> Stencil {
         
-        let v0 = Vector(corner(.c0),
+        let v0 = Vector(vertex(.c0),
                         scale)
-        let v1 = Vector(corner(.c1), 
+        let v1 = Vector(vertex(.c1),
                         scale)
-        let v2 = Vector(corner(.c2), 
+        let v2 = Vector(vertex(.c2),
                         scale)
         
         let v5 = v0.mid(v1)

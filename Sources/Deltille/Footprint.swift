@@ -6,63 +6,71 @@
 
 import Euclid
 
-extension Grid.Triangle {
+// MARK: Footprint
+
+open class Footprint<S: Scale,
+                     T: Tile,
+                     R: Rotation,
+                     V: Vertex>: Codable,
+                                 Hashable,
+                                 Rotatable where T.R == R,
+                                                 T.S == S,
+                                                 T.V == V {
     
-    ///
-    ///  Footprint defines a grouping of triangle coordinates centered around its origin.
-    ///
+    public let origin: T
+    public let tiles: [T]
     
-    public struct Footprint {
-        
-        public let origin: Grid.Triangle
-        
-        public let coordinates: [Grid.Coordinate]
-        
-        public init(_ origin: Grid.Triangle,
-                    _ coordinates: [Grid.Coordinate]) {
-            
-            self.origin = origin
-            self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }
-        }
+    public required init(_ origin: T,
+                         _ tiles: [T]) {
+     
+        self.origin = origin
+        self.tiles = tiles
     }
+    
+    open func rotate(_ rotation: R) -> Self { self }
 }
 
-public extension Grid.Triangle.Footprint {
+extension Footprint {
     
-    func intersects(_ rhs: Self) -> Bool {
-        
-        for coordinate in rhs.coordinates {
-            
-            guard !intersects(rhs: coordinate) else { return true }
-        }
-        
-        return false
-    }
+    public var perimeter: [T] { Array(Set(tiles.flatMap { $0.perimeter })) }
     
-    func intersects(rhs: Grid.Coordinate) -> Bool { coordinates.contains(rhs) }
+    public var vertices: [V] { Array(Set(tiles.flatMap { $0.vertices })) }
 }
 
-public extension Grid.Triangle.Footprint {
+extension Footprint {
     
-    func rotate(_ rotation: Grid.Triangle.Rotation) -> Self {
-
-        let footprint = coordinates.map { Grid.Triangle(($0 - origin.position) * (origin.isPointy ? 1 : -1)) }
+    public func hash(into hasher: inout Hasher) {
         
-        return .init(origin,
-                     footprint.map { $0.rotate(rotation).position })
+        hasher.combine(origin)
+        hasher.combine(tiles)
     }
-}
-
-public extension Grid.Triangle.Footprint {
     
-    func center(_ scale: Grid.Triangle.Scale) -> Vector {
+    public static func == (lhs: Footprint<S, T, R, V>,
+                           rhs: Footprint<S, T, R, V>) -> Bool {
         
-        let vector = coordinates.reduce(into: Vector.zero) { result, coordinate in
+        lhs.origin == rhs.origin &&
+        lhs.tiles == rhs.tiles
+    }
+    
+    public func center(_ scale: S) -> Vector {
+        
+        let vector = tiles.reduce(into: Vector.zero) { result, tile in
             
-            result += Vector(coordinate,
-                             scale)
+            result += tile.position(scale)
         }
         
-        return vector / Double(coordinates.count)
+        return vector / Double(tiles.count)
     }
+    
+    public func intersects(_ footprint: Footprint) -> Bool {
+        
+        for tile in footprint.tiles {
+            
+            guard !intersects(tile) else { return true }
+        }
+        
+        return intersects(footprint.origin)
+    }
+    
+    public func intersects(_ tile: T) -> Bool { tiles.contains(tile) || tile == origin }
 }

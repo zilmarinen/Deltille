@@ -5,25 +5,278 @@
 //
 
 import Euclid
+import Foundation
+
+// MARK: Triangle
 
 extension Grid {
     
-    ///
-    /// A triangle represents both the position and orientation of
-    /// an equilateral triangle on a regular tiling of a triangular grid.
-    ///
-    public struct Triangle: Equatable,
-                            Hashable {
+    public struct Triangle: Tile {
         
-        public var isPointy: Bool { position.equalToZero }
+        public static let zero = Self(.zero)
         
-        public var delta: Int { isPointy ? -1 : 1 }
-        
-        public var rotation: Double { isPointy ? 0.0 : Rotation.inverse }
-        
-        public let position: Coordinate
+        public let vertex: Vertex
         
         public init(_ position: Coordinate) {
+                    
+            self.vertex = Vertex(position)
+        }
+        
+        public init(_ x: Int,
+                    _ y: Int,
+                    _ z: Int) {
+            
+            self.vertex = Vertex(x, y, z)
+        }
+    }
+}
+
+extension Grid.Triangle {
+    
+    public var id: String { vertex.id }
+    
+    public var isPointy: Bool { vertex.position.equalToZero }
+    public var rotation: Double { isPointy ? 0.0 : Rotation.inverse }
+    
+    public var vertices: [Vertex] { edges.map { .init(vertex.position + (isPointy ? -translation($0) : .one - translation($0))) } }
+    
+    public var corners: [Corner] { Corner.allCases }
+    public var edges: [Edge] { Edge.allCases }
+    
+    public var adjacent: [Self] { edges.map { .init(vertex.position + translation($0)) } }
+    public var perimeter: [Self] {
+        
+        Array(vertices.reduce(into: Set<Self>(), { result, vertex in
+            
+            for tile in vertex.tiles {
+                
+                guard tile.vertex != self.vertex else { continue }
+                
+                result.insert(tile)
+            }
+        }))
+    }
+}
+
+extension Grid.Triangle {
+    
+    public func position(_ scale: Scale) -> Vector { vertex.position(scale) }
+    
+    public func vertex(_ corner: Corner) -> Vertex { vertices[corner.rawValue] }
+    
+    public func corner(_ vertex: Vertex) -> Corner? {
+        
+        guard let index = vertices.firstIndex(of: vertex) else { return nil }
+        
+        return Corner(rawValue: index)
+    }
+    
+    public func neighbour(_ edge: Edge) -> Self { adjacent[edge.rawValue] }
+    
+    public func translation(_ along: Edge) -> Grid.Coordinate {
+        
+        switch along {
+            
+        case .e0: return isPointy ? -.unitX : .unitX
+        case .e1: return isPointy ? -.unitY : .unitY
+        case .e2: return isPointy ? -.unitZ : .unitZ
+        }
+    }
+}
+
+// MARK: Corner
+
+extension Grid.Triangle {
+    
+    public enum Corner: Int,
+                        Deltille.Corner {
+        
+        case c0, c1, c2
+        
+        public var id: String { "\(rawValue)" }
+        
+        public var corners: [Corner] {
+                    
+            switch self {
+                
+            case .c0: return [.c1, .c2]
+            case .c1: return [.c2, .c0]
+            case .c2: return [.c0, .c1]
+            }
+        }
+        
+        public var edges: [Edge] {
+            
+            switch self {
+                
+            case .c0: return [.e0, .e2]
+            case .c1: return [.e1, .e0]
+            case .c2: return [.e2, .e1]
+            }
+        }
+    }
+}
+
+// MARK: Edge
+
+extension Grid.Triangle {
+    
+    public enum Edge: Int,
+                      Deltille.Edge {
+        
+        case e0, e1, e2
+        
+        public var id: String { "\(rawValue)" }
+        
+        public var corners: [Corner] {
+            
+            switch self {
+                
+            case .e0: return [.c1, .c0]
+            case .e1: return [.c2, .c1]
+            case .e2: return [.c0, .c2]
+            }
+        }
+        
+        public var edges: [Edge] {
+           
+            switch self {
+               
+            case .e0: return [.e1, .e2]
+            case .e1: return [.e2, .e0]
+            case .e2: return [.e0, .e1]
+            }
+        }
+    }
+}
+
+// MARK: Footprint
+
+extension Grid.Triangle {
+    
+    open class Footprint: Deltille.Footprint<Scale,
+                                             Grid.Triangle,
+                                             Rotation,
+                                             Vertex> {
+        
+        public convenience init(_ origin: Grid.Triangle,
+                                _ coordinates: [Grid.Coordinate]) {
+            
+            self.init(origin,
+                      coordinates.map { .init(origin.vertex.position + (origin.isPointy ? $0 : -$0)) })
+        }
+        
+        public override func rotate(_ rotation: Rotation) -> Self {
+            
+            let triangles = tiles.map {
+                
+                let triangle = Grid.Triangle($0.vertex.position - origin.vertex.position)
+                
+                let rotated = triangle.rotate(rotation)
+                
+                return Grid.Triangle(rotated.vertex.position + origin.vertex.position)
+            }
+            
+            return Self(origin,
+                        triangles)
+        }
+    }
+}
+
+// MARK: Rotation
+
+extension Grid.Triangle: Rotatable {
+    
+    public enum Rotation: String,
+                          Deltille.Rotation {
+        
+        public static let inverse: Double = .pi
+        public static let step: Double = .tau / 3.0
+        
+        case clockwise
+        case counterClockwise
+        
+        public var id: String { rawValue }
+    }
+    
+    public func rotate(_ rotation: Rotation) -> Self {
+    
+        switch rotation {
+            
+        case .clockwise: return .init(vertex.position.y,
+                                      vertex.position.z,
+                                      vertex.position.x)
+            
+        case .counterClockwise: return .init(vertex.position.z,
+                                             vertex.position.x,
+                                             vertex.position.y)
+        }
+    }
+}
+
+// MARK: Scale
+
+extension Grid.Triangle {
+    
+    public enum Scale: String,
+                       Deltille.Scale {
+        
+        case sierpinski
+        case tile
+        case chunk
+        case region
+        
+        public var id: String { rawValue.capitalized }
+        
+        public var edgeLength: Double {
+            
+            switch self {
+                
+            case .sierpinski: return 0.1428571429   // 1.0 / 7.0
+            case .tile: return 1.0
+            case .chunk: return 7.0
+            case .region: return 28.0
+            }
+        }
+    }
+    
+    public func transpose(_ from: Grid.Triangle.Scale,
+                          _ to: Grid.Triangle.Scale) -> Self {
+        
+        guard from != to else { return self }
+        
+        let origin = Vector(vertex, from)
+        let destination = Vertex(origin, to)
+        
+        return Self(destination.position)
+    }
+}
+
+// MARK: Vertex
+
+extension Grid.Triangle {
+    
+    public struct Vertex: Deltille.Vertex {
+        
+        public static let zero = Self(.zero)
+        
+        public let position: Grid.Coordinate
+        
+        public var tiles: [Grid.Triangle] { [.init(position - .unitX),
+                                             .init(position - (.unitX + .unitY)),
+                                             .init(position - .unitY),
+                                             .init(position - (.unitY + .unitZ)),
+                                             .init(position - .unitZ),
+                                             .init(position - (.unitX + .unitZ))] }
+        
+        public var vertices: [Vertex] { [.init(position + (-.unitX + .unitY)),
+                                         .init(position + (-.unitX + .unitZ)),
+                                         .init(position + (-.unitY + .unitZ)),
+                                         .init(position + (-.unitY + .unitX)),
+                                         .init(position + (-.unitZ + .unitX)),
+                                         .init(position + (-.unitZ + .unitY))] }
+        
+        public init(_ position: Grid.Coordinate) {
             
             self.position = position
         }
@@ -32,175 +285,25 @@ extension Grid {
                     _ y: Int,
                     _ z: Int) {
             
-            self.position = Coordinate(x, y, z)
+            self.position = .init(x, y, z)
         }
-    }
-}
-
-public extension Grid.Triangle {
-    
-    static let zero = Self(.zero)
-}
-
-public extension Grid.Triangle {
-
-    var corners: [Grid.Coordinate] { Corner.allCases.map { corner($0) } }
-
-    func corner(_ corner: Corner) -> Grid.Coordinate {
         
-        let unit = (corner.axis.unit * -1) + (isPointy ? .zero : .one)
+        public init(_ vector: Vector,
+                    _ scale: Scale) {
         
-        return position + (isPointy ? -unit : unit)
-    }
-    
-    func corner(_ vertex: Grid.Coordinate) -> Corner? { Corner.allCases.first { corner($0) == vertex } }
-    
-    func vertices(_ scale: Scale) -> [Vector] { corners.map { Vector($0,
-                                                                     scale) } }
-    
-    func vertex(_ corner: Corner,
-                _ scale: Scale) -> Vector { Vector(self.corner(corner),
-                                                   scale) }
-}
-
-public extension Grid.Triangle {
-    
-    func transpose(_ from: Scale,
-                   _ to: Scale) -> Self {
+            let offset = .sqrt3d6 * scale.edgeLength
+            let slope = .sqrt3d3 * vector.z
         
-        guard from != to else { return self }
-        
-        return Self(Grid.Coordinate(Vector(position, from), to))
-    }
-}
-
-public extension Grid.Triangle {
-    
-    ///
-    ///  All connected triangles that share a corner or an edge.
-    ///
-    ///                  :-------:
-    ///                / t \ t / y \
-    ///              :-------:-------:
-    ///            / t \ t / o \ t / t \
-    ///          :-------:-------:-------:
-    ///            \ t / t \ t / t \ t /
-    ///              :-------:-------:
-    ///
-    
-    var perimeter: [Grid.Coordinate] { adjacent + diagonals + touching }
-    
-    ///
-    ///  Directly connected adjacent triangles that share an edge.
-    ///
-    ///                  :-------:
-    ///
-    ///              :-------:-------:
-    ///                \ z / o \ y /
-    ///          :-------:-------:-------:
-    ///                   \  x  /
-    ///              :-------:-------:
-    ///
- 
-    var adjacent: [Grid.Coordinate] { Grid.Axis.allCases.map { adjacent($0) } }
-    
-    func adjacent(_ axis: Grid.Axis) -> Grid.Coordinate { position + (axis.unit * delta) }
-    
-    ///
-    ///  Indirectly connected diagonal triangles that are opposite an edge.
-    ///
-    ///                  :-------:
-    ///                   \  x  /
-    ///              :-------:-------:
-    ///                    / o \
-    ///          :-------:-------:-------:
-    ///           \  y  /         \  z  /
-    ///              :-------:-------:
-    ///
-    
-    var diagonals: [Grid.Coordinate] { Grid.Axis.allCases.map { diagonal($0) } }
-    
-    func diagonal(_ axis: Grid.Axis) -> Grid.Coordinate {
-        
-        switch axis {
+            let j = (2.0 * slope) + offset
+            let i = (vector.x - slope) + offset
+            let k = (-vector.x - slope) + offset
             
-        case .x: return .init(-delta + position.x, delta + position.y, delta + position.z)
-        case .y: return .init(delta + position.x, -delta + position.y, delta + position.z)
-        case .z: return .init(delta + position.x, delta + position.y, -delta + position.z)
+            self.init(Int(floor(j / scale.edgeLength)),
+                      Int(floor(i / scale.edgeLength)),
+                      Int(floor(k / scale.edgeLength)))
         }
-    }
-    
-    ///
-    ///  Indirectly connected triangles that share a corner.
-    ///
-    ///                  :-------:
-    ///                / z \   / y \
-    ///              :-------:-------:
-    ///            / z \   / o \   / y \
-    ///          :-------:-------:-------:
-    ///                / x \   / x \
-    ///              :-------:-------:
-    ///
-    
-    var touching: [Grid.Coordinate] { Grid.Axis.allCases.flatMap { touching($0) } }
-    
-    func touching(_ axis: Grid.Axis) -> [Grid.Coordinate] {
         
-        switch axis {
-            
-        case .x: return [.init(-delta + position.x, position.y, delta + position.z),
-                         .init(-delta + position.x, delta + position.y, position.z)]
-        case .y: return [.init(position.x, -delta + position.y, delta + position.z),
-                         .init(delta + position.x, -delta + position.y, position.z)]
-        case .z: return [.init(position.x, delta + position.y, -delta + position.z),
-                         .init(delta + position.x, position.y, -delta + position.z)]
-        }
-    }
-}
-
-public extension Grid.Triangle {
-    
-    ///
-    ///  Directly connected adjacent vertices that share an edge.
-    ///
-    ///                  v-------v
-    ///                /   \   /   \
-    ///              v-------o-------v
-    ///                \   /   \   /
-    ///                  v-------v
-    ///
-    
-    static func vertices(_ coordinate: Grid.Coordinate) -> [Grid.Coordinate] {
-        
-        guard coordinate.equalToOne else { return [] }
-        
-        return [coordinate + (.unitX + -.unitZ),
-                coordinate + (.unitX + -.unitY),
-                coordinate + (-.unitY + .unitZ),
-                coordinate + (-.unitX + .unitZ),
-                coordinate + (-.unitX + .unitY),
-                coordinate + (.unitY + -.unitZ)]
-    }
-    
-    ///
-    ///  Directly connected adjacent triangles that share an vertex.
-    ///
-    ///                  ---------
-    ///                / t \ t / t \
-    ///               -------o-------
-    ///                \ t / t \ t /
-    ///                  ---------
-    ///
-
-    static func triangles(_ coordinate: Grid.Coordinate) -> [Grid.Triangle] {
-        
-        guard coordinate.equalToOne else { return [] }
-        
-        return [.init(coordinate - (.unitY + .unitZ)),
-                .init(coordinate - .unitY),
-                .init(coordinate - (.unitX + .unitY)),
-                .init(coordinate - .unitX),
-                .init(coordinate - (.unitX + .unitZ)),
-                .init(coordinate - .unitZ)]
+        public func position(_ scale: Scale) -> Vector { Vector(self,
+                                                                scale) }
     }
 }

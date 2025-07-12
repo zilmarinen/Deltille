@@ -1,0 +1,41 @@
+//
+//  Tile.swift
+//
+//  Created by Zack Brown on 27/11/2024.
+//
+
+import Euclid
+
+// MARK: Tile
+
+public protocol Tile: Codable,
+                      Hashable,
+                      Identifiable,
+                      Sendable {
+    
+    associatedtype C = Corner
+    associatedtype E = Edge
+    associatedtype R = Rotation
+    associatedtype S = Scale
+    associatedtype V = Vertex
+    
+    var vertex: V { get }
+    
+    var vertices: [V] { get }
+    var corners: [C] { get }
+    var edges: [E] { get }
+    
+    var adjacent: [Self] { get }
+    var perimeter: [Self] { get }
+    
+    func position(_ scale: S) -> Vector
+    
+    func rotate(_ rotation: R) -> Self
+    
+    func vertex(_ corner: C) -> V
+    func corner(_ vertex: V) -> C?
+    
+    func neighbour(_ edge: E) -> Self
+    
+    func translation(_ along: E) -> Grid.Coordinate
+}
