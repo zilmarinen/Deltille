@@ -90,7 +90,7 @@ extension Grid.Triangle {
             }
         }
 
-        return Sieve(.init(vertex.position),
+        return .init(.init(vertex.position),
                      scale,
                      triangles,
                      vertices)

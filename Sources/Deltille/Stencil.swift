@@ -38,22 +38,25 @@ extension Grid.Triangle {
         }
         
         // Subdivided triangles
-        public static let subdivisions: [[Vertex]] = [[.v0, .v3, .v4],
-                                                      [.v3, .v6, .v4],
-                                                      [.v3, .v5, .v6],
-                                                      [.v5, .v9, .v6],
-                                                      [.v5, .v8, .v9],
-                                                      [.v8, .v12, .v9],
-                                                      [.v8, .v1, .v12],
-                                                      [.v4, .v6, .v7],
-                                                      [.v6, .v10, .v7],
-                                                      [.v6, .v9, .v10],
-                                                      [.v9, .v13, .v10],
-                                                      [.v9, .v12, .v13],
-                                                      [.v7, .v10, .v11],
-                                                      [.v10, .v14, .v11],
-                                                      [.v10, .v13, .v14],
-                                                      [.v11, .v14, .v2]]
+        public static let subdivisions: [[Vertex]] = [
+            
+            [.v0, .v3, .v4],
+            [.v3, .v6, .v4],
+            [.v3, .v5, .v6],
+            [.v5, .v9, .v6],
+            [.v5, .v8, .v9],
+            [.v8, .v12, .v9],
+            [.v8, .v1, .v12],
+            [.v4, .v6, .v7],
+            [.v6, .v10, .v7],
+            [.v6, .v9, .v10],
+            [.v9, .v13, .v10],
+            [.v9, .v12, .v13],
+            [.v7, .v10, .v11],
+            [.v10, .v14, .v11],
+            [.v10, .v13, .v14],
+            [.v11, .v14, .v2]
+        ]
         
         // Triangle corners
         public let v0, v1, v2: Vector
@@ -75,22 +78,22 @@ extension Grid.Triangle {
             
             switch vertex {
                 
-            case .v0: return v0
-            case .v1: return v1
-            case .v2: return v2
-            case .v3: return v3
-            case .v4: return v4
-            case .v5: return v5
-            case .v6: return v6
-            case .v7: return v7
-            case .v8: return v8
-            case .v9: return v9
-            case .v10: return v10
-            case .v11: return v11
-            case .v12: return v12
-            case .v13: return v13
-            case .v14: return v14
-            case .center: return center
+            case .v0: v0
+            case .v1: v1
+            case .v2: v2
+            case .v3: v3
+            case .v4: v4
+            case .v5: v5
+            case .v6: v6
+            case .v7: v7
+            case .v8: v8
+            case .v9: v9
+            case .v10: v10
+            case .v11: v11
+            case .v12: v12
+            case .v13: v13
+            case .v14: v14
+            case .center: center
             }
         }
     }

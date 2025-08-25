@@ -22,9 +22,9 @@ extension Grid {
             
             switch self {
                 
-            case .x: return .unitX
-            case .y: return .unitY
-            case .z: return .unitZ
+            case .x: .unitX
+            case .y: .unitY
+            case .z: .unitZ
             }
         }
     }

@@ -38,4 +38,7 @@ public protocol Tile: Codable,
     func neighbour(_ edge: E) -> Self
     
     func translation(_ along: E) -> Grid.Coordinate
+    
+    func contains(_ vector: Vector,
+                  _ scale: S) -> Bool
 }

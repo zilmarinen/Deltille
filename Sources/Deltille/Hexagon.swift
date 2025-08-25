@@ -13,7 +13,7 @@ extension Grid {
     
     public struct Hexagon: Tile {
         
-        public static let zero = Self(.zero)
+        public static let zero = Self(Vertex.zero)
         
         public let vertex: Vertex
         
@@ -28,6 +28,11 @@ extension Grid {
             
             self.vertex = Vertex(x, y, z)
         }
+        
+        public init(_ vertex: Vertex) {
+            
+            self.vertex = vertex
+        }
     }
 }
 
@@ -35,25 +40,48 @@ extension Grid.Hexagon {
     
     public var id: String { vertex.id }
     
-    public var vertices: [Vertex] { [.init(vertex.position + .unitX),
-                                     .init(vertex.position - .unitZ),
-                                     .init(vertex.position + .unitY),
-                                     .init(vertex.position - .unitX),
-                                     .init(vertex.position + .unitZ),
-                                     .init(vertex.position - .unitY)] }
+    public var vertices: [Vertex] {
+        
+        [.init(vertex.position + .unitX),
+         .init(vertex.position - .unitZ),
+         .init(vertex.position + .unitY),
+         .init(vertex.position - .unitX),
+         .init(vertex.position + .unitZ),
+         .init(vertex.position - .unitY)]
+    }
     
-    public var corners: [Corner] { Corner.allCases }
-    public var edges: [Edge] { Edge.allCases }
+    public var corners: [Corner] {
+        
+        Corner.allCases
+    }
     
-    public var adjacent: [Self] { edges.map { .init(vertex.position + translation($0)) } }
+    public var edges: [Edge] {
+        
+        Edge.allCases
+    }
+    
+    public var adjacent: [Self] {
+        
+        edges.map {
+            
+            .init(vertex.position + translation($0))
+        }
+    }
+    
     public var perimeter: [Self] { adjacent }
 }
 
 extension Grid.Hexagon {
     
-    public func position(_ scale: Scale) -> Vector { vertex.position(scale) }
+    public func position(_ scale: Scale) -> Vector {
+        
+        vertex.position(scale)
+    }
     
-    public func vertex(_ corner: Corner) -> Vertex { vertices[corner.rawValue] }
+    public func vertex(_ corner: Corner) -> Vertex {
+        
+        vertices[corner.rawValue]
+    }
     
     public func corner(_ vertex: Vertex) -> Corner? {
         
@@ -62,19 +90,36 @@ extension Grid.Hexagon {
         return Corner(rawValue: index)
     }
     
-    public func neighbour(_ edge: Edge) -> Self { adjacent[edge.rawValue] }
+    public func neighbour(_ edge: Edge) -> Self {
+        
+        adjacent[edge.rawValue]
+    }
     
     public func translation(_ along: Edge) -> Grid.Coordinate {
         
         switch along {
             
-        case .e0: return .unitX - .unitZ
-        case .e1: return .unitY - .unitZ
-        case .e2: return .unitY - .unitX
-        case .e3: return .unitZ - .unitX
-        case .e4: return .unitZ - .unitY
-        case .e5: return .unitX - .unitY
+        case .e0: .unitX - .unitZ
+        case .e1: .unitY - .unitZ
+        case .e2: .unitY - .unitX
+        case .e3: .unitZ - .unitX
+        case .e4: .unitZ - .unitY
+        case .e5: .unitX - .unitY
         }
+    }
+    
+    public func contains(_ vector: Vector,
+                         _ scale: Scale) -> Bool {
+        
+        let center = position(scale)
+        
+        let dx = abs(vector.x - center.x)
+        let dy = abs(vector.z - center.z)
+        
+        if dx > scale.edgeLength * 1.5 { return false }
+        if dy > scale.edgeLength * .sqrt3  { return false }
+        
+        return (dy * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.edgeLength * 2.0
     }
 }
 
@@ -93,12 +138,12 @@ extension Grid.Hexagon {
             
             switch self {
                 
-            case .c0: return [.c1, .c5]
-            case .c1: return [.c2, .c0]
-            case .c2: return [.c3, .c1]
-            case .c3: return [.c4, .c2]
-            case .c4: return [.c5, .c3]
-            case .c5: return [.c0, .c4]
+            case .c0: [.c1, .c5]
+            case .c1: [.c2, .c0]
+            case .c2: [.c3, .c1]
+            case .c3: [.c4, .c2]
+            case .c4: [.c5, .c3]
+            case .c5: [.c0, .c4]
             }
         }
         
@@ -106,12 +151,12 @@ extension Grid.Hexagon {
             
             switch self {
                 
-            case .c0: return [.e0, .e5]
-            case .c1: return [.e1, .e0]
-            case .c2: return [.e2, .e1]
-            case .c3: return [.e3, .e2]
-            case .c4: return [.e4, .e3]
-            case .c5: return [.e5, .e4]
+            case .c0: [.e0, .e5]
+            case .c1: [.e1, .e0]
+            case .c2: [.e2, .e1]
+            case .c3: [.e3, .e2]
+            case .c4: [.e4, .e3]
+            case .c5: [.e5, .e4]
             }
         }
     }
@@ -132,12 +177,12 @@ extension Grid.Hexagon {
             
             switch self {
                 
-            case .e0: return [.c1, .c0]
-            case .e1: return [.c2, .c1]
-            case .e2: return [.c3, .c2]
-            case .e3: return [.c4, .c3]
-            case .e4: return [.c5, .c4]
-            case .e5: return [.c0, .c5]
+            case .e0: [.c1, .c0]
+            case .e1: [.c2, .c1]
+            case .e2: [.c3, .c2]
+            case .e3: [.c4, .c3]
+            case .e4: [.c5, .c4]
+            case .e5: [.c0, .c5]
             }
         }
         
@@ -145,12 +190,12 @@ extension Grid.Hexagon {
             
             switch self {
                 
-            case .e0: return [.e1, .e5]
-            case .e1: return [.e2, .e0]
-            case .e2: return [.e3, .e1]
-            case .e3: return [.e4, .e2]
-            case .e4: return [.e5, .e3]
-            case .e5: return [.e0, .e4]
+            case .e0: [.e1, .e5]
+            case .e1: [.e2, .e0]
+            case .e2: [.e3, .e1]
+            case .e3: [.e4, .e2]
+            case .e4: [.e5, .e3]
+            case .e5: [.e0, .e4]
             }
         }
     }
@@ -209,13 +254,17 @@ extension Grid.Hexagon: Rotatable {
         
         switch rotation {
             
-        case .clockwise: return .init(-vertex.position.z,
-                                      -vertex.position.x,
-                                      -vertex.position.y)
+        case .clockwise:
             
-        case .counterClockwise: return .init(-vertex.position.y,
-                                             -vertex.position.z,
-                                             -vertex.position.x)
+                .init(-vertex.position.z,
+                       -vertex.position.x,
+                       -vertex.position.y)
+            
+        case .counterClockwise:
+            
+                .init(-vertex.position.y,
+                       -vertex.position.z,
+                       -vertex.position.x)
         }
     }
 }
@@ -237,9 +286,9 @@ extension Grid.Hexagon {
             
             switch self {
                 
-            case .tile: return 0.5
-            case .chunk: return 3.5
-            case .region: return 14.0
+            case .tile: 0.5
+            case .chunk: 3.5
+            case .region: 14.0
             }
         }
     }
@@ -255,8 +304,21 @@ extension Grid.Hexagon {
         
         public let position: Grid.Coordinate
         
-        public var tiles: [Grid.Hexagon] { Grid.Axis.allCases.map { .init(position + ($0.unit * (position.equalToOne ? -1 : 1))) } }
-        public var vertices: [Vertex] { Grid.Axis.allCases.map { .init(position + ((.one - $0.unit) * (position.equalToOne ? -1 : 1))) } }
+        public var tiles: [Grid.Hexagon] {
+            
+            Grid.Axis.allCases.map {
+                
+                .init(position + ($0.unit * (position.equalToOne ? -1 : 1)))
+            }
+        }
+        
+        public var vertices: [Vertex] {
+            
+            Grid.Axis.allCases.map {
+                
+                .init(position + ((.one - $0.unit) * (position.equalToOne ? -1 : 1)))
+            }
+        }
         
         public init(_ position: Grid.Coordinate) {
             
@@ -273,23 +335,20 @@ extension Grid.Hexagon {
         public init(_ vector: Vector,
                     _ scale: Scale) {
             
-            let slope = .sqrt3d3 * vector.z
+            let j = ceil((vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
+            let i = floor((    .sqrt3d3 * 2 * vector.z) / scale.edgeLength) + 1
+            let k = ceil((-1 * vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
             
-            let j = 2.0 * slope
-            let i = vector.x - slope
-            let k = -vector.x - slope
-            
-            let x = Int(floor(j / scale.edgeLength))
-            let y = Int(floor(i / scale.edgeLength))
-            let z = Int( ceil(k / scale.edgeLength) - 1.0)
-            
-            self.init(Int(round(Double(x - y) / 3.0)),
-                      Int(round(Double(y - z) / 3.0)),
-                      Int(round(Double(z - x) / 3.0)))
+            self.init(Int(round((i - j) / 3.0)),
+                      Int(round((j - k) / 3.0)),
+                      Int(round((k - i) / 3.0)))
         }
         
-        public func position(_ scale: Scale) -> Vector { Vector(self,
-                                                                scale) }
+        public func position(_ scale: Scale) -> Vector {
+            
+            Vector(self,
+                   scale)
+        }
     }
 }
 

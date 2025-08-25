@@ -32,9 +32,15 @@ open class Footprint<S: Scale,
 
 extension Footprint {
     
-    public var perimeter: [T] { Array(Set(tiles.flatMap { $0.perimeter })) }
+    public var perimeter: [T] {
+        
+        Array(Set(tiles.flatMap { $0.perimeter }))
+    }
     
-    public var vertices: [V] { Array(Set(tiles.flatMap { $0.vertices })) }
+    public var vertices: [V] {
+        
+        Array(Set(tiles.flatMap { $0.vertices }))
+    }
 }
 
 extension Footprint {

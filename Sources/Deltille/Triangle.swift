@@ -13,7 +13,7 @@ extension Grid {
     
     public struct Triangle: Tile {
         
-        public static let zero = Self(.zero)
+        public static let zero = Self(Vertex.zero)
         
         public let vertex: Vertex
         
@@ -28,6 +28,11 @@ extension Grid {
             
             self.vertex = Vertex(x, y, z)
         }
+        
+        public init(_ vertex: Vertex) {
+            
+            self.vertex = vertex
+        }
     }
 }
 
@@ -35,15 +40,42 @@ extension Grid.Triangle {
     
     public var id: String { vertex.id }
     
-    public var isPointy: Bool { vertex.position.equalToZero }
-    public var rotation: Double { isPointy ? 0.0 : Rotation.inverse }
+    public var isPointy: Bool {
+        
+        vertex.position.equalToZero
+    }
     
-    public var vertices: [Vertex] { edges.map { .init(vertex.position + (isPointy ? -translation($0) : .one - translation($0))) } }
+    public var rotation: Double {
+        
+        isPointy ? 0.0 : Rotation.inverse
+    }
     
-    public var corners: [Corner] { Corner.allCases }
-    public var edges: [Edge] { Edge.allCases }
+    public var vertices: [Vertex] {
+        
+        edges.map {
+            
+            .init(vertex.position + (isPointy ? -translation($0) : .one - translation($0)))
+        }
+    }
     
-    public var adjacent: [Self] { edges.map { .init(vertex.position + translation($0)) } }
+    public var corners: [Corner] {
+        
+        Corner.allCases
+    }
+    
+    public var edges: [Edge] {
+        
+        Edge.allCases
+    }
+    
+    public var adjacent: [Self] {
+        
+        edges.map {
+            
+            .init(vertex.position + translation($0))
+        }
+    }
+    
     public var perimeter: [Self] {
         
         Array(vertices.reduce(into: Set<Self>(), { result, vertex in
@@ -60,9 +92,15 @@ extension Grid.Triangle {
 
 extension Grid.Triangle {
     
-    public func position(_ scale: Scale) -> Vector { vertex.position(scale) }
+    public func position(_ scale: Scale) -> Vector {
+        
+        vertex.position(scale)
+    }
     
-    public func vertex(_ corner: Corner) -> Vertex { vertices[corner.rawValue] }
+    public func vertex(_ corner: Corner) -> Vertex {
+        
+        vertices[corner.rawValue]
+    }
     
     public func corner(_ vertex: Vertex) -> Corner? {
         
@@ -71,16 +109,46 @@ extension Grid.Triangle {
         return Corner(rawValue: index)
     }
     
-    public func neighbour(_ edge: Edge) -> Self { adjacent[edge.rawValue] }
+    public func neighbour(_ edge: Edge) -> Self {
+        
+        adjacent[edge.rawValue]
+    }
     
     public func translation(_ along: Edge) -> Grid.Coordinate {
         
         switch along {
             
-        case .e0: return isPointy ? -.unitX : .unitX
-        case .e1: return isPointy ? -.unitY : .unitY
-        case .e2: return isPointy ? -.unitZ : .unitZ
+        case .e0: isPointy ? -.unitX : .unitX
+        case .e1: isPointy ? -.unitY : .unitY
+        case .e2: isPointy ? -.unitZ : .unitZ
         }
+    }
+    
+    public func contains(_ vector: Vector,
+                         _ scale: Scale) -> Bool {
+        
+        let c0 = vertex(.c0).position(scale)
+        let c1 = vertex(.c1).position(scale)
+        let c2 = vertex(.c2).position(scale)
+        
+        let v0 = c2 - c0
+        let v1 = c1 - c0
+        let v2 = vector - c0
+        
+        let v0v0 = v0.dot(v0)
+        let v0v1 = v0.dot(v1)
+        let v0v2 = v0.dot(v2)
+        let v1v1 = v1.dot(v1)
+        let v1v2 = v1.dot(v2)
+        
+        let denominator = (v0v0 * v1v1 - v0v1 * v0v1)
+        if abs(denominator) < 1e-8 { return false }
+        
+        let inverse = 1.0 / denominator
+        let u = (v1v1 * v0v2 - v0v1 * v1v2) * inverse
+        let v = (v0v0 * v1v2 - v0v1 * v0v2) * inverse
+        
+        return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0)
     }
 }
 
@@ -99,9 +167,9 @@ extension Grid.Triangle {
                     
             switch self {
                 
-            case .c0: return [.c1, .c2]
-            case .c1: return [.c2, .c0]
-            case .c2: return [.c0, .c1]
+            case .c0: [.c1, .c2]
+            case .c1: [.c2, .c0]
+            case .c2: [.c0, .c1]
             }
         }
         
@@ -109,9 +177,9 @@ extension Grid.Triangle {
             
             switch self {
                 
-            case .c0: return [.e0, .e2]
-            case .c1: return [.e1, .e0]
-            case .c2: return [.e2, .e1]
+            case .c0: [.e0, .e2]
+            case .c1: [.e1, .e0]
+            case .c2: [.e2, .e1]
             }
         }
     }
@@ -132,9 +200,9 @@ extension Grid.Triangle {
             
             switch self {
                 
-            case .e0: return [.c1, .c0]
-            case .e1: return [.c2, .c1]
-            case .e2: return [.c0, .c2]
+            case .e0: [.c1, .c0]
+            case .e1: [.c2, .c1]
+            case .e2: [.c0, .c2]
             }
         }
         
@@ -142,9 +210,9 @@ extension Grid.Triangle {
            
             switch self {
                
-            case .e0: return [.e1, .e2]
-            case .e1: return [.e2, .e0]
-            case .e2: return [.e0, .e1]
+            case .e0: [.e1, .e2]
+            case .e1: [.e2, .e0]
+            case .e2: [.e0, .e1]
             }
         }
     }
@@ -203,13 +271,17 @@ extension Grid.Triangle: Rotatable {
     
         switch rotation {
             
-        case .clockwise: return .init(vertex.position.y,
-                                      vertex.position.z,
-                                      vertex.position.x)
+        case .clockwise:
             
-        case .counterClockwise: return .init(vertex.position.z,
-                                             vertex.position.x,
-                                             vertex.position.y)
+                .init(vertex.position.y,
+                      vertex.position.z,
+                      vertex.position.x)
+            
+        case .counterClockwise:
+            
+                .init(vertex.position.z,
+                      vertex.position.x,
+                      vertex.position.y)
         }
     }
 }
@@ -232,10 +304,10 @@ extension Grid.Triangle {
             
             switch self {
                 
-            case .sierpinski: return 0.1428571429   // 1.0 / 7.0
-            case .tile: return 1.0
-            case .chunk: return 7.0
-            case .region: return 28.0
+            case .sierpinski: 0.1428571429   // 1.0 / 7.0
+            case .tile: 1.0
+            case .chunk: 7.0
+            case .region: 28.0
             }
         }
     }
@@ -262,19 +334,25 @@ extension Grid.Triangle {
         
         public let position: Grid.Coordinate
         
-        public var tiles: [Grid.Triangle] { [.init(position - .unitX),
-                                             .init(position - (.unitX + .unitY)),
-                                             .init(position - .unitY),
-                                             .init(position - (.unitY + .unitZ)),
-                                             .init(position - .unitZ),
-                                             .init(position - (.unitX + .unitZ))] }
+        public var tiles: [Grid.Triangle] {
+            
+            [.init(position - .unitX),
+             .init(position - (.unitX + .unitY)),
+             .init(position - .unitY),
+             .init(position - (.unitY + .unitZ)),
+             .init(position - .unitZ),
+             .init(position - (.unitX + .unitZ))]
+        }
         
-        public var vertices: [Vertex] { [.init(position + (-.unitX + .unitY)),
-                                         .init(position + (-.unitX + .unitZ)),
-                                         .init(position + (-.unitY + .unitZ)),
-                                         .init(position + (-.unitY + .unitX)),
-                                         .init(position + (-.unitZ + .unitX)),
-                                         .init(position + (-.unitZ + .unitY))] }
+        public var vertices: [Vertex] {
+            
+            [.init(position + (-.unitX + .unitY)),
+             .init(position + (-.unitX + .unitZ)),
+             .init(position + (-.unitY + .unitZ)),
+             .init(position + (-.unitY + .unitX)),
+             .init(position + (-.unitZ + .unitX)),
+             .init(position + (-.unitZ + .unitY))]
+        }
         
         public init(_ position: Grid.Coordinate) {
             
@@ -291,19 +369,32 @@ extension Grid.Triangle {
         public init(_ vector: Vector,
                     _ scale: Scale) {
         
-            let offset = .sqrt3d6 * scale.edgeLength
-            let slope = .sqrt3d3 * vector.z
-        
-            let j = (2.0 * slope) + offset
-            let i = (vector.x - slope) + offset
-            let k = (-vector.x - slope) + offset
+            let j = ceil((vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
+            let i = floor((    .sqrt3d3 * 2 * vector.z) / scale.edgeLength) + 1
+            let k = ceil((-1 * vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
             
-            self.init(Int(floor(j / scale.edgeLength)),
-                      Int(floor(i / scale.edgeLength)),
-                      Int(floor(k / scale.edgeLength)))
+            var triangle = Grid.Triangle(Int(round((i - j) / 3.0)),
+                                         Int(round((j - k) / 3.0)),
+                                         Int(round((k - i) / 3.0)))
+            
+            let triangles = [triangle,
+                             .init(triangle.vertex.position - .unitX),
+                             .init(triangle.vertex.position - .unitY),
+                             .init(triangle.vertex.position - .unitZ)]
+            
+            let closest = triangles.first {
+                
+                $0.contains(vector,
+                            scale)
+            }
+            
+            self.init(closest!.vertex.position)
         }
         
-        public func position(_ scale: Scale) -> Vector { Vector(self,
-                                                                scale) }
+        public func position(_ scale: Scale) -> Vector {
+            
+            Vector(self,
+                   scale)
+        }
     }
 }
