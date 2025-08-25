@@ -14,7 +14,29 @@ final class HexagonTests: XCTestCase {
     typealias Hexagon = Grid.Hexagon
     typealias Vertex = Hexagon.Vertex
     
-    private let hexagon = Hexagon(.init(2, -1, -1))
+    private let hexagon = Hexagon(Coordinate(2, -1, -1))
+    
+    // MARK: Contains Vector
+    
+    func testTriangleContainsVector() throws {
+        
+        XCTAssertTrue(hexagon.contains(hexagon.position(.tile),
+                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).position(.tile),
+                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.tile),
+                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.tile),
+                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).position(.tile),
+                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).position(.tile),
+                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).position(.tile),
+                                       .tile))
+        
+        XCTAssertFalse(hexagon.contains(.zero, .tile))
+    }
     
     // MARK: Neighbours / Adjacency / Perimeter
     

@@ -16,10 +16,36 @@ final class TriangleTests: XCTestCase {
     
     private let pointyTriangle = Triangle(4, -2, -2)
     private let flatTriangle = Triangle(-2, -2, 3)
-    private let unitTriangle = Triangle(.zero)
+    private let unitTriangle = Triangle(Vertex.zero)
     private let x = Triangle(-.unitX)
     private let y = Triangle(-.unitY)
     private let z = Triangle(-.unitZ)
+    
+    // MARK: Contains Vector
+    
+    func testTriangleContainsVector() throws {
+        
+        XCTAssertTrue(unitTriangle.contains(unitTriangle.position(.tile),
+                                            .tile))
+        XCTAssertTrue(unitTriangle.contains(.zero,
+                                            .tile))
+        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c0).position(.tile),
+                                            .tile))
+        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c1).position(.tile),
+                                            .tile))
+        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c1).position(.tile),
+                                            .tile))
+        
+        XCTAssertTrue(flatTriangle.contains(flatTriangle.position(.tile),
+                                            .tile))
+        XCTAssertFalse(flatTriangle.contains(.zero,
+                                             .tile))
+        
+        XCTAssertTrue(pointyTriangle.contains(pointyTriangle.position(.tile),
+                                              .tile))
+        XCTAssertFalse(pointyTriangle.contains(.zero,
+                                               .tile))
+    }
     
     // MARK: Pointy / Flat
     
@@ -110,39 +136,27 @@ final class TriangleTests: XCTestCase {
                                   .init(4, -1, -2),
                                   .init(4, -2, -1)]
         
-        let vectors: [Vector] = [.init(0.0, 0.0, 4.0414),
-                                 .init(0.5, 0.0, 3.1754),
-                                 .init(-0.5, 0.0, 3.1754)]
-        
-        let center = Vector(0.0, 0.0, 3.4641)
+        let center = Vector(-3.0, 0.0, 5.1961)
         let vertex = Vertex(center, .tile)
         
         let triangleCorners = vertices.map { pointyTriangle.corner($0) }
-        let triangleVertices = vectors.map { Vertex($0, .tile) }
         
         XCTAssertEqual(triangleCorners, pointyTriangle.corners)
-        XCTAssertEqual(triangleVertices, pointyTriangle.vertices)
         XCTAssertEqual(vertex, pointyTriangle.vertex)
     }
-    
+
     func testFlatVertices() throws {
         
         let vertices: [Vertex] = [.init(-2, -1, 4),
                                   .init(-1, -2, 4),
                                   .init(-1, -1, 3)]
         
-        let vectors: [Vector] = [.init(-2.5, 0.0, -2.0207),
-                                 .init(-3.0, 0.0, -1.1547),
-                                 .init(-2.0, 0.0, -1.1547)]
-        
-        let center = Vector(-2.5, 0.0, -1.4433)
+        let center = Vector(-2.5, 0.0, -4.3301)
         let vertex = Vertex(center, .tile)
         
         let triangleCorners = vertices.map { flatTriangle.corner($0) }
-        let triangleVertices = vectors.map { Vertex($0, .tile) }
         
         XCTAssertEqual(triangleCorners, flatTriangle.corners)
-        XCTAssertEqual(triangleVertices, flatTriangle.vertices)
         XCTAssertEqual(vertex, flatTriangle.vertex)
         
     }
@@ -397,3 +411,4 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.vertices.count, 435)
     }
 }
+

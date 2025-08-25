@@ -14,7 +14,7 @@ final class HexagonFootprintTests: XCTestCase {
     typealias Hexagon = Grid.Hexagon
     typealias Footprint = Hexagon.Footprint
     
-    private let hexagon = Hexagon(.init(1, -2, 1))
+    private let hexagon = Hexagon(Coordinate(1, -2, 1))
     
     private let offsets: [Coordinate] = [.init(0, 0, 0),
                                          .init(1, 0, -1),
