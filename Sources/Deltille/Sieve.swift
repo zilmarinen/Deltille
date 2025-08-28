@@ -11,20 +11,20 @@ import Foundation
 
 extension Grid.Triangle {
 
-    //
-    //  A sieve subdivides a triangle of a given scale into
-    //  a set of smaller, inner triangles and their vertices.
-    //
-    //      v-------v-------v-------v-------v
-    //        \ t / t \ t / t \ t / t \ t /
-    //          v-------v-------v-------v
-    //            \ t / t \ t / t \ t /
-    //              v-------v-------v
-    //                \ t / t \ t /
-    //                  v-------v
-    //                    \ t /
-    //                      v
-    //
+    ///
+    ///  A sieve subdivides a triangle of a given scale into
+    ///  a set of smaller, inner triangles and their vertices.
+    ///
+    ///      v-------v-------v-------v-------v
+    ///        \ t / t \ t / t \ t / t \ t /
+    ///          v-------v-------v-------v
+    ///            \ t / t \ t / t \ t /
+    ///              v-------v-------v
+    ///                \ t / t \ t /
+    ///                  v-------v
+    ///                    \ t /
+    ///                      v
+    ///
 
     public struct Sieve {
 

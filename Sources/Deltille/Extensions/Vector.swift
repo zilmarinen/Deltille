@@ -22,23 +22,6 @@ extension Vector {
     }
 }
 
-// MARK: Coordinate
-
-extension Vector {
-    
-    public init(_ coordinate: Grid.Coordinate,
-                _ scale: any Scale) {
-        
-        let dx = Double(coordinate.y)
-        let dy = Double(coordinate.x)
-        let dz = Double(coordinate.z)
-        
-        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
-                  0.0,
-                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
-    }
-}
-
 // MARK: Hexagon
 
 extension Vector {
@@ -46,8 +29,13 @@ extension Vector {
     public init(_ vertex: Grid.Hexagon.Vertex,
                 _ scale: Grid.Hexagon.Scale) {
         
-        self.init(vertex.position,
-                  scale)
+        let dx = Double(vertex.position.x)
+        let dy = Double(vertex.position.y)
+        let dz = Double(vertex.position.z)
+        
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength,
+                  0.0,
+                  (dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength)
     }
 }
 
@@ -58,7 +46,13 @@ extension Vector {
     public init(_ vertex: Grid.Triangle.Vertex,
                 _ scale: Grid.Triangle.Scale) {
         
-        self.init(vertex.position,
-                  scale)
+        let dx = Double(vertex.position.y)
+        let dy = Double(vertex.position.x)
+        let dz = Double(vertex.position.z)
+        
+        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
+                  0.0,
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
     }
 }
+

@@ -7,5 +7,9 @@
 extension Double {
     
     func isEqual(to other: Double,
-                 withPrecision p: Double) -> Bool { self == other || abs(self - other) < p }
+                 withPrecision p: Double) -> Bool {
+        
+        self == other ||
+        abs(self - other) < p
+    }
 }

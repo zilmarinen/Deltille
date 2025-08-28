@@ -78,5 +78,9 @@ extension Footprint {
         return intersects(footprint.origin)
     }
     
-    public func intersects(_ tile: T) -> Bool { tiles.contains(tile) || tile == origin }
+    public func intersects(_ tile: T) -> Bool {
+        
+        tiles.contains(tile) ||
+        tile == origin
+    }
 }
