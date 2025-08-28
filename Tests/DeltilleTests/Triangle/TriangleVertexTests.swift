@@ -44,56 +44,6 @@ final class TriangleVertexTests: XCTestCase {
         XCTAssertEqual(vertex.vertices, vertices)
     }
     
-    // MARK: To be removed
-    // TODO: Fix vector to coordinate conversion
-    
-    func testVertexPosition() throws {
-        
-        let triangle = Triangle.zero
-        
-        let v0 = triangle.vertex(.c0)
-        let v1 = triangle.vertex(.c1)
-        let v2 = triangle.vertex(.c2)
-        
-        let c0 = Vector(v0, .tile)
-        let c1 = Vector(v1, .tile)
-        let c2 = Vector(v2, .tile)
-        
-        let center = Vector(triangle.vertex, .tile)
-        
-        let l0 = c0.lerp(center, 0.1)
-        let l1 = c1.lerp(center, 0.1)
-        let l2 = c2.lerp(center, 0.1)
-        
-        let rx = Vertex(center, .tile)
-        
-        let r0 = Vertex(c0, .tile)
-        let r1 = Vertex(c1, .tile)
-        let r2 = Vertex(c2, .tile)
-        
-        let t0 = Vertex(l0, .tile)
-        let t1 = Vertex(l1, .tile)
-        let t2 = Vertex(l2, .tile)
-        
-        print("-------")
-        print("center: \(center.id))")
-        print("v0: \(v0.id) -> \(c0.id)")
-        print("v1: \(v1.id) -> \(c1.id)")
-        print("v2: \(v2.id) -> \(c2.id)")
-        print("-------")
-        print("rx: \(center.id)) -> \(rx.id)")
-        print("r0: \(c0.id)) -> \(r0.id)")
-        print("r1: \(c1.id)) -> \(r1.id)")
-        print("r2: \(c2.id)) -> \(r2.id)")
-        print("-------")
-        print("t0: \(l0.id)) -> \(t0.id)")
-        print("t1: \(l1.id)) -> \(t1.id)")
-        print("t2: \(l2.id)) -> \(t2.id)")
-        print("-------")
-        
-        XCTAssertEqual(t0, t1)
-    }
-    
     func testVertexConversion() throws {
         
         let triangle0 = Triangle(Coordinate(-3, -2, 4))
@@ -103,16 +53,16 @@ final class TriangleVertexTests: XCTestCase {
         let center0 = Vector(triangle0.vertex, .tile)
         let target0 = Vector(corner0, .tile)
         let vector0 = center0.lerp(target0, 0.9)
-        let coordinate0 = Vertex(vector0, .tile)
+        let result0 = Triangle(vector0, .tile)
         
         let corner1 = triangle1.vertex(.c1)
         let center1 = Vector(triangle1.vertex, .tile)
         let target1 = Vector(corner1, .tile)
         let vector1 = center1.lerp(target1, 0.9)
-        let coordinate1 = Vertex(vector1, .tile)
+        let result1 = Triangle(vector1, .tile)
         
-        XCTAssertEqual(triangle0.vertex.position, coordinate0.position)
-        XCTAssertEqual(triangle1.vertex.position, coordinate1.position)
+        XCTAssertEqual(triangle0.vertex, result0.vertex)
+        XCTAssertEqual(triangle1.vertex, result1.vertex)
     }
     
     // MARK: Vertex to Vector
@@ -137,26 +87,26 @@ final class TriangleVertexTests: XCTestCase {
         XCTAssertTrue(testVertexToVector(.region))
     }
     
-    // MARK: Vector to Triangle Coordinate
+    // MARK: Vector to Triangle
     
-    func testVectorToVertexSierpinski() throws {
+    func testVectorToTriangleSierpinski() throws {
         
-        XCTAssertTrue(testVectorToVertex(.sierpinski))
+        XCTAssertTrue(testVectorToTriangle(.sierpinski))
     }
     
-    func testVectorToVertexTile() throws {
+    func testVectorToTriangleTile() throws {
         
-        XCTAssertTrue(testVectorToVertex(.tile))
+        XCTAssertTrue(testVectorToTriangle(.tile))
     }
     
-    func testVectorToVertexChunk() throws {
+    func testVectorToTriangleChunk() throws {
         
-        XCTAssertTrue(testVectorToVertex(.chunk))
+        XCTAssertTrue(testVectorToTriangle(.chunk))
     }
     
-    func testVectorToVertexRegion() throws {
+    func testVectorToTriangleRegion() throws {
         
-        XCTAssertTrue(testVectorToVertex(.region))
+        XCTAssertTrue(testVectorToTriangle(.region))
     }
     
     // MARK: Vertices
@@ -266,10 +216,10 @@ extension TriangleVertexTests {
                 let position = center.lerp(vertex.position(scale),
                                            interpolation)
                 
-                let result = Vertex(position,
-                                    scale)
+                let result = Triangle(position,
+                                      scale)
                 
-                if result.position != triangle.vertex.position {
+                if result.vertex != triangle.vertex {
                     
                     return false
                 }
@@ -279,7 +229,7 @@ extension TriangleVertexTests {
         return true
     }
     
-    private func testVectorToVertex(_ scale: Triangle.Scale) -> Bool {
+    private func testVectorToTriangle(_ scale: Triangle.Scale) -> Bool {
         
         let edgeLength = scale.edgeLength
         let sqrt3d2 = .sqrt3d2 * edgeLength
@@ -299,12 +249,12 @@ extension TriangleVertexTests {
         let v4 = Vector( edgeLength * 9.0, 0.0, 0.0)
         let v5 = Vector(-edgeLength * 4.5, 0.0,  sqrt3d2 * 9.0)
         
-        guard   Vertex(v0, scale).position == c0,
-                Vertex(v1, scale).position == c1,
-                Vertex(v2, scale).position == c2,
-                Vertex(v3, scale).position == c3,
-                Vertex(v4, scale).position == c4,
-                Vertex(v5, scale).position == c5 else { return false }
+        guard   Triangle(v0, scale).vertex.position == c0,
+                Triangle(v1, scale).vertex.position == c1,
+                Triangle(v2, scale).vertex.position == c2,
+                Triangle(v3, scale).vertex.position == c3,
+                Triangle(v4, scale).vertex.position == c4,
+                Triangle(v5, scale).vertex.position == c5 else { return false }
         
         return true
     }

@@ -55,21 +55,21 @@ final class HexagonVertexTests: XCTestCase {
         XCTAssertTrue(testVertexToVector(.region))
     }
     
-    // MARK: Vector to Hexagon Coordinate
+    // MARK: Vector to Hexagon
     
-    func testVectorToVertexTiile() throws {
+    func testVectorToHexagonTiile() throws {
         
-        XCTAssertTrue(testVectorToVertex(.tile))
+        XCTAssertTrue(testVectorToHexagon(.tile))
     }
     
-    func testVectorToVertexChunk() throws {
+    func testVectorToHexagonChunk() throws {
         
-        XCTAssertTrue(testVectorToVertex(.chunk))
+        XCTAssertTrue(testVectorToHexagon(.chunk))
     }
     
-    func testVectorToVertexRegion() throws {
+    func testVectorToHexagonRegion() throws {
         
-        XCTAssertTrue(testVectorToVertex(.region))
+        XCTAssertTrue(testVectorToHexagon(.region))
     }
     
     // MARK: Vertices
@@ -100,12 +100,12 @@ extension HexagonVertexTests {
         let halfEdgeLength = edgeLength / 2.0
         let sqrt3d2 = .sqrt3d2 * edgeLength
         
-        let v0 = Vector(-halfEdgeLength, 0.0, sqrt3d2)
-        let v1 = Vector(halfEdgeLength,  0.0, sqrt3d2)
-        let v2 = Vector(edgeLength,      0.0, 0.0)
-        let v3 = Vector(halfEdgeLength,  0.0, -sqrt3d2)
-        let v4 = Vector(-halfEdgeLength, 0.0, -sqrt3d2)
-        let v5 = Vector(-edgeLength,     0.0, 0.0)
+        let v0 = Vector(0.0,      0.0, edgeLength)
+        let v1 = Vector(sqrt3d2,  0.0, halfEdgeLength)
+        let v2 = Vector(sqrt3d2,  0.0, -halfEdgeLength)
+        let v3 = Vector(0.0,      0.0, -edgeLength)
+        let v4 = Vector(-sqrt3d2, 0.0, -halfEdgeLength)
+        let v5 = Vector(-sqrt3d2, 0.0, halfEdgeLength)
         
         guard   Vector(zero.vertex,
                        scale).isEqual(to: .zero),
@@ -135,7 +135,7 @@ extension HexagonVertexTests {
                                    .init(-.unitX + .unitY),
                                    .init(.unitY - .unitZ)]
         
-        let delta = 0.99
+        let delta = 0.9999
         
         for hexagon in hexagons {
             
@@ -149,15 +149,15 @@ extension HexagonVertexTests {
                 
                 let vector = position.lerp(vertex, delta)
                 
-                if Vertex(vector,
-                          scale).position != hexagon.vertex.position { return false }
+                if Hexagon(vector,
+                           scale).vertex != hexagon.vertex { return false }
             }
         }
         
         return true
     }
     
-    private func testVectorToVertex(_ scale: Hexagon.Scale) -> Bool {
+    private func testVectorToHexagon(_ scale: Hexagon.Scale) -> Bool {
         
         let edgeLength = scale.edgeLength
         let halfEdgeLength = edgeLength / 2.0
@@ -172,21 +172,21 @@ extension HexagonVertexTests {
         let c5 = Coordinate(0, 2, -2)
         let c6 = Coordinate.zero
         
-        let v0 = Vector((edgeLength + halfEdgeLength),  0.0, -sqrt3d2)
-        let v1 = Vector(0.0,                            0.0, sqrt3d2 * 2.0)
-        let v2 = Vector(-(edgeLength + halfEdgeLength), 0.0, -sqrt3d2)
-        let v3 = Vector(-edgeLength * 3.0, 0.0, sqrt3d2 * 2.0)
-        let v4 = Vector( 0.0,              0.0, -sqrt3d2 * 4.0)
-        let v5 = Vector( edgeLength * 3.0, 0.0,  sqrt3d2 * 2.0)
+        let v0 = Vector(sqrt3d2,        0.0, -(edgeLength + halfEdgeLength))
+        let v1 = Vector(sqrt3d2,        0.0, edgeLength + halfEdgeLength)
+        let v2 = Vector(-sqrt3d2 * 2.0, 0.0, 0.0)
+        let v3 = Vector(-sqrt3d2 * 2.0, 0.0, (edgeLength + halfEdgeLength) * 2.0)
+        let v4 = Vector(-sqrt3d2 * 2.0, 0.0, -(edgeLength + halfEdgeLength) * 2.0)
+        let v5 = Vector(sqrt3d2 * 4.0,  0.0,  0.0)
         let v6 = Vector.zero
         
-        guard   Vertex(v0, scale).position == c0,
-                Vertex(v1, scale).position == c1,
-                Vertex(v2, scale).position == c2,
-                Vertex(v3, scale).position == c3,
-                Vertex(v4, scale).position == c4,
-                Vertex(v5, scale).position == c5,
-                Vertex(v6, scale).position == c6 else { return false }
+        guard   Hexagon(v0, scale).vertex.position == c0,
+                Hexagon(v1, scale).vertex.position == c1,
+                Hexagon(v2, scale).vertex.position == c2,
+                Hexagon(v3, scale).vertex.position == c3,
+                Hexagon(v4, scale).vertex.position == c4,
+                Hexagon(v5, scale).vertex.position == c5,
+                Hexagon(v6, scale).vertex.position == c6 else { return false }
         
         return true
     }

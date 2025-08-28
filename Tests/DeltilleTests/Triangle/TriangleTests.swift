@@ -137,12 +137,12 @@ final class TriangleTests: XCTestCase {
                                   .init(4, -2, -1)]
         
         let center = Vector(-3.0, 0.0, 5.1961)
-        let vertex = Vertex(center, .tile)
+        let triangle = Triangle(center, .tile)
         
         let triangleCorners = vertices.map { pointyTriangle.corner($0) }
         
         XCTAssertEqual(triangleCorners, pointyTriangle.corners)
-        XCTAssertEqual(vertex, pointyTriangle.vertex)
+        XCTAssertEqual(triangle.vertex, pointyTriangle.vertex)
     }
 
     func testFlatVertices() throws {
@@ -152,12 +152,12 @@ final class TriangleTests: XCTestCase {
                                   .init(-1, -1, 3)]
         
         let center = Vector(-2.5, 0.0, -4.3301)
-        let vertex = Vertex(center, .tile)
+        let triangle = Triangle(center, .tile)
         
         let triangleCorners = vertices.map { flatTriangle.corner($0) }
         
         XCTAssertEqual(triangleCorners, flatTriangle.corners)
-        XCTAssertEqual(vertex, flatTriangle.vertex)
+        XCTAssertEqual(triangle.vertex, flatTriangle.vertex)
         
     }
     

@@ -18,7 +18,7 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Contains Vector
     
-    func testTriangleContainsVector() throws {
+    func testHexagonContainsVector() throws {
         
         XCTAssertTrue(hexagon.contains(hexagon.position(.tile),
                                        .tile))
