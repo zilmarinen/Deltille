@@ -41,4 +41,6 @@ public protocol Tile: Codable,
     
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
+    
+    func mesh(_ scale: S) -> Mesh
 }

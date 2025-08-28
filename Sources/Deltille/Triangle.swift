@@ -22,16 +22,41 @@ extension Grid {
             self.vertex = Vertex(position)
         }
         
+        public init(_ vertex: Vertex) {
+            
+            self.vertex = vertex
+        }
+        
         public init(_ x: Int,
                     _ y: Int,
                     _ z: Int) {
             
-            self.vertex = Vertex(x, y, z)
+            self.vertex = .init(x, y, z)
         }
         
-        public init(_ vertex: Vertex) {
+        public init(_ vector: Vector,
+                    _ scale: Scale) {
+        
+            let j = ceil((vector.x - .sqrt3d3  * vector.z) / scale.edgeLength)
+            let i = floor((     .sqrt3d3 * 2.0 * vector.z) / scale.edgeLength) + 1
+            let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
             
-            self.vertex = vertex
+            let triangle = Grid.Triangle(Int(round((i - j) / 3.0)),
+                                         Int(round((j - k) / 3.0)),
+                                         Int(round((k - i) / 3.0)))
+            
+            let triangles = [triangle,
+                             .init(triangle.vertex.position - .unitX),
+                             .init(triangle.vertex.position - .unitY),
+                             .init(triangle.vertex.position - .unitZ)]
+            
+            let closest = triangles.first {
+                
+                $0.contains(vector,
+                            scale)
+            } ?? triangle
+            
+            self.init(closest.vertex)
         }
     }
 }
@@ -150,6 +175,19 @@ extension Grid.Triangle {
         
         return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0)
     }
+    
+    public func mesh(_ scale: Scale) -> Mesh {
+        
+        let vertices = self.vertices.map {
+            
+            Euclid.Vertex($0.position(scale),
+                          .unitY)
+        }
+        
+        guard let polygon = Polygon(vertices) else { fatalError("Degenerate tile vertices") }
+        
+        return .init([polygon])
+    }
 }
 
 // MARK: Corner
@@ -231,7 +269,10 @@ extension Grid.Triangle {
                                 _ coordinates: [Grid.Coordinate]) {
             
             self.init(origin,
-                      coordinates.map { .init(origin.vertex.position + (origin.isPointy ? $0 : -$0)) })
+                      coordinates.map {
+                
+                .init(origin.vertex.position + (origin.isPointy ? $0 : -$0))
+            })
         }
         
         public override func rotate(_ rotation: Rotation) -> Self {
@@ -273,15 +314,15 @@ extension Grid.Triangle: Rotatable {
             
         case .clockwise:
             
-                .init(vertex.position.y,
-                      vertex.position.z,
-                      vertex.position.x)
+            .init(vertex.position.y,
+                  vertex.position.z,
+                  vertex.position.x)
             
         case .counterClockwise:
             
-                .init(vertex.position.z,
-                      vertex.position.x,
-                      vertex.position.y)
+            .init(vertex.position.z,
+                  vertex.position.x,
+                  vertex.position.y)
         }
     }
 }
@@ -317,10 +358,11 @@ extension Grid.Triangle {
         
         guard from != to else { return self }
         
-        let origin = Vector(vertex, from)
-        let destination = Vertex(origin, to)
+        let origin = Vector(vertex,
+                            from)
         
-        return Self(destination.position)
+        return Self(origin,
+                    to)
     }
 }
 
@@ -364,31 +406,6 @@ extension Grid.Triangle {
                     _ z: Int) {
             
             self.position = .init(x, y, z)
-        }
-        
-        public init(_ vector: Vector,
-                    _ scale: Scale) {
-        
-            let j = ceil((vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
-            let i = floor((    .sqrt3d3 * 2 * vector.z) / scale.edgeLength) + 1
-            let k = ceil((-1 * vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
-            
-            var triangle = Grid.Triangle(Int(round((i - j) / 3.0)),
-                                         Int(round((j - k) / 3.0)),
-                                         Int(round((k - i) / 3.0)))
-            
-            let triangles = [triangle,
-                             .init(triangle.vertex.position - .unitX),
-                             .init(triangle.vertex.position - .unitY),
-                             .init(triangle.vertex.position - .unitZ)]
-            
-            let closest = triangles.first {
-                
-                $0.contains(vector,
-                            scale)
-            }
-            
-            self.init(closest!.vertex.position)
         }
         
         public func position(_ scale: Scale) -> Vector {

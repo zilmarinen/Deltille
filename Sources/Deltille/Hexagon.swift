@@ -22,6 +22,11 @@ extension Grid {
             self.vertex = Vertex(position)
         }
         
+        public init(_ vertex: Vertex) {
+            
+            self.vertex = vertex
+        }
+        
         public init(_ x: Int,
                     _ y: Int,
                     _ z: Int) {
@@ -29,9 +34,16 @@ extension Grid {
             self.vertex = Vertex(x, y, z)
         }
         
-        public init(_ vertex: Vertex) {
+        public init(_ vector: Vector,
+                    _ scale: Scale) {
+
+            let i = ceil((vector.z - .sqrt3d3  * vector.x) / scale.edgeLength)
+            let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.edgeLength) + 1
+            let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.edgeLength)
             
-            self.vertex = vertex
+            self.vertex = Vertex(Int(round((i - k) / 3.0)),
+                                 Int(round((j - i) / 3.0)),
+                                 Int(round((k - j) / 3.0)))
         }
     }
 }
@@ -114,12 +126,25 @@ extension Grid.Hexagon {
         let center = position(scale)
         
         let dx = abs(vector.x - center.x)
-        let dy = abs(vector.z - center.z)
+        let dz = abs(vector.z - center.z)
         
         if dx > scale.edgeLength * 1.5 { return false }
-        if dy > scale.edgeLength * .sqrt3  { return false }
+        if dz > scale.edgeLength * .sqrt3  { return false }
         
-        return (dy * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.edgeLength * 2.0
+        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.edgeLength * 2.0
+    }
+    
+    public func mesh(_ scale: Scale) -> Mesh {
+        
+        let vertices = self.vertices.map {
+            
+            Euclid.Vertex($0.position(scale),
+                          .unitY)
+        }
+        
+        guard let polygon = Polygon(vertices) else { fatalError("Degenerate tile vertices") }
+        
+        return .init([polygon])
     }
 }
 
@@ -214,7 +239,10 @@ extension Grid.Hexagon {
                     _ coordinates: [Grid.Coordinate]) {
             
             self.init(origin,
-                      coordinates.map { .init(origin.vertex.position + $0) })
+                      coordinates.map {
+                
+                .init(origin.vertex.position + $0)
+            })
         }
         
         public override func rotate(_ rotation: Rotation) -> Self {
@@ -256,15 +284,15 @@ extension Grid.Hexagon: Rotatable {
             
         case .clockwise:
             
-                .init(-vertex.position.z,
-                       -vertex.position.x,
-                       -vertex.position.y)
+            .init(-vertex.position.z,
+                  -vertex.position.x,
+                  -vertex.position.y)
             
         case .counterClockwise:
             
-                .init(-vertex.position.y,
-                       -vertex.position.z,
-                       -vertex.position.x)
+            .init(-vertex.position.y,
+                  -vertex.position.z,
+                  -vertex.position.x)
         }
     }
 }
@@ -330,18 +358,6 @@ extension Grid.Hexagon {
                     _ z: Int) {
             
             self.position = .init(x, y, z)
-        }
-        
-        public init(_ vector: Vector,
-                    _ scale: Scale) {
-            
-            let j = ceil((vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
-            let i = floor((    .sqrt3d3 * 2 * vector.z) / scale.edgeLength) + 1
-            let k = ceil((-1 * vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
-            
-            self.init(Int(round((i - j) / 3.0)),
-                      Int(round((j - k) / 3.0)),
-                      Int(round((k - i) / 3.0)))
         }
         
         public func position(_ scale: Scale) -> Vector {
