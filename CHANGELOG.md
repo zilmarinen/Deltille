@@ -4,16 +4,18 @@
 
 - Introduce `Hexagon` type
     - Add `Scale` enum to define hexagon edge lengths
+    
+- Introduce `Tile` protocol
+    
+- Introduce `Vertex` protocol
 
 - Introduce `Sieve` type for triangle subdivisions
-
-- Introduce `Array` extension to discover footprint perimeters
-
-- Introduce `Polygon` and `Mesh` face wrapping extensions
 
 - Introduce `Hexagon` unit tests
 
 - Remove `Canopy` enum
+
+- Remove `Kite` enum
 
 - Remove `Septomino` enum
 
