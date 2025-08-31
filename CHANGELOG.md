@@ -4,7 +4,15 @@
 
 - Introduce `Hexagon` type
     - Add `Scale` enum to define hexagon edge lengths
-    
+
+- Introduce `Corner` protocol
+
+- Introduce `Edge` protocol
+
+- Introduce `Rotation` protocol
+
+- Introduce `Scale` protocol
+
 - Introduce `Tile` protocol
     
 - Introduce `Vertex` protocol

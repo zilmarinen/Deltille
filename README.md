@@ -12,21 +12,20 @@
 # Deltille
 Deltille is a Swift library for working with hexagonal and triangular grid systems. It provides robust data structures and utilities to make grid based development simple, accurate, and efficient.
 
-## Features
-- Hexagonal & Triangular Grids – Supports both coordinate systems.
-- Coordinate Conversion – Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
-- Neighbour & Vertex Navigation – Convenient methods for traversing edge neighbours, and corner vertices.
-- Scaling & Transformations – Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
-- Composable API – Designed to integrate cleanly into games, simulations, and visualization tools.
-
-## Relationship Between Hexagonal and Triangular Grids
 Hexagonal and triangular grids are deeply related through duality:
 
 - Every hexagonal grid can be subdivided into equilateral triangles, forming a triangular grid.
-- Conversely, the dual graph of a triangular grid is a hexagonal grid, and vice versa.
+- Conversely, the dual graph of a triangular grid is a hexagonal grid and vice versa.
 - This makes them complementary representations of the same underlying space. You can often solve problems easily by switching between them.
 
 By supporting both grid types in a unified API, Deltille lets you take advantage of this relationship making it easier to build flexible systems for geometry, navigation, or procedural generation.
+
+## Features
+- Hexagonal & Triangular Grids – Supports both coordinate systems.
+- Coordinate Conversion – Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
+- Neighbour & Vertex Navigation – Convenient methods for traversing edge neighbours and corner vertices.
+- Scaling & Transformations – Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
+- Composable API – Designed to integrate cleanly into games, simulations, and visualization tools.
 
 # Installation
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
@@ -83,7 +82,7 @@ let triangles = sieve.triangles
 A `Footprint` defines a collection of `Tile` types centered around a given origin.
 
 ```swift
-//define footprint
+//MARK: Footprint
 let coordinates: [Grid.Coordinate] = [.zero,
                                       -.unitX,
                                       -.unitY,
