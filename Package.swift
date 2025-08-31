@@ -1,26 +1,25 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "Deltille",
-    platforms: [.macOS(.v12),
-                .iOS(.v15)],
+    platforms: [.macOS(.v14),
+                .iOS(.v17)],
     products: [
-        .library(
-            name: "Deltille",
-            targets: ["Deltille"]),
+        .library(name: "Deltille",
+                 targets: ["Deltille"]),
     ],
     dependencies: [
-        .package(url: "git@github.com:nicklockwood/Euclid.git", branch: "main"),
+        .package(url: "git@github.com:nicklockwood/Euclid.git",
+                 branch: "main"),
     ],
     targets: [
-        .target(
-            name: "Deltille",
-            dependencies: ["Euclid"]),
-        .testTarget(
-            name: "DeltilleTests",
-            dependencies: ["Deltille"]),
+        .target(name: "Deltille",
+                dependencies: ["Euclid"]),
+        .testTarget(name: "DeltilleTests",
+                    dependencies: ["Deltille",
+                                  "Euclid"]),
     ]
 )

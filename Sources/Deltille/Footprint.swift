@@ -6,59 +6,81 @@
 
 import Euclid
 
-///
-///  Footprint defines a grouping of coordinates centered around its origin.
-///
+// MARK: Footprint
 
-public struct Footprint {
+public class Footprint<S: Scale,
+                       T: Tile,
+                       R: Rotation,
+                       V: Vertex>: Codable,
+                                   Hashable,
+                                   Rotatable where T.R == R,
+                                                   T.S == S,
+                                                   T.V == V {
     
-    let origin: Grid.Triangle
+    public let origin: T
+    public let tiles: [T]
     
-    let coordinates: [Coordinate]
-    
-    init(origin: Grid.Triangle,
-         coordinates: [Coordinate]) {
-        
+    public required init(_ origin: T,
+                         _ tiles: [T]) {
+     
         self.origin = origin
-        self.coordinates = coordinates.map { origin.position + (origin.isPointy ? $0 : -$0) }
+        self.tiles = tiles
+    }
+    
+    open func rotate(_ rotation: R) -> Self { self }
+}
+
+extension Footprint {
+    
+    public var perimeter: [T] {
+        
+        Array(Set(tiles.flatMap { $0.perimeter }))
+    }
+    
+    public var vertices: [V] {
+        
+        Array(Set(tiles.flatMap { $0.vertices }))
     }
 }
 
-public extension Footprint {
+extension Footprint {
     
-    func intersects(rhs: Self) -> Bool {
+    public func hash(into hasher: inout Hasher) {
         
-        for coordinate in rhs.coordinates {
+        hasher.combine(origin)
+        hasher.combine(tiles)
+    }
+    
+    public static func == (lhs: Footprint<S, T, R, V>,
+                           rhs: Footprint<S, T, R, V>) -> Bool {
+        
+        lhs.origin == rhs.origin &&
+        lhs.tiles == rhs.tiles
+    }
+    
+    public func center(_ scale: S) -> Vector {
+        
+        let vector = tiles.reduce(into: Vector.zero) { result, tile in
             
-            guard !intersects(rhs: coordinate) else { return true }
+            result += tile.position(scale)
         }
         
-        return false
+        return vector / Double(tiles.count)
     }
     
-    func intersects(rhs: Coordinate) -> Bool { coordinates.contains(rhs) }
-}
-
-public extension Footprint {
-    
-    func rotate(rotation: Coordinate.Rotation) -> Self {
-
-        let footprint = coordinates.map { ($0 - origin.position) * (origin.isPointy ? 1 : -1) }
+    public func intersects(_ footprint: Footprint) -> Bool {
         
-        return Self(origin: origin,
-                    coordinates: footprint.map { $0.rotate(rotation: rotation) })
-    }
-}
-
-public extension Footprint {
-    
-    func center(at scale: Grid.Scale) -> Vector {
-        
-        let vector = coordinates.reduce(into: Vector.zero) { result, coordinate in
+        for tile in footprint.tiles {
             
-            result += coordinate.convert(to: scale)
+            guard !intersects(tile) else { return true }
         }
         
-        return vector / Double(coordinates.count)
+        return intersects(footprint.origin)
+    }
+    
+    public func intersects(_ tile: T) -> Bool {
+        
+        tiles.contains(tile) ||
+        tile == origin
     }
 }

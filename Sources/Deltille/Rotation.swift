@@ -4,16 +4,23 @@
 //  Created by Zack Brown on 24/05/2024.
 //
 
-extension Coordinate {
+// MARK: Rotation
+
+public protocol Rotation: CaseIterable,
+                          Codable,
+                          Hashable,
+                          Identifiable,
+                          Sendable {
     
-    public enum Rotation {
-        
-        public static let inverse = 180.0
-        public static let step = 120.0
-        
-        case clockwise
-        case counterClockwise
-    }
+    static var inverse: Double { get }
+    static var step: Double { get }
+}
+
+// MARK: Rotatable
+
+public protocol Rotatable {
     
-    public func rotate(rotation: Rotation) -> Self { rotation == .clockwise ? Coordinate(z, x, y) : Coordinate(y, z, x) }
+    associatedtype R = Rotation
+    
+    func rotate(_ rotation: R) -> Self
 }

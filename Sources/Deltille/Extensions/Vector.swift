@@ -7,40 +7,77 @@
 import Euclid
 import Foundation
 
-extension Vector: Identifiable {
+// MARK: Vector
+
+extension Vector: @retroactive Identifiable {
     
     public var id: String { "[\(x), \(y), \(z)]" }
-    
-    init(_ coordinate: Coordinate) {
-        
-        self.init(Double(coordinate.x),
-                  Double(coordinate.y),
-                  Double(coordinate.z))
-    }
 }
 
 extension Vector {
     
-    public static let forward = Vector(0.0, 0.0, 1.0)
-    public static let up = Vector(0.0, 1.0, 0.0)
-    public static let right = Vector(1.0, 0.0, 0.0)
+    public func mid(_ lhs: Self) -> Self {
+        
+        lerp(lhs, 0.5)
+    }
 }
+
+extension Array where Element == Vector {
+    
+    public func firstIndexOf(closest vector: Vector) -> Int {
+        
+        var distance = Double.greatestFiniteMagnitude
+        var closestIndex = 0
+        
+        for index in indices {
+            
+            let other = self[index]
+            
+            let length = (other - vector).length
+            
+            if length < distance {
+                
+                closestIndex = index
+                
+                distance = length
+            }
+        }
+        
+        return closestIndex
+    }
+}
+
+// MARK: Hexagon
 
 extension Vector {
     
-    public func convert(to scale: Grid.Scale) -> Coordinate {
+    public init(_ vertex: Grid.Hexagon.Vertex,
+                _ scale: Grid.Hexagon.Scale) {
         
-        let offset = Double.sqrt3d6 * scale.edgeLength
-        let slope = (.sqrt3d3 * z)
+        let dx = Double(vertex.position.x)
+        let dy = Double(vertex.position.y)
+        let dz = Double(vertex.position.z)
         
-        let j = (2.0 * slope) + offset
-        let i = (x - slope) + offset
-        let k = (-x - slope) + offset
-        
-        return Coordinate(Int(floor(j / scale.edgeLength)),
-                          Int(floor(i / scale.edgeLength)),
-                          Int(ceil(k / scale.edgeLength) - 1.0))
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength,
+                  0.0,
+                  (dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength)
     }
-    
-    public func mid(_ other: Vector) -> Vector { lerp(other, 0.5) }
 }
+
+// MARK: Triangle
+
+extension Vector {
+    
+    public init(_ vertex: Grid.Triangle.Vertex,
+                _ scale: Grid.Triangle.Scale) {
+        
+        let dx = Double(vertex.position.y)
+        let dy = Double(vertex.position.x)
+        let dz = Double(vertex.position.z)
+        
+        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
+                  0.0,
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
+    }
+}
+

@@ -1,6 +1,33 @@
-# [CHANGELOG](https://github.com/zilmarinen/Deltille/)
+# CHANGELOG
 
-## [0.1.0](https://github.com/zilmarinen/Deltille/tag/0.1.0) (27/05/2024)
+## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
+
+- Introduce `Hexagon` type
+    - Add `Scale` enum to define hexagon edge lengths
+
+- Introduce `Corner` protocol
+
+- Introduce `Edge` protocol
+
+- Introduce `Rotation` protocol
+
+- Introduce `Scale` protocol
+
+- Introduce `Tile` protocol
+    
+- Introduce `Vertex` protocol
+
+- Introduce `Sieve` type for triangle subdivisions
+
+- Introduce `Hexagon` unit tests
+
+- Remove `Canopy` enum
+
+- Remove `Kite` enum
+
+- Remove `Septomino` enum
+
+## [0.1.0](https://github.com/zilmarinen/Deltille/releases/tag/0.1.0) (27/05/2024)
 
 - Introduce `Grid` enum namespace
 	- Add `Axis` enum to define world axis
