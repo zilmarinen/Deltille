@@ -45,15 +45,18 @@ extension Grid.Triangle {
         }
     }
 
-    public func sieve(for scale: Grid.Triangle.Scale) -> Sieve {
+    public func sieve(for scale: Scale) -> Sieve {
         
-        let columns = Int(ceil(scale.edgeLength))
+        let origin = Grid.Triangle(vertex.position(scale),
+                                   .tile)
+        
+        let columns = Int(max(scale.edgeLength, 1.0))
         let base = Int(floor(Double(columns) / 1.5))
-        let half = Int(ceil(Double(base) / 2.0))
+        let half = Int(floor(Double(base) / 2.0))
         let pointy = isPointy
         
         var triangles: [Grid.Triangle] = []
-        var vertices: [Grid.Triangle.Vertex] = []
+        var vertices: [Vertex] = []
         
         for column in 0...columns {
             
@@ -66,11 +69,11 @@ extension Grid.Triangle {
                 let y = half - row
                 let z = base + 1 - column - row
                 
-                let vertex = Grid.Triangle.Vertex(pointy ? -x : x + 1,
-                                                  pointy ? -y : y + 1,
-                                                  pointy ? z : -z + 1)
+                let other = Grid.Triangle.Vertex(pointy ? -x : x + 1,
+                                                 pointy ? -y : y + 1,
+                                                 pointy ? z : -z + 1)
                 
-                vertices.append(.init(vertex.position + vertex.position))
+                vertices.append(.init(origin.vertex.position + other.position))
                 
                 guard row != rows else { continue }
                 
@@ -78,7 +81,7 @@ extension Grid.Triangle {
                                           pointy ? -y : y,
                                           pointy ? z - 1 : -z + 1)
                 
-                triangles.append(.init(vertex.position + lhs))
+                triangles.append(.init(origin.vertex.position + lhs))
                 
                 guard row < (rows - 1) else { continue }
                 
@@ -86,7 +89,7 @@ extension Grid.Triangle {
                                           pointy ? -y : y,
                                           pointy ? z - 2 : -z + 2)
                 
-                triangles.append(.init(vertex.position + rhs))
+                triangles.append(.init(origin.vertex.position + rhs))
             }
         }
 
