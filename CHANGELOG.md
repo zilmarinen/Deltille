@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (27/05/2024)
+## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
 
 - Introduce `Hexagon` type
     - Add `Scale` enum to define hexagon edge lengths
