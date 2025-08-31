@@ -45,10 +45,7 @@ extension Grid {
                                          Int(round((j - k) / 3.0)),
                                          Int(round((k - i) / 3.0)))
             
-            let triangles = [triangle,
-                             .init(triangle.vertex.position - .unitX),
-                             .init(triangle.vertex.position - .unitY),
-                             .init(triangle.vertex.position - .unitZ)]
+            let triangles = [triangle] + triangle.adjacent
             
             let closest = triangles.first {
                 
@@ -188,6 +185,16 @@ extension Grid.Triangle {
         
         return .init([polygon])
     }
+    
+    public func closest(_ vector: Vector,
+                        _ scale: Scale) -> Vertex {
+        
+        let vertices = vertices.map { $0.position(scale) }
+        
+        let index = vertices.firstIndexOf(closest: vector)
+        
+        return self.vertices[index]
+    }
 }
 
 // MARK: Corner
@@ -260,10 +267,10 @@ extension Grid.Triangle {
 
 extension Grid.Triangle {
     
-    open class Footprint: Deltille.Footprint<Scale,
-                                             Grid.Triangle,
-                                             Rotation,
-                                             Vertex> {
+    final class Footprint: Deltille.Footprint<Scale,
+                                              Grid.Triangle,
+                                              Rotation,
+                                              Vertex> {
         
         public convenience init(_ origin: Grid.Triangle,
                                 _ coordinates: [Grid.Coordinate]) {

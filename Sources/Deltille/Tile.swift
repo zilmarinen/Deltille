@@ -43,4 +43,7 @@ public protocol Tile: Codable,
                   _ scale: S) -> Bool
     
     func mesh(_ scale: S) -> Mesh
+    
+    func closest(_ vector: Vector,
+                 _ scale: S) -> V
 }

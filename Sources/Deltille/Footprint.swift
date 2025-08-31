@@ -8,14 +8,14 @@ import Euclid
 
 // MARK: Footprint
 
-open class Footprint<S: Scale,
-                     T: Tile,
-                     R: Rotation,
-                     V: Vertex>: Codable,
-                                 Hashable,
-                                 Rotatable where T.R == R,
-                                                 T.S == S,
-                                                 T.V == V {
+public class Footprint<S: Scale,
+                       T: Tile,
+                       R: Rotation,
+                       V: Vertex>: Codable,
+                                   Hashable,
+                                   Rotatable where T.R == R,
+                                                   T.S == S,
+                                                   T.V == V {
     
     public let origin: T
     public let tiles: [T]

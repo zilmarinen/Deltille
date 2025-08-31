@@ -146,6 +146,16 @@ extension Grid.Hexagon {
         
         return .init([polygon])
     }
+    
+    public func closest(_ vector: Vector,
+                        _ scale: Scale) -> Vertex {
+        
+        let vertices = vertices.map { $0.position(scale) }
+        
+        let index = vertices.firstIndexOf(closest: vector)
+        
+        return self.vertices[index]
+    }
 }
 
 // MARK: Corner
@@ -230,10 +240,10 @@ extension Grid.Hexagon {
 
 extension Grid.Hexagon {
     
-    open class Footprint: Deltille.Footprint<Scale,
-                                             Grid.Hexagon,
-                                             Rotation,
-                                             Vertex> {
+    final class Footprint: Deltille.Footprint<Scale,
+                                              Grid.Hexagon,
+                                              Rotation,
+                                              Vertex> {
         
         public convenience init(_ origin: Grid.Hexagon,
                     _ coordinates: [Grid.Coordinate]) {
