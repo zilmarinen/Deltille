@@ -56,7 +56,7 @@ extension Array where Element: Vertex {
                           .unitY)
         }
         
-        guard let polygon = Polygon(vertices) else { fatalError("Degenerate tile vertices") }
+        guard let polygon = Polygon(vertices) else { fatalError("Degenerate vertices") }
         
         return .init([polygon])
     }
