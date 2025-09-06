@@ -20,7 +20,6 @@ Hexagonal and triangular grids are deeply related through duality:
 
 By supporting both grid types in a unified API, Deltille lets you take advantage of this relationship making it easier to build flexible systems for geometry, navigation, or procedural generation.
 
-![Hexagon / Triangle grid and dual](./Images/grid_dual.png)
 ![Hexagon / Triangle grid and dual](./Images/dual_grid.png)
 
 ## Features
