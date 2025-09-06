@@ -28,3 +28,36 @@ extension Vertex {
     
     public var id: String { position.id }
 }
+
+// MARK: Array
+
+extension Array where Element: Vertex {
+    
+    public func closest(_ vector: Vector,
+                        _ scale: Element.S) -> Element {
+     
+        let vectors = position(scale)
+        
+        let index = vectors.firstIndexOf(closest: vector)
+        
+        return self[index]
+    }
+    
+    public func position(_ scale: Element.S) -> [Vector] {
+        
+        map { $0.position(scale) }
+    }
+    
+    internal func mesh(_ scale: Element.S) -> Mesh {
+        
+        let vertices = map {
+            
+            Euclid.Vertex($0.position(scale),
+                          .unitY)
+        }
+        
+        guard let polygon = Polygon(vertices) else { fatalError("Degenerate tile vertices") }
+        
+        return .init([polygon])
+    }
+}

@@ -22,31 +22,6 @@ extension Vector {
     }
 }
 
-extension Array where Element == Vector {
-    
-    public func firstIndexOf(closest vector: Vector) -> Int {
-        
-        var distance = Double.greatestFiniteMagnitude
-        var closestIndex = 0
-        
-        for index in indices {
-            
-            let other = self[index]
-            
-            let length = (other - vector).length
-            
-            if length < distance {
-                
-                closestIndex = index
-                
-                distance = length
-            }
-        }
-        
-        return closestIndex
-    }
-}
-
 // MARK: Hexagon
 
 extension Vector {
@@ -81,3 +56,29 @@ extension Vector {
     }
 }
 
+// MARK: Array
+
+extension Array where Element == Vector {
+    
+    public func firstIndexOf(closest vector: Vector) -> Int {
+        
+        var distance = Double.greatestFiniteMagnitude
+        var closestIndex = 0
+        
+        for index in indices {
+            
+            let other = self[index]
+            
+            let length = (other - vector).length
+            
+            if length < distance {
+                
+                closestIndex = index
+                
+                distance = length
+            }
+        }
+        
+        return closestIndex
+    }
+}

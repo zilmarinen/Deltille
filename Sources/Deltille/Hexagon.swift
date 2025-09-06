@@ -136,25 +136,14 @@ extension Grid.Hexagon {
     
     public func mesh(_ scale: Scale) -> Mesh {
         
-        let vertices = self.vertices.map {
-            
-            Euclid.Vertex($0.position(scale),
-                          .unitY)
-        }
-        
-        guard let polygon = Polygon(vertices) else { fatalError("Degenerate tile vertices") }
-        
-        return .init([polygon])
+        vertices.mesh(scale)
     }
     
     public func closest(_ vector: Vector,
                         _ scale: Scale) -> Vertex {
         
-        let vertices = vertices.map { $0.position(scale) }
-        
-        let index = vertices.firstIndexOf(closest: vector)
-        
-        return self.vertices[index]
+        vertices.closest(vector,
+                         scale)
     }
 }
 
