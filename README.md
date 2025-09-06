@@ -12,6 +12,9 @@
 # Deltille
 Deltille is a Swift library for working with hexagonal and triangular grid systems. It provides robust data structures and utilities to make grid based development simple, accurate and efficient.
 
+![Hexagon grid](./Images/hex_grid.png)<!-- {"width":250} -->
+![Triangle grid](./Images/tri_grid.png)<!-- {"width":250} -->
+
 Hexagonal and triangular grids are deeply related through duality:
 
 - Every hexagonal grid can be subdivided into equilateral triangles forming a triangular grid.
