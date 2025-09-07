@@ -1,7 +1,7 @@
 [![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac-lightgray.svg)]()
 [![Swift 5.1](https://img.shields.io/badge/swift-5.1-red.svg?style=flat)](https://developer.apple.com/swift)
 [![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-red?style=flat)](https://www.swift.org/documentation/package-manager/)
-[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 - [Introduction](#deltille)
 - [Installation](#installation)
@@ -24,15 +24,15 @@ By supporting both grid types in a unified API, Deltille lets you take advantage
 
 ## Features
 - Hexagonal & Triangular Grids:
- - Supports both coordinate systems.
+  - Supports both coordinate systems.
 - Coordinate Conversion:
- - Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
+  - Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
 - Neighbour & Vertex Navigation:
- - Convenient methods for traversing edge neighbours and corner vertices.
+  - Convenient methods for traversing edge neighbours and corner vertices.
 - Scaling & Transformations:
- - Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
+  - Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
 - Composable API:
- - Designed to integrate cleanly into games, simulations and visualization tools.
+  - Designed to integrate cleanly into games, simulations and visualization tools.
 
 # Installation
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
@@ -60,7 +60,9 @@ let triangle = Triangle(.zero)
     
 //generate triangle vertices for the desired scale
 let vertices = triangle.vertices.map { $0.position(.tile) }
+```
 
+```swift
 // MARK: Hexagon
 let hexagon = Hexagon(.zero)
 
@@ -78,7 +80,9 @@ Both a `Stencil` or `Sieve` can be used to subdivide a triangle into individual 
 let stencil = triangle.stencil(.tile)
 
 let triangles = stencil.triangles
+```
 
+```swift
 //MARK: Sieve
 let sieve = triangle.sieve(for: .chunk)
 
