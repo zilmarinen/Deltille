@@ -16,7 +16,7 @@ public protocol Vertex: Codable,
     associatedtype S = Scale
     associatedtype T = Tile
     
-    var position: Grid.Coordinate { get }
+    var position: Coordinate { get }
     
     var tiles: [T] { get }
     var vertices: [Self] { get }

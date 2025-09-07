@@ -26,8 +26,8 @@ extension Vector {
 
 extension Vector {
     
-    public init(_ vertex: Grid.Hexagon.Vertex,
-                _ scale: Grid.Hexagon.Scale) {
+    public init(_ vertex: Hexagon.Vertex,
+                _ scale: Hexagon.Scale) {
         
         let dx = Double(vertex.position.x)
         let dy = Double(vertex.position.y)
@@ -43,8 +43,8 @@ extension Vector {
 
 extension Vector {
     
-    public init(_ vertex: Grid.Triangle.Vertex,
-                _ scale: Grid.Triangle.Scale) {
+    public init(_ vertex: Triangle.Vertex,
+                _ scale: Triangle.Scale) {
         
         let dx = Double(vertex.position.y)
         let dy = Double(vertex.position.x)

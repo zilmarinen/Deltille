@@ -10,8 +10,6 @@ import XCTest
 
 final class HexagonVertexTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Hexagon = Grid.Hexagon
     typealias Vertex = Hexagon.Vertex
     
     private let vertex = Vertex(.init(2, -2, 1))
@@ -36,6 +34,41 @@ final class HexagonVertexTests: XCTestCase {
                                   .init(1, -3, 1)]
         
         XCTAssertEqual(vertex.vertices, vertices)
+    }
+    
+    func testVertexConversion() throws {
+        
+        let hexagon0 = Hexagon(Coordinate(3, -1, -2))
+        let hexagon1 = Hexagon(Coordinate(2, 0, -2))
+        
+        let corner0 = hexagon0.vertex(.c2)
+        let center0 = Vector(hexagon0.vertex, .tile)
+        let target0 = Vector(corner0, .tile)
+        let vector0 = center0.lerp(target0, 0.9)
+        let result0 = Hexagon(vector0, .tile)
+        
+        let corner1 = hexagon1.vertex(.c1)
+        let center1 = Vector(hexagon1.vertex, .tile)
+        let target1 = Vector(corner1, .tile)
+        let vector1 = center1.lerp(target1, 0.9)
+        let result1 = Hexagon(vector1, .tile)
+        
+        XCTAssertEqual(hexagon0.vertex, result0.vertex)
+        XCTAssertEqual(hexagon1.vertex, result1.vertex)
+    }
+    
+    func testClosestVertex() throws {
+        
+        let scale = Hexagon.Scale.tile
+        let triangle = Hexagon(Coordinate(3, -1, -2))
+        
+        let center = triangle.position(scale)
+        let vertex = triangle.vertex(.c0)
+        
+        let vector = center.mid(vertex.position(scale))
+        
+        XCTAssertEqual(triangle.closest(vector,
+                                        scale), vertex)
     }
     
     // MARK: Vertex to Vector

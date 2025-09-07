@@ -9,6 +9,8 @@ import Foundation
 
 // MARK: Triangle
 
+public typealias Triangle = Grid.Triangle
+
 extension Grid {
     
     public struct Triangle: Tile {
@@ -41,9 +43,9 @@ extension Grid {
             let i = floor((     .sqrt3d3 * 2.0 * vector.z) / scale.edgeLength) + 1
             let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
             
-            let triangle = Grid.Triangle(Int(round((i - j) / 3.0)),
-                                         Int(round((j - k) / 3.0)),
-                                         Int(round((k - i) / 3.0)))
+            let triangle = Triangle(Int(round((i - j) / 3.0)),
+                                    Int(round((j - k) / 3.0)),
+                                    Int(round((k - i) / 3.0)))
             
             let triangles = [triangle] + triangle.adjacent
             
@@ -136,7 +138,7 @@ extension Grid.Triangle {
         adjacent[edge.rawValue]
     }
     
-    public func translation(_ along: Edge) -> Grid.Coordinate {
+    public func translation(_ along: Edge) -> Coordinate {
         
         switch along {
             
@@ -257,12 +259,12 @@ extension Grid.Triangle {
 extension Grid.Triangle {
     
     final class Footprint: Deltille.Footprint<Scale,
-                                              Grid.Triangle,
+                                              Triangle,
                                               Rotation,
                                               Vertex> {
         
-        public convenience init(_ origin: Grid.Triangle,
-                                _ coordinates: [Grid.Coordinate]) {
+        public convenience init(_ origin: Triangle,
+                                _ coordinates: [Coordinate]) {
             
             self.init(origin,
                       coordinates.map {
@@ -275,11 +277,11 @@ extension Grid.Triangle {
             
             let triangles = tiles.map {
                 
-                let triangle = Grid.Triangle($0.vertex.position - origin.vertex.position)
+                let triangle = Triangle($0.vertex.position - origin.vertex.position)
                 
                 let rotated = triangle.rotate(rotation)
                 
-                return Grid.Triangle(rotated.vertex.position + origin.vertex.position)
+                return Triangle(rotated.vertex.position + origin.vertex.position)
             }
             
             return Self(origin,
@@ -349,8 +351,8 @@ extension Grid.Triangle {
         }
     }
     
-    public func transpose(_ from: Grid.Triangle.Scale,
-                          _ to: Grid.Triangle.Scale) -> Self {
+    public func transpose(_ from: Triangle.Scale,
+                          _ to: Triangle.Scale) -> Self {
         
         guard from != to else { return self }
         
@@ -370,9 +372,9 @@ extension Grid.Triangle {
         
         public static let zero = Self(.zero)
         
-        public let position: Grid.Coordinate
+        public let position: Coordinate
         
-        public var tiles: [Grid.Triangle] {
+        public var tiles: [Triangle] {
             
             [.init(position - .unitX),
              .init(position - (.unitX + .unitY)),
@@ -392,7 +394,7 @@ extension Grid.Triangle {
              .init(position + (-.unitZ + .unitY))]
         }
         
-        public init(_ position: Grid.Coordinate) {
+        public init(_ position: Coordinate) {
             
             self.position = position
         }

@@ -10,8 +10,6 @@ import XCTest
 
 final class HexagonTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Hexagon = Grid.Hexagon
     typealias Vertex = Hexagon.Vertex
     
     private let hexagon = Hexagon(Coordinate(2, -1, -1))

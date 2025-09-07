@@ -6,6 +6,8 @@
 
 // MARK: Coordinate
 
+public typealias Coordinate = Grid.Coordinate
+
 extension Grid {
  
     public struct Coordinate: Codable,

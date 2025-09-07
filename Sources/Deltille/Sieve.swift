@@ -28,15 +28,15 @@ extension Grid.Triangle {
 
     public struct Sieve {
 
-        public let origin: Grid.Triangle
-        public let scale: Grid.Triangle.Scale
-        public let triangles: [Grid.Triangle]
-        public let vertices: [Grid.Triangle.Vertex]
+        public let origin: Triangle
+        public let scale: Triangle.Scale
+        public let triangles: [Triangle]
+        public let vertices: [Triangle.Vertex]
         
-        public init(_ origin: Grid.Triangle,
-                    _ scale: Grid.Triangle.Scale,
-                    _ triangles: [Grid.Triangle],
-                    _ vertices: [Grid.Triangle.Vertex]) {
+        public init(_ origin: Triangle,
+                    _ scale: Triangle.Scale,
+                    _ triangles: [Triangle],
+                    _ vertices: [Triangle.Vertex]) {
             
             self.origin = origin
             self.scale = scale
@@ -47,15 +47,15 @@ extension Grid.Triangle {
 
     public func sieve(for scale: Scale) -> Sieve {
         
-        let origin = Grid.Triangle(vertex.position(scale),
-                                   .tile)
+        let origin = Triangle(vertex.position(scale),
+                              .tile)
         
         let columns = Int(max(scale.edgeLength, 1.0))
         let base = Int(floor(Double(columns) / 1.5))
         let half = Int(floor(Double(base) / 2.0))
         let pointy = isPointy
         
-        var triangles: [Grid.Triangle] = []
+        var triangles: [Triangle] = []
         var vertices: [Vertex] = []
         
         for column in 0...columns {
@@ -69,25 +69,25 @@ extension Grid.Triangle {
                 let y = half - row
                 let z = base + 1 - column - row
                 
-                let other = Grid.Triangle.Vertex(pointy ? -x : x + 1,
-                                                 pointy ? -y : y + 1,
-                                                 pointy ? z : -z + 1)
+                let other = Triangle.Vertex(pointy ? -x : x + 1,
+                                            pointy ? -y : y + 1,
+                                            pointy ? z : -z + 1)
                 
                 vertices.append(.init(origin.vertex.position + other.position))
                 
                 guard row != rows else { continue }
                 
-                let lhs = Grid.Coordinate(pointy ? -x : x,
-                                          pointy ? -y : y,
-                                          pointy ? z - 1 : -z + 1)
+                let lhs = Coordinate(pointy ? -x : x,
+                                     pointy ? -y : y,
+                                     pointy ? z - 1 : -z + 1)
                 
                 triangles.append(.init(origin.vertex.position + lhs))
                 
                 guard row < (rows - 1) else { continue }
                 
-                let rhs = Grid.Coordinate(pointy ? -x : x,
-                                          pointy ? -y : y,
-                                          pointy ? z - 2 : -z + 2)
+                let rhs = Coordinate(pointy ? -x : x,
+                                     pointy ? -y : y,
+                                     pointy ? z - 2 : -z + 2)
                 
                 triangles.append(.init(origin.vertex.position + rhs))
             }

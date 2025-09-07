@@ -10,8 +10,6 @@ import XCTest
 
 final class HexagonFootprintTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Hexagon = Grid.Hexagon
     typealias Footprint = Hexagon.Footprint
     
     private let hexagon = Hexagon(Coordinate(1, -2, 1))

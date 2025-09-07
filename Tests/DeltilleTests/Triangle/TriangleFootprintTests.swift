@@ -10,8 +10,6 @@ import XCTest
 
 final class TriangleFootprintTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Triangle = Grid.Triangle
     typealias Footprint = Triangle.Footprint
     
     private let pointyTriangle = Triangle(1, -2, 1)

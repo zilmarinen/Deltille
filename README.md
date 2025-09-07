@@ -23,11 +23,16 @@ By supporting both grid types in a unified API, Deltille lets you take advantage
 ![Hexagon / Triangle grid and dual](./Images/dual_grid.png)
 
 ## Features
-- Hexagonal & Triangular Grids: Supports both coordinate systems.
-- Coordinate Conversion: Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
-- Neighbour & Vertex Navigation: Convenient methods for traversing edge neighbours and corner vertices.
-- Scaling & Transformations: Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
-- Composable API: Designed to integrate cleanly into games, simulations and visualization tools.
+- Hexagonal & Triangular Grids:
+ - Supports both coordinate systems.
+- Coordinate Conversion:
+ - Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
+- Neighbour & Vertex Navigation:
+ - Convenient methods for traversing edge neighbours and corner vertices.
+- Scaling & Transformations:
+ - Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
+- Composable API:
+ - Designed to integrate cleanly into games, simulations and visualization tools.
 
 # Installation
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
@@ -51,13 +56,13 @@ The basic building blocks of Deltille are both the `Triangle` and `Hexagon` `Til
 
 ```swift
 // MARK: Triangle
-let triangle = Grid.Triangle(.zero)
+let triangle = Triangle(.zero)
     
 //generate triangle vertices for the desired scale
 let vertices = triangle.vertices.map { $0.position(.tile) }
 
 // MARK: Hexagon
-let hexagon = Grid.Hexagon(.zero)
+let hexagon = Hexagon(.zero)
 
 //generate hexagon vertices for the desired scale
 let vertices = hexagon.vertices.map { $0.position(.tile) }
@@ -85,13 +90,13 @@ A `Footprint` defines a collection of `Tile` types centered around a given origi
 
 ```swift
 //MARK: Footprint
-let coordinates: [Grid.Coordinate] = [.zero,
-                                      -.unitX,
-                                      -.unitY,
-                                      -.unitZ]
+let coordinates: [Coordinate] = [.zero,
+                                 -.unitX,
+                                 -.unitY,
+                                 -.unitZ]
 
-let footprint = Grid.Triangle.Footprint(.zero,
-                                        coordinates)
+let footprint = Triangle.Footprint(.zero,
+                                   coordinates)
 
 //rotate footprint around its origin
 let rotated = footprint.rotate(.clockwise)

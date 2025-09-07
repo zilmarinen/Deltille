@@ -10,8 +10,6 @@ import XCTest
 
 final class TriangleVertexTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Triangle = Grid.Triangle
     typealias Vertex = Triangle.Vertex
     
     private let vertex = Vertex(.init(3, -1, -1))
@@ -63,6 +61,20 @@ final class TriangleVertexTests: XCTestCase {
         
         XCTAssertEqual(triangle0.vertex, result0.vertex)
         XCTAssertEqual(triangle1.vertex, result1.vertex)
+    }
+    
+    func testClosestVertex() throws {
+        
+        let scale = Triangle.Scale.tile
+        let triangle = Triangle(Coordinate(-3, -2, 4))
+        
+        let center = triangle.position(scale)
+        let vertex = triangle.vertex(.c0)
+        
+        let vector = center.mid(vertex.position(scale))
+        
+        XCTAssertEqual(triangle.closest(vector,
+                                        scale), vertex)
     }
     
     // MARK: Vertex to Vector

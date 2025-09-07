@@ -18,7 +18,7 @@ extension Grid {
          
         public var id: String { unit.id }
         
-        public var unit: Grid.Coordinate {
+        public var unit: Coordinate {
             
             switch self {
                 

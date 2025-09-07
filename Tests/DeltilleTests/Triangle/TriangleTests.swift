@@ -10,8 +10,6 @@ import XCTest
 
 final class TriangleTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Triangle = Grid.Triangle
     typealias Vertex = Triangle.Vertex
     
     private let pointyTriangle = Triangle(4, -2, -2)

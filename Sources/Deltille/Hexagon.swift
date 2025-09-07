@@ -9,6 +9,8 @@ import Foundation
 
 // MARK: Hexagon
 
+public typealias Hexagon = Grid.Hexagon
+
 extension Grid {
     
     public struct Hexagon: Tile {
@@ -107,7 +109,7 @@ extension Grid.Hexagon {
         adjacent[edge.rawValue]
     }
     
-    public func translation(_ along: Edge) -> Grid.Coordinate {
+    public func translation(_ along: Edge) -> Coordinate {
         
         switch along {
             
@@ -230,12 +232,12 @@ extension Grid.Hexagon {
 extension Grid.Hexagon {
     
     final class Footprint: Deltille.Footprint<Scale,
-                                              Grid.Hexagon,
+                                              Hexagon,
                                               Rotation,
                                               Vertex> {
         
-        public convenience init(_ origin: Grid.Hexagon,
-                    _ coordinates: [Grid.Coordinate]) {
+        public convenience init(_ origin: Hexagon,
+                                _ coordinates: [Coordinate]) {
             
             self.init(origin,
                       coordinates.map {
@@ -248,11 +250,11 @@ extension Grid.Hexagon {
         
             let hexagons = tiles.map {
                 
-                let hexagon = Grid.Hexagon($0.vertex.position - origin.vertex.position)
+                let hexagon = Hexagon($0.vertex.position - origin.vertex.position)
                 
                 let rotated = hexagon.rotate(rotation)
                 
-                return Grid.Hexagon(rotated.vertex.position + origin.vertex.position)
+                return Hexagon(rotated.vertex.position + origin.vertex.position)
             }
             
             return Self(origin,
@@ -329,9 +331,9 @@ extension Grid.Hexagon {
         
         public static let zero = Self(.zero)
         
-        public let position: Grid.Coordinate
+        public let position: Coordinate
         
-        public var tiles: [Grid.Hexagon] {
+        public var tiles: [Hexagon] {
             
             Grid.Axis.allCases.map {
                 
@@ -347,7 +349,7 @@ extension Grid.Hexagon {
             }
         }
         
-        public init(_ position: Grid.Coordinate) {
+        public init(_ position: Coordinate) {
             
             self.position = position
         }
