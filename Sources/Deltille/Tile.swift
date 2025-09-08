@@ -42,8 +42,10 @@ public protocol Tile: Codable,
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
     
-    func mesh(_ scale: S) -> Mesh
-    
     func closest(_ vector: Vector,
                  _ scale: S) -> V
+    
+    func distance(_ other: Self) -> Int
+    
+    func mesh(_ scale: S) -> Mesh
 }

@@ -175,16 +175,21 @@ extension Grid.Triangle {
         return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0)
     }
     
-    public func mesh(_ scale: Scale) -> Mesh {
-        
-        vertices.mesh(scale)
-    }
-    
     public func closest(_ vector: Vector,
                         _ scale: Scale) -> Vertex {
         
         vertices.closest(vector,
                          scale)
+    }
+    
+    public func distance(_ other: Self) -> Int {
+        
+        vertex.distance(other.vertex)
+    }
+    
+    public func mesh(_ scale: Scale) -> Mesh {
+        
+        vertices.mesh(scale)
     }
 }
 
@@ -284,8 +289,8 @@ extension Grid.Triangle {
                 return Triangle(rotated.vertex.position + origin.vertex.position)
             }
             
-            return Self(origin,
-                        triangles)
+            return .init(origin,
+                         triangles)
         }
     }
 }
@@ -356,11 +361,8 @@ extension Grid.Triangle {
         
         guard from != to else { return self }
         
-        let origin = Vector(vertex,
-                            from)
-        
-        return Self(origin,
-                    to)
+        return .init(vertex.position(from),
+                     to)
     }
 }
 
@@ -408,8 +410,15 @@ extension Grid.Triangle {
         
         public func position(_ scale: Scale) -> Vector {
             
-            Vector(self,
-                   scale)
+            .init(self,
+                  scale)
+        }
+        
+        public func distance(_ other: Self) -> Int {
+            
+            abs(position.x - other.position.x) +
+            abs(position.y - other.position.y) +
+            abs(position.z - other.position.z)
         }
     }
 }

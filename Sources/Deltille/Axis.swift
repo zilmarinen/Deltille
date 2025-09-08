@@ -6,13 +6,15 @@
 
 // MARK: Axis
 
+public typealias Axis = Grid.Axis
+
 extension Grid {
     
-    enum Axis: CaseIterable,
-               Codable,
-               Hashable,
-               Identifiable,
-               Sendable {
+    public enum Axis: CaseIterable,
+                      Codable,
+                      Hashable,
+                      Identifiable,
+                      Sendable {
         
         case x, y, z
          

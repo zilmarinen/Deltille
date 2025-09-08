@@ -19,6 +19,16 @@ final class TriangleTests: XCTestCase {
     private let y = Triangle(-.unitY)
     private let z = Triangle(-.unitZ)
     
+    // MARK: Distance
+    
+    func testDistance() {
+        
+        XCTAssertEqual(pointyTriangle.distance(pointyTriangle), 0)
+        XCTAssertEqual(flatTriangle.distance(flatTriangle), 0)
+        XCTAssertEqual(pointyTriangle.distance(unitTriangle), 8)
+        XCTAssertEqual(flatTriangle.distance(unitTriangle), 7)
+    }
+    
     // MARK: Contains Vector
     
     func testTriangleContainsVector() throws {

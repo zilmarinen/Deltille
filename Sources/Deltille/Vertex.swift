@@ -22,6 +22,8 @@ public protocol Vertex: Codable,
     var vertices: [Self] { get }
     
     func position(_ scale: S) -> Vector
+    
+    func distance(_ other: Self) -> Int
 }
 
 extension Vertex {
@@ -35,7 +37,7 @@ extension Array where Element: Vertex {
     
     public func closest(_ vector: Vector,
                         _ scale: Element.S) -> Element {
-     
+        
         let vectors = position(scale)
         
         let index = vectors.firstIndexOf(closest: vector)

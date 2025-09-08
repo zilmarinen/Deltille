@@ -14,6 +14,14 @@ final class HexagonTests: XCTestCase {
     
     private let hexagon = Hexagon(Coordinate(2, -1, -1))
     
+    // MARK: Distance
+    
+    func testDistance() {
+        
+        XCTAssertEqual(hexagon.distance(hexagon), 0)
+        XCTAssertEqual(hexagon.distance(.zero), 2)
+    }
+    
     // MARK: Contains Vector
     
     func testHexagonContainsVector() throws {

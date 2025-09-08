@@ -136,16 +136,21 @@ extension Grid.Hexagon {
         return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.edgeLength * 2.0
     }
     
-    public func mesh(_ scale: Scale) -> Mesh {
-        
-        vertices.mesh(scale)
-    }
-    
     public func closest(_ vector: Vector,
                         _ scale: Scale) -> Vertex {
         
         vertices.closest(vector,
                          scale)
+    }
+    
+    public func distance(_ other: Self) -> Int {
+        
+        vertex.distance(other.vertex)
+    }
+    
+    public func mesh(_ scale: Scale) -> Mesh {
+        
+        vertices.mesh(scale)
     }
 }
 
@@ -257,8 +262,8 @@ extension Grid.Hexagon {
                 return Hexagon(rotated.vertex.position + origin.vertex.position)
             }
             
-            return Self(origin,
-                        hexagons)
+            return .init(origin,
+                         hexagons)
         }
     }
 }
@@ -335,7 +340,7 @@ extension Grid.Hexagon {
         
         public var tiles: [Hexagon] {
             
-            Grid.Axis.allCases.map {
+            Axis.allCases.map {
                 
                 .init(position + ($0.unit * (position.equalToOne ? -1 : 1)))
             }
@@ -343,7 +348,7 @@ extension Grid.Hexagon {
         
         public var vertices: [Vertex] {
             
-            Grid.Axis.allCases.map {
+            Axis.allCases.map {
                 
                 .init(position + ((.one - $0.unit) * (position.equalToOne ? -1 : 1)))
             }
@@ -363,9 +368,15 @@ extension Grid.Hexagon {
         
         public func position(_ scale: Scale) -> Vector {
             
-            Vector(self,
-                   scale)
+            .init(self,
+                  scale)
+        }
+        
+        public func distance(_ other: Self) -> Int {
+            
+            (abs(position.x - other.position.x) +
+             abs(position.y - other.position.y) +
+             abs(position.z - other.position.z)) / 2
         }
     }
 }
-

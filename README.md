@@ -1,5 +1,5 @@
 [![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac-lightgray.svg)]()
-[![Swift 5.1](https://img.shields.io/badge/swift-5.1-red.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 6.1](https://img.shields.io/badge/swift-6.1-red.svg?style=flat)](https://developer.apple.com/swift)
 [![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-red?style=flat)](https://www.swift.org/documentation/package-manager/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -24,11 +24,14 @@ By supporting both grid types in a unified API, Deltille lets you take advantage
 
 ## Features
 - Hexagonal & Triangular Grids:
-  - Supports both coordinate systems.
+  - Unified support for both coordinate systems with consistent APIs.
+  - Models both grid space and dual grid representations.
 - Coordinate Conversion:
   - Easily convert between 2D Cartesian coordinates and 3D hexagonal grid coordinates.
+  - Seamless bridging between triangle and hexagon grid spaces.
 - Neighbour & Vertex Navigation:
   - Convenient methods for traversing edge neighbours and corner vertices.
+  - Determine Manhattan distance between tiles in grid space.
 - Scaling & Transformations:
   - Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
 - Composable API:
@@ -49,25 +52,42 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 # Implementation
-Deltille defines a `Tile` archetype of which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations.
+Deltille defines a `Tile` archetype to which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations. Each tile type is defined by a `Vertex` array which represents a position in both grid space and world space.
+
+## Vertices
+Vertices are the basic building blocks for defining `Tile` types. Vertices define the perimeter of a tile and their relationships between neighbouring tiles and vertices. 
+
+```swift
+// MARK: Vertex
+let triangle = Triangle.zero
+
+//gather corner vertex
+let vertex = triangle.vertex(.c0)
+
+//explore neighbouring vertices
+let vertices = vertex.vertices
+
+//explore neighbouring tiles
+let tiles = vertex.tiles
+```  
 
 ## Triangles & Hexagons
-The basic building blocks of Deltille are both the `Triangle` and `Hexagon` `Tile` types which are used together to model vertex positions along the `xz` plane.
+Both `Triangle` and `Hexagon` `Tile` types can be used to model vertex positions along the `xz` plane.
 
 ```swift
 // MARK: Triangle
-let triangle = Triangle(.zero)
+let triangle = Triangle.zero
     
-//generate triangle vertices for the desired scale
-let vertices = triangle.vertices.map { $0.position(.tile) }
+//generate tile vertices for the desired scale
+let vertices = triangle.vertices.position(.tile)
 ```
 
 ```swift
 // MARK: Hexagon
-let hexagon = Hexagon(.zero)
+let hexagon = Hexagon.zero
 
-//generate hexagon vertices for the desired scale
-let vertices = hexagon.vertices.map { $0.position(.tile) }
+//generate tile mesh for the desired scale
+let vertices = hexagon.mesh(.tile)
 ```
 
 ## Stencils & Sieves
@@ -79,18 +99,26 @@ Both a `Stencil` or `Sieve` can be used to subdivide a triangle into individual 
 // MARK: Stencil
 let stencil = triangle.stencil(.tile)
 
+//sub divided triangle vertices in world space
 let triangles = stencil.triangles
+
+//stencil vertex in world space
+let vector = stencil.vertex(.center)
 ```
 
 ```swift
 //MARK: Sieve
 let sieve = triangle.sieve(for: .chunk)
 
+//sub divided triangles in grid space
 let triangles = sieve.triangles
+
+//triangle vertices in grid space
+let vertices = sieve.vertices
 ```
 
 ## Footprints
-A `Footprint` defines a collection of `Tile` types centered around a given origin.
+A `Footprint` defines a collection of tiles which can be intersected and rotated around a given origin.
 
 ```swift
 //MARK: Footprint
@@ -104,6 +132,9 @@ let footprint = Triangle.Footprint(.zero,
 
 //rotate footprint around its origin
 let rotated = footprint.rotate(.clockwise)
+
+//explore footprint perimeter
+let perimeter = rotated.perimeter
 ```
 
 # Examples
