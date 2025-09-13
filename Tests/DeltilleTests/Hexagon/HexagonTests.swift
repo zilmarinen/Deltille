@@ -22,6 +22,14 @@ final class HexagonTests: XCTestCase {
         XCTAssertEqual(hexagon.distance(.zero), 2)
     }
     
+    func testDisc() {
+        
+        XCTAssertEqual(hexagon.disc(0).count, 1)
+        XCTAssertEqual(hexagon.disc(1).count, 7)
+        XCTAssertEqual(hexagon.disc(2).count, 19)
+        XCTAssertEqual(hexagon.disc(3).count, 37)
+    }
+    
     // MARK: Contains Vector
     
     func testHexagonContainsVector() throws {

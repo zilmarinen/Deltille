@@ -9,43 +9,46 @@ import Foundation
 
 // MARK: Sieve
 
-extension Grid.Triangle {
-
-    ///
-    ///  A sieve subdivides a triangle of a given scale into
-    ///  a set of smaller, inner triangles and their vertices.
-    ///
-    ///      v-------v-------v-------v-------v
-    ///        \ t / t \ t / t \ t / t \ t /
-    ///          v-------v-------v-------v
-    ///            \ t / t \ t / t \ t /
-    ///              v-------v-------v
-    ///                \ t / t \ t /
-    ///                  v-------v
-    ///                    \ t /
-    ///                      v
-    ///
-
-    public struct Sieve {
-
-        public let origin: Triangle
-        public let scale: Triangle.Scale
-        public let triangles: [Triangle]
-        public let vertices: [Triangle.Vertex]
+public class Sieve<S: Scale,
+                   T: Tile,
+                   V: Vertex> {
+    
+    public let origin: T
+    public let scale: S
+    public let tiles: [T]
+    public let vertices: [V]
+    
+    public init(_ origin: T,
+                _ scale: S,
+                _ tiles: [T],
+                _ vertices: [V]) {
         
-        public init(_ origin: Triangle,
-                    _ scale: Triangle.Scale,
-                    _ triangles: [Triangle],
-                    _ vertices: [Triangle.Vertex]) {
-            
-            self.origin = origin
-            self.scale = scale
-            self.triangles = triangles
-            self.vertices = vertices
-        }
+        self.origin = origin
+        self.scale = scale
+        self.tiles = tiles
+        self.vertices = vertices
     }
+}
 
-    public func sieve(for scale: Scale) -> Sieve {
+// MARK: Triangle
+
+extension Triangle {
+    
+    //
+    //  v-------v-------v-------v-------v
+    //    \ t / t \ t / t \ t / t \ t /
+    //      v-------v-------v-------v
+    //        \ t / t \ t / t \ t /
+    //          v-------v-------v
+    //            \ t / t \ t /
+    //              v-------v
+    //                \ t /
+    //                  v
+    //
+
+    public func sieve(for scale: Scale) -> Sieve<Scale,
+                                                 Triangle,
+                                                 Triangle.Vertex> {
         
         let origin = Triangle(vertex.position(scale),
                               .tile)

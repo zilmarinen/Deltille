@@ -39,6 +39,9 @@ public protocol Tile: Codable,
     
     func translation(_ along: E) -> Coordinate
     
+    func transpose(_ from: S,
+                   _ to: S) -> Self
+    
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
     
@@ -46,6 +49,8 @@ public protocol Tile: Codable,
                  _ scale: S) -> V
     
     func distance(_ other: Self) -> Int
+    
+    func disc(_ radius: Int) -> [Self]
     
     func mesh(_ scale: S) -> Mesh
 }

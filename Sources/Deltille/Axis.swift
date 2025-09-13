@@ -6,28 +6,23 @@
 
 // MARK: Axis
 
-public typealias Axis = Grid.Axis
-
-extension Grid {
+public enum Axis: CaseIterable,
+                  Codable,
+                  Hashable,
+                  Identifiable,
+                  Sendable {
     
-    public enum Axis: CaseIterable,
-                      Codable,
-                      Hashable,
-                      Identifiable,
-                      Sendable {
+    case x, y, z
+     
+    public var id: String { unit.id }
+    
+    public var unit: Coordinate {
         
-        case x, y, z
-         
-        public var id: String { unit.id }
-        
-        public var unit: Coordinate {
+        switch self {
             
-            switch self {
-                
-            case .x: .unitX
-            case .y: .unitY
-            case .z: .unitZ
-            }
+        case .x: .unitX
+        case .y: .unitY
+        case .z: .unitZ
         }
     }
 }

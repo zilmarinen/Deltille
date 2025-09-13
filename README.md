@@ -100,7 +100,7 @@ Both a `Stencil` or `Sieve` can be used to subdivide a triangle into individual 
 let stencil = triangle.stencil(.tile)
 
 //sub divided triangle vertices in world space
-let triangles = stencil.triangles
+let triangles = stencil.subdivisions
 
 //stencil vertex in world space
 let vector = stencil.vertex(.center)
@@ -111,7 +111,7 @@ let vector = stencil.vertex(.center)
 let sieve = triangle.sieve(for: .chunk)
 
 //sub divided triangles in grid space
-let triangles = sieve.triangles
+let triangles = sieve.tiles
 
 //triangle vertices in grid space
 let vertices = sieve.vertices

@@ -29,6 +29,14 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(flatTriangle.distance(unitTriangle), 7)
     }
     
+    func testDisc() {
+        
+        XCTAssertEqual(unitTriangle.disc(0).count, 1)
+        XCTAssertEqual(unitTriangle.disc(1).count, 4)
+        XCTAssertEqual(unitTriangle.disc(2).count, 12)
+        XCTAssertEqual(unitTriangle.disc(3).count, 24)
+    }
+    
     // MARK: Contains Vector
     
     func testTriangleContainsVector() throws {
@@ -338,7 +346,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.tiles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
     }
     
@@ -349,7 +357,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.tiles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
     }
     
@@ -360,7 +368,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.tiles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
     }
     
@@ -371,7 +379,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.tiles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
     }
     
@@ -382,7 +390,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 49)
+        XCTAssertEqual(sieve.tiles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
     }
     
@@ -393,7 +401,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 49)
+        XCTAssertEqual(sieve.tiles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
     }
     
@@ -404,7 +412,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 784)
+        XCTAssertEqual(sieve.tiles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
     }
     
@@ -415,7 +423,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 784)
+        XCTAssertEqual(sieve.tiles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
     }
 }

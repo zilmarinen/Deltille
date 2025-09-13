@@ -8,24 +8,109 @@ import Euclid
 
 // MARK: Stencil
 
-extension Grid.Triangle {
+public protocol Stencil: Sendable {
     
-    ///
-    ///  Stencil defines a fixed set of points for the corners, edges
-    ///  and interior subdivisions of a triangle and its center.
-    ///
-    ///      0-------3-------5-------8-------1
-    ///        \   /   \   /   \   /   \   /
-    ///          4-------6-------9-------12
-    ///            \   /   \ c /   \   /
-    ///              7------10-------13
-    ///                \   /   \   /
-    ///                 11-------14
-    ///                    \   /
-    ///                      2
-    ///
+    associatedtype S = Scale
+    associatedtype T = Tile
+    associatedtype V
     
-    public struct Stencil {
+    static var subdivisions: [[V]] { get }
+    
+    var scale: S { get }
+    
+    var center: Vector { get }
+    
+    func vertex(_ vertex: V) -> Vector
+}
+
+// MARK: Hexagon
+
+extension Hexagon {
+    
+    public struct Stencil: Deltille.Stencil {
+        
+        //
+        //     0---------1
+        //    /   \   /   \
+        //   5------c------2
+        //    \   /   \   /
+        //     4---------3
+        //
+        
+        public enum Vertex: CaseIterable,
+                            Sendable {
+            
+            case v0, v1, v2, v3, v4, v5
+            case center
+        }
+        
+        public static let subdivisions: [[Vertex]] = [
+            
+            [.center, .v0, .v1],
+            [.center, .v1, .v2],
+            [.center, .v2, .v3],
+            [.center, .v3, .v4],
+            [.center, .v4, .v5],
+            [.center, .v5, .v0]
+        ]
+        
+        public let scale: Hexagon.Scale
+        
+        public var center: Vector { (v0 + v1 + v2 + v3 + v4 + v5) / 6.0 }
+        
+        // Corners
+        public let v0, v1, v2, v3, v4, v5: Vector
+        
+        public func vertex(_ vertex: Vertex) -> Vector {
+            
+            switch vertex {
+                
+            case .v0: v0
+            case .v1: v1
+            case .v2: v2
+            case .v3: v3
+            case .v4: v4
+            case .v5: v5
+            case .center: center
+            }
+        }
+    }
+    
+    public func stencil(_ scale: Scale) -> Stencil {
+        
+        return .init(scale: scale,
+                     v0: Vector(vertex(.c0),
+                                scale),
+                     v1: Vector(vertex(.c1),
+                                scale),
+                     v2: Vector(vertex(.c2),
+                                scale),
+                     v3: Vector(vertex(.c3),
+                                scale),
+                     v4: Vector(vertex(.c4),
+                                scale),
+                     v5: Vector(vertex(.c5),
+                                scale))
+    }
+}
+
+// MARK: Triangle
+
+extension Triangle {
+    
+    public struct Stencil: Deltille.Stencil {
+        
+        //
+        //  0-------3-------5-------8-------1
+        //    \   /   \   /   \   /   \   /
+        //      4-------6-------9-------12
+        //        \   /   \ c /   \   /
+        //          7------10-------13
+        //            \   /   \   /
+        //             11-------14
+        //                \   /
+        //                  2
+        //
         
         public enum Vertex: CaseIterable,
                             Sendable {
@@ -37,8 +122,7 @@ extension Grid.Triangle {
             case center
         }
         
-        // Subdivided triangles
-        public static let triangles: [[Vertex]] = [
+        public static let subdivisions: [[Vertex]] = [
             
             [.v0, .v3, .v4],
             [.v3, .v6, .v4],
@@ -58,7 +142,11 @@ extension Grid.Triangle {
             [.v11, .v14, .v2]
         ]
         
-        // Triangle corners
+        public let scale: Triangle.Scale
+        
+        public var center: Vector { (v0 + v1 + v2) / 3.0 }
+        
+        // Corners
         public let v0, v1, v2: Vector
         
         // Edge midpoints
@@ -69,10 +157,6 @@ extension Grid.Triangle {
         
         // Outer subdivisions
         public let v3, v4, v8, v11, v12, v14: Vector
-        
-        public let scale: Scale
-        
-        public var center: Vector { (v0 + v1 + v2) / 3.0 }
         
         public func vertex(_ vertex: Vertex) -> Vector {
             
@@ -111,7 +195,8 @@ extension Grid.Triangle {
         let v7 = v0.mid(v2)
         let v13 = v1.mid(v2)
         
-        return .init(v0: v0,
+        return .init(scale: scale,
+                     v0: v0,
                      v1: v1,
                      v2: v2,
                      v5: v5,
@@ -125,7 +210,6 @@ extension Grid.Triangle {
                      v8: v1.mid(v5),
                      v11: v2.mid(v7),
                      v12: v1.mid(v13),
-                     v14: v2.mid(v13),
-                     scale: scale)
+                     v14: v2.mid(v13),)
     }
 }
