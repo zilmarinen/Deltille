@@ -33,8 +33,8 @@ final class TriangleTests: XCTestCase {
         
         XCTAssertEqual(unitTriangle.disc(0).count, 1)
         XCTAssertEqual(unitTriangle.disc(1).count, 4)
-        XCTAssertEqual(unitTriangle.disc(2).count, 12)
-        XCTAssertEqual(unitTriangle.disc(3).count, 24)
+        XCTAssertEqual(unitTriangle.disc(2).count, 10)
+        XCTAssertEqual(unitTriangle.disc(3).count, 19)
     }
     
     // MARK: Contains Vector

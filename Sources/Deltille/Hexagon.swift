@@ -161,9 +161,11 @@ extension Hexagon {
         return tiles
     }
     
-    public func mesh(_ scale: Scale) -> Mesh {
+    public func mesh(_ scale: Scale,
+                     _ color: Color? = nil) -> Mesh {
         
-        vertices.mesh(scale)
+        vertices.mesh(scale,
+                      color)
     }
 }
 
@@ -249,10 +251,10 @@ extension Hexagon {
 
 extension Hexagon {
     
-    final class Footprint: Deltille.Footprint<Scale,
-                                              Hexagon,
-                                              Rotation,
-                                              Vertex> {
+    public final class Footprint: Deltille.Footprint<Scale,
+                                                    Hexagon,
+                                                    Rotation,
+                                                    Vertex> {
         
         public convenience init(_ origin: Hexagon,
                                 _ coordinates: [Coordinate]) {

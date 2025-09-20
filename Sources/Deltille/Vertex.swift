@@ -50,12 +50,15 @@ extension Array where Element: Vertex {
         map { $0.position(scale) }
     }
     
-    internal func mesh(_ scale: Element.S) -> Mesh {
+    internal func mesh(_ scale: Element.S,
+                       _ color: Color? = nil) -> Mesh {
         
         let vertices = map {
             
             Euclid.Vertex($0.position(scale),
-                          .unitY)
+                          .unitY,
+                          nil,
+                          color)
         }
         
         guard let polygon = Polygon(vertices) else { fatalError("Degenerate vertices") }

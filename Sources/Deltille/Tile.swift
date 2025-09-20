@@ -52,5 +52,6 @@ public protocol Tile: Codable,
     
     func disc(_ radius: Int) -> [Self]
     
-    func mesh(_ scale: S) -> Mesh
+    func mesh(_ scale: S,
+              _ color: Color?) -> Mesh
 }
