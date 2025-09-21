@@ -21,7 +21,7 @@ final class TriangleTests: XCTestCase {
     
     // MARK: Distance
     
-    func testDistance() {
+    func testDistance() throws {
         
         XCTAssertEqual(pointyTriangle.distance(pointyTriangle), 0)
         XCTAssertEqual(flatTriangle.distance(flatTriangle), 0)
@@ -29,7 +29,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(flatTriangle.distance(unitTriangle), 7)
     }
     
-    func testDisc() {
+    func testDisc() throws {
         
         XCTAssertEqual(unitTriangle.disc(0).count, 1)
         XCTAssertEqual(unitTriangle.disc(1).count, 4)

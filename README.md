@@ -20,7 +20,7 @@ Hexagonal and triangular grids are deeply related through duality:
 
 By supporting both grid types in a unified API, Deltille lets you take advantage of this relationship making it easier to build flexible systems for geometry, navigation, or procedural generation.
 
-![Hexagon / Triangle grid and dual](./Images/dual_grid.png)
+![Hexagon / Triangle grid and dual representations](./Images/dual_grid.png)
 
 ## Features
 - Hexagonal & Triangular Grids:
@@ -61,14 +61,14 @@ Vertices are the basic building blocks for defining `Tile` types. Vertices defin
 // MARK: Vertex
 let triangle = Triangle.zero
 
+//explore neighbouring tiles
+let tiles = triangle.adjacent
+
 //gather corner vertex
 let vertex = triangle.vertex(.c0)
 
 //explore neighbouring vertices
 let vertices = vertex.vertices
-
-//explore neighbouring tiles
-let tiles = vertex.tiles
 ```  
 
 ## Triangles & Hexagons

@@ -16,13 +16,13 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Distance
     
-    func testDistance() {
+    func testDistance() throws {
         
         XCTAssertEqual(hexagon.distance(hexagon), 0)
         XCTAssertEqual(hexagon.distance(.zero), 2)
     }
     
-    func testDisc() {
+    func testDisc() throws {
         
         XCTAssertEqual(hexagon.disc(0).count, 1)
         XCTAssertEqual(hexagon.disc(1).count, 7)
