@@ -2,6 +2,8 @@
 
 ## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (12/09/2025)
 
+- Add `Tile` methods for distance and proximity
+
 - Remove `Grid` enum namespace
 
 ## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)

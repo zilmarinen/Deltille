@@ -24,8 +24,6 @@ public struct Coordinate: Codable,
     public var id: String { "[\(x), \(y), \(z)]" }
     
     public var sum: Int { x + y + z }
-    
-    public var identifier: Int { x &* .bell ^ y &* .delicate ^ z &* .mersenne }
             
     public var equalToZero: Bool { sum == 0 }
     public var equalToOne: Bool { sum == 1 }

@@ -52,7 +52,7 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 # Implementation
-Deltille defines a `Tile` archetype to which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations. Each tile type is defined by a `Vertex` array which represents a position in both grid space and world space.
+Deltille defines a `Tile` archetype to which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations. Each tile type defines a `Vertex` array which represents positions in grid space.
 
 ## Vertices
 Vertices are the basic building blocks for defining `Tile` types. Vertices define the perimeter of a tile and their relationships between neighbouring tiles and vertices. 
