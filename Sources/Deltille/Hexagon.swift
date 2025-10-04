@@ -325,6 +325,7 @@ extension Hexagon {
     public enum Scale: String,
                        Deltille.Scale {
         
+        case conway
         case tile
         case chunk
         case region
@@ -335,6 +336,7 @@ extension Hexagon {
             
             switch self {
                 
+            case .conway: 0.08247860988 //sqrt(3.0) / 3.0 / 7.0
             case .tile: .sqrt3d3
             case .chunk: 3.4641016151   //sqrt(3.0) * 2.0
             case .region: 13.8564064606 //sqrt(3.0) * 8.0
