@@ -14,6 +14,15 @@ final class HexagonTests: XCTestCase {
     
     private let hexagon = Hexagon(Coordinate(2, -1, -1))
     
+    // MARK: Vertex Winding
+    
+    func testVertexWinding() throws {
+        
+        let mesh = hexagon.mesh(.default)
+        
+        XCTAssertEqual(mesh.polygons.first?.plane.normal, .unitY)
+    }
+    
     // MARK: Distance
     
     func testDistance() throws {

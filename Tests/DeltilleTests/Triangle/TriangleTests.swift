@@ -19,6 +19,17 @@ final class TriangleTests: XCTestCase {
     private let y = Triangle(-.unitY)
     private let z = Triangle(-.unitZ)
     
+    // MARK: Vertex Winding
+    
+    func testVertexWinding() throws {
+        
+        let pointyMesh = pointyTriangle.mesh(.default)
+        let flatMesh = flatTriangle.mesh(.default)
+        
+        XCTAssertEqual(pointyMesh.polygons.first?.plane.normal, .unitY)
+        XCTAssertEqual(flatMesh.polygons.first?.plane.normal, .unitY)
+    }
+    
     // MARK: Distance
     
     func testDistance() throws {
