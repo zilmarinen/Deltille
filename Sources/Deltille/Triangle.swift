@@ -357,6 +357,8 @@ extension Triangle {
     public enum Scale: String,
                        Deltille.Scale {
         
+        public static let `default` = Self.tile
+        
         case sierpinski
         case tile
         case chunk

@@ -45,11 +45,6 @@ extension Array where Element: Vertex {
         return self[index]
     }
     
-    public func position(_ scale: Element.S) -> [Vector] {
-        
-        map { $0.position(scale) }
-    }
-    
     internal func mesh(_ scale: Element.S,
                        _ color: Color? = nil) -> Mesh {
         
@@ -64,5 +59,10 @@ extension Array where Element: Vertex {
         guard let polygon = Polygon(vertices) else { fatalError("Degenerate vertices") }
         
         return .init([polygon])
+    }
+    
+    public func position(_ scale: Element.S) -> [Vector] {
+        
+        map { $0.position(scale) }
     }
 }

@@ -14,5 +14,7 @@ public protocol Scale: CaseIterable,
                        Identifiable,
                        Sendable {
     
+    static var `default`: Self { get }
+    
     var edgeLength: Double { get }
 }

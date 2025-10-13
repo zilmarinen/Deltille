@@ -325,6 +325,8 @@ extension Hexagon {
     public enum Scale: String,
                        Deltille.Scale {
         
+        public static let `default` = Self.tile
+        
         case conway
         case tile
         case chunk
