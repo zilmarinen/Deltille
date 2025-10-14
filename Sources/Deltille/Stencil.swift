@@ -19,6 +19,7 @@ public protocol Stencil: Sendable {
     var scale: S { get }
     
     var center: Vector { get }
+    var perimeter: [Vector] { get }
     
     func vertex(_ vertex: V) -> Vector
 }
@@ -57,6 +58,8 @@ extension Hexagon {
         public let scale: Hexagon.Scale
         
         public var center: Vector { (v0 + v1 + v2 + v3 + v4 + v5) / 6.0 }
+        
+        public var perimeter: [Vector] { [v0, v1, v2, v3, v4, v5] }
         
         // Corners
         public let v0, v1, v2, v3, v4, v5: Vector
@@ -145,6 +148,8 @@ extension Triangle {
         public let scale: Triangle.Scale
         
         public var center: Vector { (v0 + v1 + v2) / 3.0 }
+        
+        public var perimeter: [Vector] { [v0, v1, v2] }
         
         // Corners
         public let v0, v1, v2: Vector
