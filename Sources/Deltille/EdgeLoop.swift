@@ -4,6 +4,8 @@
 //  Created by Zack Brown on 14/10/2025.
 //
 
+import Euclid
+
 // MARK: EdgeLoop
 
 public struct EdgeLoop<S: Scale,
@@ -29,9 +31,9 @@ public struct EdgeLoop<S: Scale,
         let vertices = Array(Set(tiles.flatMap { $0.vertices }))
         let center = vertices.center(.default)
         
-        var next: T? = nil
+        var first: T? = nil
         
-        let first = tiles.first { tile in
+        let last = tiles.first { tile in
             
             let neighbours = tile.adjacent.filter { tiles.contains($0) }
             
@@ -44,7 +46,7 @@ public struct EdgeLoop<S: Scale,
                 
                 guard cross.y > 0 else { continue }
                 
-                next = neighbour
+                first = neighbour
                 
                 return true
             }
@@ -53,16 +55,13 @@ public struct EdgeLoop<S: Scale,
         }
         
         guard let first,
-              var next else { throw Error.invalidWinding }
+              let last else { throw Error.invalidWinding }
         
-        var loop = [first, next]
+        let tiles = Array(Set(tiles).subtracting([first, last]))
         
-        let tiles = Array(Set(tiles).subtracting(loop))
+        var next = first
         
-        self.start = next
-        self.end = first
-        
-        self.tiles = try tiles.reduce(into: loop, { result, _ in
+        let loop = try tiles.reduce(into: [T](), { result, _ in
             
             let neighbour = next.adjacent.first {
                 
@@ -76,5 +75,28 @@ public struct EdgeLoop<S: Scale,
             
             next = neighbour
         })
+        
+        self.start = first
+        self.end = last
+        self.tiles = [first] + loop + [last]
+    }
+}
+
+extension EdgeLoop {
+    
+    public func path(_ scale: S,
+                     _ color: Color) -> Path {
+        
+        let loop = tiles.map { $0.position(scale) } + [start.position(scale)]
+        
+        let points = loop.map {
+            
+            PathPoint($0,
+                      texcoord: nil,
+                      color: color,
+                      isCurved: false)
+        }
+        
+        return .init(points)
     }
 }

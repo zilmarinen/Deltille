@@ -279,6 +279,15 @@ extension Triangle {
     }
 }
 
+// MARK: EdgeLoop
+
+extension Triangle {
+    
+    public typealias EdgeLoop = Deltille.EdgeLoop<Self.Scale,
+                                                  Self,
+                                                  Self.Vertex>
+}
+
 // MARK: Footprint
 
 extension Triangle {
