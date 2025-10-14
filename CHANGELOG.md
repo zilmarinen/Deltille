@@ -2,9 +2,15 @@
 
 ## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (12/09/2025)
 
-- Add `Tile` methods for distance and proximity
+- Introduce `EdgeLoop` to determine correct winding for closed `Tile` paths. 
 
 - Remove `Grid` enum namespace
+
+- Introduce `.default` property for `Scale`
+
+- Introduce `perimeter` property for `Stencil` 
+
+- Introduce `Tile` methods for distance and proximity
 
 ## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
 

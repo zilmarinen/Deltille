@@ -35,6 +35,16 @@ extension Vertex {
 
 extension Array where Element: Vertex {
     
+    public func center(_ scale: Element.S) -> Vector {
+        
+        let vector = reduce(into: Vector.zero) { result, vertex in
+            
+            result += vertex.position(scale)
+        }
+        
+        return vector / Double(count)
+    }
+    
     public func closest(_ vector: Vector,
                         _ scale: Element.S) -> Element {
         

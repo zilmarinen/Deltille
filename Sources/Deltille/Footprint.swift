@@ -15,7 +15,8 @@ public class Footprint<S: Scale,
                                    Hashable,
                                    Rotatable where T.R == R,
                                                    T.S == S,
-                                                   T.V == V {
+                                                   T.V == V,
+                                                   V.S == S {
     
     public let origin: T
     public let tiles: [T]
@@ -28,22 +29,6 @@ public class Footprint<S: Scale,
     }
     
     open func rotate(_ rotation: R) -> Self { self }
-}
-
-extension Footprint {
-    
-    public var perimeter: [T] {
-        
-        Array(Set(tiles.flatMap { $0.perimeter }))
-    }
-    
-    public var vertices: [V] {
-        
-        Array(Set(tiles.flatMap { $0.vertices }))
-    }
-}
-
-extension Footprint {
     
     public func hash(into hasher: inout Hasher) {
         
@@ -57,15 +42,46 @@ extension Footprint {
         lhs.origin == rhs.origin &&
         lhs.tiles == rhs.tiles
     }
+}
+
+extension Footprint {
+    
+    public var perimeter: [T] {
+        
+        let unique = Set(tiles.flatMap { $0.perimeter })
+        
+        let edges = Array(unique.subtracting(tiles))
+        
+        return edges.filter { tile in
+            
+            let intersecting = tile.adjacent.filter {
+                
+                tiles.contains($0)
+            }
+            
+            return intersecting.count <= 1
+        }
+    }
+    
+    public var vertices: [V] {
+        
+        Array(Set(tiles.flatMap { $0.vertices }))
+    }
+    
+    public var edgeLoop: EdgeLoop<S, T, V> {
+        
+        get throws {
+            
+            try .init(tiles: perimeter)
+        }
+    }
+}
+
+extension Footprint {
     
     public func center(_ scale: S) -> Vector {
         
-        let vector = tiles.reduce(into: Vector.zero) { result, tile in
-            
-            result += tile.position(scale)
-        }
-        
-        return vector / Double(tiles.count)
+        vertices.center(scale)
     }
     
     public func intersects(_ footprint: Footprint) -> Bool {
