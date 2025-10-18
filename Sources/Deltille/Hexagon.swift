@@ -167,6 +167,13 @@ extension Hexagon {
         vertices.mesh(scale,
                       color)
     }
+    
+    public func path(_ scale: Scale,
+                     _ color: Color?) -> Path {
+        
+        vertices.path(scale,
+                      color)
+    }
 }
 
 // MARK: Corner

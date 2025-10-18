@@ -54,4 +54,7 @@ public protocol Tile: Codable,
     
     func mesh(_ scale: S,
               _ color: Color?) -> Mesh
+    
+    func path(_ scale: S,
+              _ color: Color?) -> Path
 }

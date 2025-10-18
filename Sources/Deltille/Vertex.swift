@@ -55,20 +55,23 @@ extension Array where Element: Vertex {
         return self[index]
     }
     
-    internal func mesh(_ scale: Element.S,
-                       _ color: Color? = nil) -> Mesh {
+    public func mesh(_ scale: Element.S,
+                     _ color: Color? = nil) -> Mesh {
         
-        let vertices = map {
-            
-            Euclid.Vertex($0.position(scale),
-                          .unitY,
-                          nil,
-                          color)
-        }
+        let path = path(scale,
+                        color)
         
-        guard let polygon = Polygon(vertices) else { fatalError("Degenerate vertices") }
+        guard let polygon = Polygon(shape: path) else { fatalError("Degenerate vertices") }
         
         return .init([polygon])
+    }
+    
+    public func path(_ scale: Element.S,
+                     _ color: Color?) -> Path {
+        
+        let points = map { $0.position(scale) }
+        
+        return points.path(color)
     }
     
     public func position(_ scale: Element.S) -> [Vector] {
