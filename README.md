@@ -99,8 +99,8 @@ Both a `Stencil` or `Sieve` can be used to subdivide a triangle into individual 
 // MARK: Stencil
 let stencil = triangle.stencil(.tile)
 
-//sub divided triangle vertices in world space
-let triangles = stencil.subdivisions
+//gather perimeter vertices
+let vertices = stencil.perimeter
 
 //stencil vertex in world space
 let vector = stencil.vertex(.center)
