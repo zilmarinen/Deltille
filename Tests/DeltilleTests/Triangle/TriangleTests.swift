@@ -23,11 +23,13 @@ final class TriangleTests: XCTestCase {
     
     func testVertexWinding() throws {
         
-        let pointyMesh = pointyTriangle.mesh(.default)
-        let flatMesh = flatTriangle.mesh(.default)
+        let pointyPath = pointyTriangle.path(.default,
+                                             nil)
+        let flatPath = flatTriangle.path(.default,
+                                         nil)
         
-        XCTAssertEqual(pointyMesh.polygons.first?.plane.normal, .unitY)
-        XCTAssertEqual(flatMesh.polygons.first?.plane.normal, .unitY)
+        XCTAssertEqual(pointyPath.faceNormal, .unitY)
+        XCTAssertEqual(flatPath.faceNormal, .unitY)
     }
     
     // MARK: Distance

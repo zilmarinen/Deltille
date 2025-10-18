@@ -18,9 +18,10 @@ final class HexagonTests: XCTestCase {
     
     func testVertexWinding() throws {
         
-        let mesh = hexagon.mesh(.default)
+        let path = hexagon.path(.default,
+                                nil)
         
-        XCTAssertEqual(mesh.polygons.first?.plane.normal, .unitY)
+        XCTAssertEqual(path.faceNormal, .unitY)
     }
     
     // MARK: Distance
