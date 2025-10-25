@@ -362,13 +362,35 @@ extension Hexagon {
         }
     }
     
-    public func transpose(_ from: Scale,
-                          _ to: Scale) -> Self {
+    public func parent(_ radius: Int = 1) -> Self {
         
-        guard from != to else { return self }
+        let area = Double(3 * radius * radius + 3 * radius + 1)
+        let shift = 3 * radius + 2
         
-        return .init(vertex.position(from),
-                     to)
+        let (x, y, z) = vertex.position.xyz
+        
+        let a = floor(Double(z + y * shift) / area)
+        let b = floor(Double(x + z * shift) / area)
+        let c = floor(Double(y + x * shift) / area)
+        
+        return .init(Int(floor((1 + c - b) / 3)),
+                     Int(floor((1 + a - c) / 3)),
+                     Int(floor((1 + b - a) / 3)))
+    }
+    
+    public func child(_ radius: Int = 1) -> Self {
+        
+        let shift = 3 * radius + 2
+        
+        let (x, y, z) = vertex.position.xyz
+        
+        let a = y - z
+        let b = z - x
+        let c = x - y
+        
+        return .init(Int(floor(Double(shift * c + b) / 3)),
+                     Int(floor(Double(shift * a + c) / 3)),
+                     Int(floor(Double(shift * b + a) / 3)))
     }
 }
 

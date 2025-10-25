@@ -99,4 +99,66 @@ final class HexagonTests: XCTestCase {
         XCTAssertEqual(hexagonVertices, hexagon.vertices)
         XCTAssertEqual(nil, hexagon.corner(.zero))
     }
+    
+    // MARK: Transposing
+    
+    func testTransposeToParent() throws {
+        
+        let tiles: [Hexagon] = [.zero,
+                                .init(0, 1, -1),
+                                .init(-1, 0, 1),
+                                .init(1, -1, 0),
+                                .init(-2, -1, 3),
+                                .init(-3, 2, 1),
+                                .init(-1, 3, -2),
+                                .init(2, 1, -3),
+                                .init(3, -2, -1),
+                                .init(1, -3, 2)]
+        
+        let transposed = tiles.map {
+            
+            $0.parent()
+        }
+        
+        let chunks: [Hexagon] = [.zero,
+                                 .zero,
+                                 .zero,
+                                 .zero,
+                                 .init(-1, 0, 1),
+                                 .init(-1, 1, 0),
+                                 .init(0, 1, -1),
+                                 .init(1, 0, -1),
+                                 .init(1, -1, 0),
+                                 .init(0, -1, 1)]
+        
+        XCTAssertEqual(transposed,
+                       chunks)
+    }
+    
+    func testTransposeToChild() throws {
+        
+        let chunks: [Hexagon] = [.zero,
+                                .init(-1, 0, 1),
+                                .init(-1, 1, 0),
+                                .init(0, 1, -1),
+                                .init(1, 0, -1),
+                                .init(1, -1, 0),
+                                .init(0, -1, 1)]
+        
+        let transposed = chunks.map {
+            
+            $0.child()
+        }
+        
+        let tiles: [Hexagon] = [.zero,
+                                .init(-1, -2, 3),
+                                .init(-3, 1, 2),
+                                .init(-2, 3, -1),
+                                .init(1, 2, -3),
+                                .init(3, -1, -2),
+                                .init(2, -3, 1)]
+        
+        XCTAssertEqual(transposed,
+                       tiles)
+    }
 }

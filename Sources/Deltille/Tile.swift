@@ -39,9 +39,6 @@ public protocol Tile: Codable,
     
     func translation(_ along: E) -> Coordinate
     
-    func transpose(_ from: S,
-                   _ to: S) -> Self
-    
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
     

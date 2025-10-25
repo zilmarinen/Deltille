@@ -71,3 +71,11 @@ extension Coordinate {
               lhs.y * rhs,
               lhs.z * rhs) }
 }
+
+extension Coordinate {
+    
+    public var xyz: (x: Int, y: Int, z: Int) {
+        
+        (x, y, z)
+    }
+}

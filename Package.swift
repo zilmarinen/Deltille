@@ -20,6 +20,6 @@ let package = Package(
                 dependencies: ["Euclid"]),
         .testTarget(name: "DeltilleTests",
                     dependencies: ["Deltille",
-                                  "Euclid"]),
+                                   "Euclid"]),
     ]
 )

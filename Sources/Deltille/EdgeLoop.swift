@@ -85,7 +85,7 @@ public struct EdgeLoop<S: Scale,
 extension EdgeLoop {
     
     public func path(_ scale: S,
-                     _ color: Color) -> Path {
+                     _ color: Color? = nil) -> Path {
         
         let loop = tiles.map { $0.position(scale) } + [start.position(scale)]
         
