@@ -268,9 +268,9 @@ extension Triangle {
             
             switch self {
                 
-            case .e0: [.c1, .c0]
-            case .e1: [.c2, .c1]
-            case .e2: [.c0, .c2]
+            case .e0: [.c2, .c1]
+            case .e1: [.c0, .c2]
+            case .e2: [.c1, .c0]
             }
         }
         

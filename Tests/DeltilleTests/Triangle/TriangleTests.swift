@@ -19,6 +19,20 @@ final class TriangleTests: XCTestCase {
     private let y = Triangle(-.unitY)
     private let z = Triangle(-.unitZ)
     
+    // MARK: Edges
+    
+    func testEdges() throws {
+        
+        for edge in unitTriangle.edges {
+            
+            let adjacent = unitTriangle.neighbour(edge)
+            
+            let vertices = Set(edge.corners.map { unitTriangle.vertex($0) })
+            
+            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+        }
+    }
+    
     // MARK: Vertex Winding
     
     func testVertexWinding() throws {

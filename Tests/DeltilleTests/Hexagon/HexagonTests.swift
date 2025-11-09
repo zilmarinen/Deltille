@@ -14,6 +14,20 @@ final class HexagonTests: XCTestCase {
     
     private let hexagon = Hexagon(Coordinate(2, -1, -1))
     
+    // MARK: Edges
+    
+    func testEdges() throws {
+        
+        for edge in hexagon.edges {
+            
+            let adjacent = hexagon.neighbour(edge)
+            
+            let vertices = Set(edge.corners.map { hexagon.vertex($0) })
+            
+            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+        }
+    }
+    
     // MARK: Vertex Winding
     
     func testVertexWinding() throws {
