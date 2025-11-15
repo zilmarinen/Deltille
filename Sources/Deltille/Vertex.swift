@@ -35,6 +35,27 @@ extension Vertex {
 
 extension Array where Element: Vertex {
     
+    public var perimeter: [Element] {
+    
+        filter {
+            
+            for vertex in $0.vertices {
+                
+                if !contains(vertex) {
+                    
+                    return false
+                }
+            }
+            
+            return true
+        }
+    }
+    
+    public var interior: [Element] {
+        
+        Array(Set(self).subtracting(perimeter))
+    }
+    
     public func center(_ scale: Element.S) -> Vector {
         
         let vector = reduce(into: Vector.zero) { result, vertex in

@@ -286,15 +286,6 @@ extension Triangle {
     }
 }
 
-// MARK: EdgeLoop
-
-extension Triangle {
-    
-    public typealias EdgeLoop = Deltille.EdgeLoop<Self.Scale,
-                                                  Self,
-                                                  Self.Vertex>
-}
-
 // MARK: Footprint
 
 extension Triangle {
@@ -548,5 +539,29 @@ extension Triangle {
             abs(position.y - other.position.y) +
             abs(position.z - other.position.z)
         }
+    }
+}
+
+// MARK: Array
+
+extension Array where Element == Triangle {
+    
+    public func transpose(_ from: Element.Scale,
+                          _ to: Element.Scale) -> Self {
+        map {
+            
+            $0.transpose(from,
+                         to)
+        }
+    }
+    
+    public func unique(_ from: Element.Scale,
+                       _ to: Element.Scale) -> Self {
+        
+        Array(Set(map {
+            
+            $0.transpose(from,
+                         to)
+        }))
     }
 }
