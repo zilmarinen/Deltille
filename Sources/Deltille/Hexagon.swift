@@ -254,15 +254,6 @@ extension Hexagon {
     }
 }
 
-// MARK: EdgeLoop
-
-extension Hexagon {
-    
-    public typealias EdgeLoop = Deltille.EdgeLoop<Self.Scale,
-                                                  Self,
-                                                  Self.Vertex>
-}
-
 // MARK: Footprint
 
 extension Hexagon {

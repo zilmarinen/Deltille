@@ -1,12 +1,10 @@
 # CHANGELOG
 
-## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (12/09/2025)
-
-- Introduce `EdgeLoop` to determine correct winding for closed `Tile` path loops. 
+## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (12/09/2025)
 
 - Remove `Grid` enum namespace
 
-- Introduce methods to for `Hexagon` chunking heuristics
+- Introduce methods for `Hexagon` chunking
 
 - Introduce `.default` property for `Scale`
 

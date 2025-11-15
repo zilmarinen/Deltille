@@ -67,14 +67,6 @@ extension Footprint {
         
         Array(Set(tiles.flatMap { $0.vertices }))
     }
-    
-    public var edgeLoop: EdgeLoop<S, T, V> {
-        
-        get throws {
-            
-            try .init(tiles: perimeter)
-        }
-    }
 }
 
 extension Footprint {
