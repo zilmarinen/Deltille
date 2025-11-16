@@ -77,16 +77,6 @@ extension Triangle {
         }
     }
     
-    public var corners: [Corner] {
-        
-        Corner.allCases
-    }
-    
-    public var edges: [Edge] {
-        
-        Edge.allCases
-    }
-    
     public var adjacent: [Self] {
         
         edges.map {
@@ -251,6 +241,11 @@ extension Triangle {
             }
         }
     }
+    
+    public var corners: [Corner] {
+        
+        Corner.allCases
+    }
 }
 
 // MARK: Edge
@@ -283,6 +278,11 @@ extension Triangle {
             case .e2: [.e0, .e1]
             }
         }
+    }
+    
+    public var edges: [Edge] {
+        
+        Edge.allCases
     }
 }
 

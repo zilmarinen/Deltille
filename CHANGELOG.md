@@ -12,6 +12,8 @@
 
 - Introduce `Tile` methods for distance and proximity
 
+- Introduce `Array` extensions for `Vertex` collections
+
 ## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
 
 - Introduce `Hexagon` type

@@ -59,16 +59,6 @@ extension Hexagon {
          .init(vertex.position - .unitY)]
     }
     
-    public var corners: [Corner] {
-        
-        Corner.allCases
-    }
-    
-    public var edges: [Edge] {
-        
-        Edge.allCases
-    }
-    
     public var adjacent: [Self] {
         
         edges.map {
@@ -213,6 +203,11 @@ extension Hexagon {
             }
         }
     }
+    
+    public var corners: [Corner] {
+        
+        Corner.allCases
+    }
 }
 
 // MARK: Edge
@@ -251,6 +246,11 @@ extension Hexagon {
             case .e5: [.e0, .e4]
             }
         }
+    }
+    
+    public var edges: [Edge] {
+        
+        Edge.allCases
     }
 }
 
