@@ -11,7 +11,6 @@ import Euclid
 public protocol Stencil: Sendable {
     
     associatedtype S = Scale
-    associatedtype T = Tile
     associatedtype V
     
     static var subdivisions: [[V]] { get }

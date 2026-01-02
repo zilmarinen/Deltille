@@ -258,13 +258,20 @@ extension Hexagon {
 
 extension Hexagon {
     
-    public final class Footprint: Deltille.Footprint<Scale,
-                                                    Hexagon,
-                                                    Rotation,
-                                                    Vertex> {
+    public struct Footprint: Deltille.Footprint {
         
-        public convenience init(_ origin: Hexagon,
-                                _ coordinates: [Coordinate]) {
+        public let origin: Hexagon
+        public let tiles: [Hexagon]
+        
+        public init(_ origin: Hexagon,
+                    _ tiles: [Hexagon]) {
+         
+            self.origin = origin
+            self.tiles = tiles
+        }
+        
+        public init(_ origin: Hexagon,
+                    _ coordinates: [Coordinate]) {
             
             self.init(origin,
                       coordinates.map {
@@ -273,7 +280,7 @@ extension Hexagon {
             })
         }
         
-        public override func rotate(_ rotation: Rotation) -> Self {
+        public func rotate(_ rotation: Rotation) -> Self {
         
             let hexagons = tiles.map {
                 

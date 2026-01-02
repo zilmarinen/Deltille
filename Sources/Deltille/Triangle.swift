@@ -290,13 +290,20 @@ extension Triangle {
 
 extension Triangle {
     
-    public final class Footprint: Deltille.Footprint<Scale,
-                                                     Triangle,
-                                                     Rotation,
-                                                     Vertex> {
+    public struct Footprint: Deltille.Footprint {
         
-        public convenience init(_ origin: Triangle,
-                                _ coordinates: [Coordinate]) {
+        public let origin: Triangle
+        public let tiles: [Triangle]
+        
+        public init(_ origin: Triangle,
+                    _ tiles: [Triangle]) {
+         
+            self.origin = origin
+            self.tiles = tiles
+        }
+        
+        public init(_ origin: Triangle,
+                    _ coordinates: [Coordinate]) {
             
             self.init(origin,
                       coordinates.map {
@@ -305,7 +312,7 @@ extension Triangle {
             })
         }
         
-        public override func rotate(_ rotation: Rotation) -> Self {
+        public func rotate(_ rotation: Rotation) -> Self {
             
             let triangles = tiles.map {
                 

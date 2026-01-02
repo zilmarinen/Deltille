@@ -8,40 +8,25 @@ import Euclid
 
 // MARK: Footprint
 
-public class Footprint<S: Scale,
-                       T: Tile,
-                       R: Rotation,
-                       V: Vertex>: Codable,
-                                   Hashable,
-                                   Rotatable where T.R == R,
-                                                   T.S == S,
-                                                   T.V == V,
-                                                   V.S == S {
+public protocol Footprint: Codable,
+                           Hashable,
+                           Rotatable,
+                           Sendable where T.V == V,
+                                          V.S == S {
     
-    public let origin: T
-    public let tiles: [T]
+    associatedtype S: Scale
+    associatedtype T: Tile
+    associatedtype V: Vertex
     
-    public required init(_ origin: T,
-                         _ tiles: [T]) {
-     
-        self.origin = origin
-        self.tiles = tiles
-    }
+    var origin: T { get }
+    var tiles: [T] { get }
     
-    open func rotate(_ rotation: R) -> Self { self }
+    var perimeter: [T] { get }
+    var vertices: [V] { get }
     
-    public func hash(into hasher: inout Hasher) {
-        
-        hasher.combine(origin)
-        hasher.combine(tiles)
-    }
-    
-    public static func == (lhs: Footprint<S, T, R, V>,
-                           rhs: Footprint<S, T, R, V>) -> Bool {
-        
-        lhs.origin == rhs.origin &&
-        lhs.tiles == rhs.tiles
-    }
+    func center(_ scale: S) -> Vector
+    func intersects(_ footprint: Self) -> Bool
+    func intersects(_ tile: T) -> Bool
 }
 
 extension Footprint {
@@ -76,7 +61,7 @@ extension Footprint {
         vertices.center(scale)
     }
     
-    public func intersects(_ footprint: Footprint) -> Bool {
+    public func intersects(_ footprint: Self) -> Bool {
         
         for tile in footprint.tiles {
             
