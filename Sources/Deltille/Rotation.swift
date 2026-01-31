@@ -13,7 +13,14 @@ public protocol Rotation: CaseIterable,
                           Sendable {
     
     static var inverse: Double { get }
-    static var step: Double { get }
+    static var turn: Double { get }
+    static var turns: Int { get }
+}
+
+extension Rotation {
+    
+    public static var inverse: Double { .pi }
+    public static var turn: Double { .tau / Double(turns) }
 }
 
 // MARK: Rotatable

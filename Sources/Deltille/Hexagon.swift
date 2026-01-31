@@ -304,8 +304,7 @@ extension Hexagon: Rotatable {
     public enum Rotation: String,
                           Deltille.Rotation {
         
-        public static let inverse: Double = .pi
-        public static let step: Double = .tau / 6.0
+        public static let turns: Int = 6
         
         case clockwise
         case counterClockwise
