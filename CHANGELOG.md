@@ -14,6 +14,8 @@
 
 - Introduce `Array` extensions for `Vertex` collections
 
+- Delegate `Rotation` implementation to `Vertex` from `Tile`  
+
 ## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
 
 - Introduce `Hexagon` type

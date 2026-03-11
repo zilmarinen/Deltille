@@ -99,6 +99,9 @@ final class TriangleFootprintTests: XCTestCase {
         let clockwiseRotation = footprint.rotate(.clockwise)
         let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
+        let singleTurnClockwiseRotation = footprint.rotate(.turns(1))
+        let singleTurnCounterClockwiseRotation = footprint.rotate(.turns(-1))
+        
         let clockwiseTiles: [Triangle] = [.init(2, -1, -2),
                                           .init(2, 0, -2),
                                           .init(2, 0, -3),
@@ -118,6 +121,11 @@ final class TriangleFootprintTests: XCTestCase {
         XCTAssertEqual(clockwiseRotation.tiles,
                        clockwiseTiles)
         XCTAssertEqual(counterClockwiseRotation.tiles,
+                       counterClockwiseTiles)
+        
+        XCTAssertEqual(singleTurnClockwiseRotation.tiles,
+                       clockwiseTiles)
+        XCTAssertEqual(singleTurnCounterClockwiseRotation.tiles,
                        counterClockwiseTiles)
     }
     

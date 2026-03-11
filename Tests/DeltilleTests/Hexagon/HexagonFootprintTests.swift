@@ -45,6 +45,9 @@ final class HexagonFootprintTests: XCTestCase {
         let clockwiseRotation = footprint.rotate(.clockwise)
         let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
+        let singleTurnClockwiseRotation = footprint.rotate(.turns(1))
+        let singleTurnCounterClockwiseRotation = footprint.rotate(.turns(-1))
+        
         let clockwiseTiles: [Hexagon] = [.init(1, -2, 1),
                                          .init(2, -3, 1),
                                          .init(3, -4, 1),
@@ -58,6 +61,11 @@ final class HexagonFootprintTests: XCTestCase {
         XCTAssertEqual(clockwiseRotation.tiles,
                        clockwiseTiles)
         XCTAssertEqual(counterClockwiseRotation.tiles,
+                       counterClockwiseTiles)
+        
+        XCTAssertEqual(singleTurnClockwiseRotation.tiles,
+                       clockwiseTiles)
+        XCTAssertEqual(singleTurnCounterClockwiseRotation.tiles,
                        counterClockwiseTiles)
     }
 }

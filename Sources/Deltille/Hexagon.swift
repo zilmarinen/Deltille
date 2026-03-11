@@ -301,33 +301,18 @@ extension Hexagon {
 
 extension Hexagon: Rotatable {
     
-    public enum Rotation: String,
-                          Deltille.Rotation {
+    public enum Rotation: Deltille.Rotation {
         
         public static let turns: Int = 6
         
         case clockwise
         case counterClockwise
-        
-        public var id: String { rawValue }
+        case turns(_ turns: Int)
     }
     
     public func rotate(_ rotation: Rotation) -> Self {
         
-        switch rotation {
-            
-        case .clockwise:
-            
-            .init(-vertex.position.z,
-                  -vertex.position.x,
-                  -vertex.position.y)
-            
-        case .counterClockwise:
-            
-            .init(-vertex.position.y,
-                  -vertex.position.z,
-                  -vertex.position.x)
-        }
+        .init(vertex.rotate(rotation))
     }
 }
 
@@ -429,17 +414,48 @@ extension Hexagon {
             self.position = .init(x, y, z)
         }
         
+        public func distance(_ other: Self) -> Int {
+            
+            (abs(position.x - other.position.x) +
+             abs(position.y - other.position.y) +
+             abs(position.z - other.position.z)) / 2
+        }
+        
         public func position(_ scale: Scale) -> Vector {
             
             .init(self,
                   scale)
         }
         
-        public func distance(_ other: Self) -> Int {
+        public func rotate(_ rotation: Rotation) -> Self {
             
-            (abs(position.x - other.position.x) +
-             abs(position.y - other.position.y) +
-             abs(position.z - other.position.z)) / 2
+            switch rotation {
+                
+            case .clockwise:
+                
+                return .init(-position.z,
+                              -position.x,
+                              -position.y)
+                
+            case .counterClockwise:
+                
+                return .init(-position.y,
+                              -position.z,
+                              -position.x)
+                
+            case .turns(let turns):
+                
+                var rotated = Self.init(position)
+                
+                for _ in 0..<rotation.wrap(turns) {
+                    
+                    rotated = .init(-rotated.position.z,
+                                     -rotated.position.x,
+                                     -rotated.position.y)
+                }
+                
+                return rotated
+            }
         }
     }
 }

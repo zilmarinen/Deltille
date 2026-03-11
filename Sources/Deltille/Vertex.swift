@@ -11,8 +11,10 @@ import Euclid
 public protocol Vertex: Codable,
                         Hashable,
                         Identifiable,
+                        Rotatable,
                         Sendable {
     
+    associatedtype R = Rotation
     associatedtype S = Scale
     associatedtype T = Tile
     
@@ -21,9 +23,11 @@ public protocol Vertex: Codable,
     var tiles: [T] { get }
     var vertices: [Self] { get }
     
+    func distance(_ other: Self) -> Int
+                            
     func position(_ scale: S) -> Vector
     
-    func distance(_ other: Self) -> Int
+    func rotate(_ rotation: R) -> Self
 }
 
 extension Vertex {
