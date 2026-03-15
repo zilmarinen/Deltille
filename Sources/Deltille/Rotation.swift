@@ -14,7 +14,7 @@ public protocol Rotation: Codable,
     static var turn: Double { get }
     static var turns: Int { get }
     
-    func wrap(_ turns: Int) -> Int
+    static func wrap(_ turns: Int) -> Int
 }
 
 extension Rotation {
@@ -22,7 +22,7 @@ extension Rotation {
     public static var inverse: Double { .pi }
     public static var turn: Double { .tau / Double(turns) }
     
-    public func wrap(_ turns: Int) -> Int {
+    public static func wrap(_ turns: Int) -> Int {
         
         ((turns % Self.turns) + Self.turns) % Self.turns
     }

@@ -14,7 +14,9 @@
 
 - Introduce `Array` extensions for `Vertex` collections
 
-- Delegate `Rotation` implementation to `Vertex` from `Tile`  
+- Delegate `Rotation` implementation to `Vertex` from `Tile`
+
+- Introduce codified `Stencil` subdivisions 
 
 ## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
 

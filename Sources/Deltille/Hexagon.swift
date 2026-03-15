@@ -447,7 +447,7 @@ extension Hexagon {
                 
                 var rotated = Self.init(position)
                 
-                for _ in 0..<rotation.wrap(turns) {
+                for _ in 0..<Rotation.wrap(turns) {
                     
                     rotated = .init(-rotated.position.z,
                                      -rotated.position.x,
