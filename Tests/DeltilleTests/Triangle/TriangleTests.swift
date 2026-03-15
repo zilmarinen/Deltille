@@ -361,23 +361,29 @@ final class TriangleTests: XCTestCase {
     func testPointySierpinskiSieve() throws {
         
         let sieve = pointyTriangle.sieve(for: .sierpinski)
+        let tile = pointyTriangle.transpose(.sierpinski,
+                                            .tile)
         
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.tiles.count, 1)
+        XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatSierpinskiSieve() throws {
         
         let sieve = flatTriangle.sieve(for: .sierpinski)
+        let tile = flatTriangle.transpose(.sierpinski,
+                                          .tile)
         
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.tiles.count, 1)
+        XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testPointyTileSieve() throws {
@@ -387,8 +393,9 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.tiles.count, 1)
+        XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(pointyTriangle))
     }
     
     func testFlatTileSieve() throws {
@@ -398,52 +405,65 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.tiles.count, 1)
+        XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(flatTriangle))
     }
     
     func testPointyChunkSieve() throws {
         
         let sieve = pointyTriangle.sieve(for: .chunk)
+        let tile = pointyTriangle.transpose(.chunk,
+                                            .tile)
         
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.tiles.count, 49)
+        XCTAssertEqual(sieve.triangles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatChunkSieve() throws {
         
         let sieve = flatTriangle.sieve(for: .chunk)
+        let tile = flatTriangle.transpose(.chunk,
+                                          .tile)
         
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.tiles.count, 49)
+        XCTAssertEqual(sieve.triangles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testPointyRegionSieve() throws {
         
         let sieve = pointyTriangle.sieve(for: .region)
+        let tile = pointyTriangle.transpose(.region,
+                                            .tile)
         
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.tiles.count, 784)
+        XCTAssertEqual(sieve.triangles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatRegionSieve() throws {
         
         let sieve = flatTriangle.sieve(for: .region)
+        let tile = flatTriangle.transpose(.region,
+                                          .tile)
         
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.tiles.count, 784)
+        XCTAssertEqual(sieve.triangles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
 }
 

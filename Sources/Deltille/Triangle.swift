@@ -406,17 +406,17 @@ extension Triangle {
         
         public let origin: Triangle
         public let scale: Scale
-        public let tiles: [Triangle]
+        public let triangles: [Triangle]
         public let vertices: [Vertex]
         
         public init(_ origin: Triangle,
                     _ scale: Scale,
-                    _ tiles: [Triangle],
+                    _ triangles: [Triangle],
                     _ vertices: [Vertex]) {
             
             self.origin = origin
             self.scale = scale
-            self.tiles = tiles
+            self.triangles = triangles
             self.vertices = vertices
         }
     }
@@ -551,7 +551,7 @@ extension Triangle {
                 
                 var rotated = Self.init(position)
                 
-                for _ in 0..<rotation.wrap(turns) {
+                for _ in 0..<Rotation.wrap(turns) {
                     
                     rotated = .init(rotated.position.y,
                                     rotated.position.z,
