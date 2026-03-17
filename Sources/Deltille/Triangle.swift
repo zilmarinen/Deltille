@@ -194,20 +194,6 @@ extension Triangle {
         
         return tiles
     }
-    
-    public func mesh(_ scale: Scale,
-                     _ color: Color? = nil) -> Mesh {
-        
-        vertices.mesh(scale,
-                      color)
-    }
-    
-    public func path(_ scale: Scale,
-                     _ color: Color?) -> Path {
-        
-        vertices.path(scale,
-                      color)
-    }
 }
 
 // MARK: Corner

@@ -80,25 +80,6 @@ extension Array where Element: Vertex {
         return self[index]
     }
     
-    public func mesh(_ scale: Element.S,
-                     _ color: Color? = nil) -> Mesh {
-        
-        let path = path(scale,
-                        color)
-        
-        guard let polygon = Polygon(shape: path) else { fatalError("Degenerate vertices") }
-        
-        return .init([polygon])
-    }
-    
-    public func path(_ scale: Element.S,
-                     _ color: Color?) -> Path {
-        
-        let points = map { $0.position(scale) }
-        
-        return points.path(color)
-    }
-    
     public func position(_ scale: Element.S) -> [Vector] {
         
         map { $0.position(scale) }

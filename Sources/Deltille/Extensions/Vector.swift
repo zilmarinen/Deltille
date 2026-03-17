@@ -81,17 +81,4 @@ extension Array where Element == Vector {
         
         return closestIndex
     }
-    
-    public func path(_ color: Color?) -> Path {
-        
-        let points = map {
-            
-            PathPoint($0,
-                      texcoord: nil,
-                      color: color,
-                      isCurved: false)
-        }
-        
-        return .init(points + points.prefix(1))
-    }
 }

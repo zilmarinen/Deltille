@@ -48,10 +48,4 @@ public protocol Tile: Codable,
     func distance(_ other: Self) -> Int
     
     func disc(_ radius: Int) -> [Self]
-    
-    func mesh(_ scale: S,
-              _ color: Color?) -> Mesh
-    
-    func path(_ scale: S,
-              _ color: Color?) -> Path
 }

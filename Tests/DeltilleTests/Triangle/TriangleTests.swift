@@ -33,19 +33,6 @@ final class TriangleTests: XCTestCase {
         }
     }
     
-    // MARK: Vertex Winding
-    
-    func testVertexWinding() throws {
-        
-        let pointyPath = pointyTriangle.path(.default,
-                                             nil)
-        let flatPath = flatTriangle.path(.default,
-                                         nil)
-        
-        XCTAssertEqual(pointyPath.faceNormal, .unitY)
-        XCTAssertEqual(flatPath.faceNormal, .unitY)
-    }
-    
     // MARK: Distance
     
     func testDistance() throws {

@@ -28,16 +28,6 @@ final class HexagonTests: XCTestCase {
         }
     }
     
-    // MARK: Vertex Winding
-    
-    func testVertexWinding() throws {
-        
-        let path = hexagon.path(.default,
-                                nil)
-        
-        XCTAssertEqual(path.faceNormal, .unitY)
-    }
-    
     // MARK: Distance
     
     func testDistance() throws {
