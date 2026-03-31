@@ -20,8 +20,6 @@ Hexagonal and triangular grids are deeply related through duality:
 
 By supporting both grid types in a unified API, Deltille lets you take advantage of this relationship making it easier to build flexible systems for geometry, navigation, or procedural generation.
 
-![Hexagon / Triangle grid and dual representations](./Images/dual_grid.png)
-
 ## Features
 - Hexagonal & Triangular Grids:
   - Unified support for both coordinate systems with consistent APIs.
@@ -33,9 +31,12 @@ By supporting both grid types in a unified API, Deltille lets you take advantage
   - Convenient methods for traversing edge neighbours and corner vertices.
   - Determine Manhattan distance between tiles in grid space.
 - Scaling & Transformations:
-  - Built-in support for scaling grid space and handling grid math such as subdivision and rotation.
+  - Built-in support for scaling grid space and handling math such as subdivision and tessellation.
+  - Effortless rotation and intersection of triangle and hexagonal footprints.
 - Composable API:
   - Designed to integrate cleanly into games, simulations and visualization tools.
+- Unit Tested:
+  - Backed by a robust suite of unit tests covering all common use cases.
 
 # Installation
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
@@ -52,7 +53,24 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 # Implementation
-Deltille defines a `Tile` archetype to which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations. Each tile type defines a `Vertex` array which represents positions in grid space.
+Deltille defines a `Tile` archetype to which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations. Each `Tile` type defines a `Vertex` array which represents positions in grid space.
+
+## Triangles & Hexagons
+Both `Triangle` and `Hexagon` `Tile` types can be used to model vertex positions along the `xz` plane.
+
+```swift
+// MARK: Triangle
+let triangle = Triangle.zero
+    
+let adjacent = Triangle(0, 1, -1)
+```
+
+```swift
+// MARK: Hexagon
+let hexagon = Hexagon.zero
+
+let adjacent = Hexagon(0, 1, -1)
+```
 
 ## Vertices
 Vertices are the basic building blocks for defining `Tile` types. Vertices define the perimeter of a tile and their relationships between neighbouring tiles and vertices. 
@@ -71,24 +89,18 @@ let vertex = triangle.vertex(.c0)
 let vertices = vertex.vertices
 ```  
 
-## Triangles & Hexagons
-Both `Triangle` and `Hexagon` `Tile` types can be used to model vertex positions along the `xz` plane.
+## Scales
+`Tile` vertices can be translated to / from constrained grid sizes using the `Scale` types.
 
 ```swift
 // MARK: Triangle
-let triangle = Triangle.zero
-    
 //generate tile vertices for the desired scale
 let vertices = triangle.vertices.position(.tile)
-```
 
-```swift
 // MARK: Hexagon
-let hexagon = Hexagon.zero
-
-//generate tile mesh for the desired scale
-let vertices = hexagon.mesh(.tile)
-```
+//generate tile vertices for the desired scale
+let vertices = hexagon.vertices.position(.chunk)
+``` 
 
 ## Stencils & Sieves
 Both a `Stencil` or `Sieve` can be used to subdivide a triangle into individual sub-triangles mapped to a specific grid scale.
@@ -136,6 +148,22 @@ let rotated = footprint.rotate(.clockwise)
 //explore footprint perimeter
 let perimeter = rotated.perimeter
 ```
+
+## Rotations
+A `Tile` `Rotation` is defined as a single turn around the world origin.
+
+```swift
+//MARK: Triangle
+let rotated = triangle.rotate(.clockwise)
+
+// MARK: Hexagon
+let rotated = hexagon.rotate(.counterClockwise)
+
+// MARK: Footprint
+let rotated = footprint.rotate(.init(turns: -1)) //wrapped to a non-negative value
+
+```
+
 
 # Examples
 [Regolith](https://github.com/zilmarinen/Regolith/) makes use of the concepts introduced by Deltille to generate meshes for predefined tessellations of a triangle interior using [Ortho-Tiling](https://www.boristhebrave.com/2023/05/31/ortho-tiles/).

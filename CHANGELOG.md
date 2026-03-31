@@ -14,7 +14,7 @@
 
 - Introduce `Array` extensions for `Vertex` collections
 
-- Delegate `Rotation` implementation to `Vertex` from `Tile`
+- Refactor `Rotation` implementation for `Tile`
 
 - Introduce codified `Stencil` subdivisions 
 
