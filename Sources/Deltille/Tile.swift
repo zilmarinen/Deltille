@@ -11,11 +11,11 @@ import Euclid
 public protocol Tile: Codable,
                       Hashable,
                       Identifiable,
+                      Rotatable,
                       Sendable {
     
     associatedtype C = Corner
     associatedtype E = Edge
-    associatedtype R = Rotation
     associatedtype S = Scale
     associatedtype V = Vertex
     
@@ -29,8 +29,6 @@ public protocol Tile: Codable,
     var perimeter: [Self] { get }
     
     func position(_ scale: S) -> Vector
-    
-    func rotate(_ rotation: R) -> Self
     
     func vertex(_ corner: C) -> V
     func corner(_ vertex: V) -> C?

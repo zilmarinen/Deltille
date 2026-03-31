@@ -6,25 +6,29 @@
 
 // MARK: Rotation
 
-public protocol Rotation: Codable,
-                          Hashable,
-                          Sendable {
+public struct Rotation: Codable,
+                        Hashable,
+                        Sendable {
     
-    static var inverse: Double { get }
-    static var turn: Double { get }
-    static var turns: Int { get }
+    public static let identity = Self(turns: 0)
+    public static let clockwise = Self(turns: 1)
+    public static let counterClockwise = Self(turns: -1)
     
-    static func wrap(_ turns: Int) -> Int
+    public let turns: Int
+    
+    public init(turns: Int) {
+     
+        self.turns = turns
+    }
 }
 
 extension Rotation {
     
-    public static var inverse: Double { .pi }
-    public static var turn: Double { .tau / Double(turns) }
-    
-    public static func wrap(_ turns: Int) -> Int {
+    public var radians: Double {
         
-        ((turns % Self.turns) + Self.turns) % Self.turns
+        guard turns != 0 else { return 0 }
+        
+        return .tau / Double(turns)
     }
 }
 
@@ -32,7 +36,17 @@ extension Rotation {
 
 public protocol Rotatable {
     
-    associatedtype R = Rotation
+    static var turns: Int { get }
     
-    func rotate(_ rotation: R) -> Self
+    static func wrap(_ turns: Int) -> Int
+    
+    func rotate(_ rotation: Rotation) -> Self
+}
+
+extension Rotatable {
+    
+    public static func wrap(_ turns: Int) -> Int {
+        
+        ((turns % Self.turns) + Self.turns) % Self.turns
+    }
 }

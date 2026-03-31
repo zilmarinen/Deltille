@@ -246,6 +246,8 @@ extension Hexagon {
     
     public struct Footprint: Deltille.Footprint {
         
+        public static let turns: Int = Hexagon.turns
+        
         public let origin: Hexagon
         public let tiles: [Hexagon]
         
@@ -287,18 +289,20 @@ extension Hexagon {
 
 extension Hexagon: Rotatable {
     
-    public enum Rotation: Deltille.Rotation {
-        
-        public static let turns: Int = 6
-        
-        case clockwise
-        case counterClockwise
-        case turns(_ turns: Int)
-    }
+    public static let turns: Int = 6
     
     public func rotate(_ rotation: Rotation) -> Self {
         
-        .init(vertex.rotate(rotation))
+        var rotated = vertex
+        
+        for _ in 0..<Self.wrap(rotation.turns) {
+            
+            rotated = .init(-rotated.position.z,
+                            -rotated.position.x,
+                            -rotated.position.y)
+        }
+        
+        return .init(rotated)
     }
 }
 
@@ -411,37 +415,6 @@ extension Hexagon {
             
             .init(self,
                   scale)
-        }
-        
-        public func rotate(_ rotation: Rotation) -> Self {
-            
-            switch rotation {
-                
-            case .clockwise:
-                
-                return .init(-position.z,
-                              -position.x,
-                              -position.y)
-                
-            case .counterClockwise:
-                
-                return .init(-position.y,
-                              -position.z,
-                              -position.x)
-                
-            case .turns(let turns):
-                
-                var rotated = Self.init(position)
-                
-                for _ in 0..<Rotation.wrap(turns) {
-                    
-                    rotated = .init(-rotated.position.z,
-                                     -rotated.position.x,
-                                     -rotated.position.y)
-                }
-                
-                return rotated
-            }
         }
     }
 }

@@ -64,9 +64,9 @@ extension Triangle {
         vertex.position.equalToZero
     }
     
-    public var rotation: Double {
+    public var orientation: Double {
         
-        isPointy ? 0.0 : Rotation.inverse
+        isPointy ? 0.0 : .pi
     }
     
     public var vertices: [Vertex] {
@@ -278,6 +278,8 @@ extension Triangle {
     
     public struct Footprint: Deltille.Footprint {
         
+        public static let turns: Int = Triangle.turns
+        
         public let origin: Triangle
         public let tiles: [Triangle]
         
@@ -319,18 +321,20 @@ extension Triangle {
 
 extension Triangle: Rotatable {
     
-    public enum Rotation: Deltille.Rotation {
-        
-        public static let turns: Int = 3
-        
-        case clockwise
-        case counterClockwise
-        case turns(_ turns: Int)
-    }
+    public static let turns: Int = 3
     
     public func rotate(_ rotation: Rotation) -> Self {
     
-        .init(vertex.rotate(rotation))
+        var rotated = vertex
+        
+        for _ in 0..<Self.wrap(rotation.turns) {
+            
+            rotated = .init(rotated.position.y,
+                            rotated.position.z,
+                            rotated.position.x)
+        }
+        
+        return .init(rotated)
     }
 }
 
@@ -515,37 +519,6 @@ extension Triangle {
             
             .init(self,
                   scale)
-        }
-        
-        public func rotate(_ rotation: Rotation) -> Self {
-        
-            switch rotation {
-                
-            case .clockwise:
-                
-                return .init(position.y,
-                             position.z,
-                             position.x)
-                
-            case .counterClockwise:
-                
-                return .init(position.z,
-                             position.x,
-                             position.y)
-                
-            case .turns(let turns):
-                
-                var rotated = Self.init(position)
-                
-                for _ in 0..<Rotation.wrap(turns) {
-                    
-                    rotated = .init(rotated.position.y,
-                                    rotated.position.z,
-                                    rotated.position.x)
-                }
-                
-                return rotated
-            }
         }
     }
 }
