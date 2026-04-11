@@ -278,8 +278,6 @@ extension Triangle {
     
     public struct Footprint: Deltille.Footprint {
         
-        public static let turns: Int = Triangle.turns
-        
         public let origin: Triangle
         public let tiles: [Triangle]
         
@@ -321,13 +319,23 @@ extension Triangle {
 
 extension Triangle: Rotatable {
     
-    public static let turns: Int = 3
+    public struct Rotation: Deltille.Rotation {
+        
+        public static let turns: Int = 3
+        
+        public let turns: Int
+        
+        public init(turns: Int) {
+            
+            self.turns = Self.wrap(turns)
+        }
+    }
     
     public func rotate(_ rotation: Rotation) -> Self {
     
         var rotated = vertex
         
-        for _ in 0..<Self.wrap(rotation.turns) {
+        for _ in 0..<rotation.turns {
             
             rotated = .init(rotated.position.y,
                             rotated.position.z,
