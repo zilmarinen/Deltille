@@ -129,6 +129,18 @@ let triangles = sieve.tiles
 let vertices = sieve.vertices
 ```
 
+## Rotations
+A `Tile` `Rotation` encodes a sequence of fixed step turns around the world origin, wrapped to a non-negative value.
+
+```swift
+//MARK: Triangle
+let rotated = triangle.rotate(.clockwise)
+
+// MARK: Hexagon
+let rotated = hexagon.rotate(.counterClockwise)
+
+```
+
 ## Footprints
 A `Footprint` defines a collection of tiles which can be intersected and rotated around a given origin.
 
@@ -143,27 +155,11 @@ let footprint = Triangle.Footprint(.zero,
                                    coordinates)
 
 //rotate footprint around its origin
-let rotated = footprint.rotate(.clockwise)
+let rotated = footprint.rotate(.init(turns: -1)) //wrapped to a non-negative value
 
 //explore footprint perimeter
 let perimeter = rotated.perimeter
 ```
-
-## Rotations
-A `Tile` `Rotation` is defined as a single turn around the world origin.
-
-```swift
-//MARK: Triangle
-let rotated = triangle.rotate(.clockwise)
-
-// MARK: Hexagon
-let rotated = hexagon.rotate(.counterClockwise)
-
-// MARK: Footprint
-let rotated = footprint.rotate(.init(turns: -1)) //wrapped to a non-negative value
-
-```
-
 
 # Examples
 [Regolith](https://github.com/zilmarinen/Regolith/) makes use of the concepts introduced by Deltille to generate meshes for predefined tessellations of a triangle interior using [Ortho-Tiling](https://www.boristhebrave.com/2023/05/31/ortho-tiles/).
