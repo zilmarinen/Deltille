@@ -9,46 +9,43 @@ import Foundation
 
 // MARK: Hexagon
 
-extension Grid {
+public struct Hexagon: Tile {
     
-    public struct Hexagon: Tile {
+    public static let zero = Self(Vertex.zero)
+    
+    public let vertex: Vertex
+    
+    public init(_ position: Coordinate) {
+                
+        self.vertex = Vertex(position)
+    }
+    
+    public init(_ vertex: Vertex) {
         
-        public static let zero = Self(Vertex.zero)
+        self.vertex = vertex
+    }
+    
+    public init(_ x: Int,
+                _ y: Int,
+                _ z: Int) {
         
-        public let vertex: Vertex
-        
-        public init(_ position: Coordinate) {
-                    
-            self.vertex = Vertex(position)
-        }
-        
-        public init(_ vertex: Vertex) {
-            
-            self.vertex = vertex
-        }
-        
-        public init(_ x: Int,
-                    _ y: Int,
-                    _ z: Int) {
-            
-            self.vertex = Vertex(x, y, z)
-        }
-        
-        public init(_ vector: Vector,
-                    _ scale: Scale) {
+        self.vertex = Vertex(x, y, z)
+    }
+    
+    public init(_ vector: Vector,
+                _ scale: Scale) {
 
-            let i = ceil((vector.z - .sqrt3d3  * vector.x) / scale.edgeLength)
-            let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.edgeLength) + 1
-            let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.edgeLength)
-            
-            self.vertex = Vertex(Int(round((i - k) / 3.0)),
-                                 Int(round((j - i) / 3.0)),
-                                 Int(round((k - j) / 3.0)))
-        }
+        let i = ceil((vector.z - .sqrt3d3  * vector.x) / scale.length)
+        let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.length) + 1
+        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.length)
+        
+        self.vertex = Vertex(Int(round((i - k) / 3.0)),
+                             Int(round((j - i) / 3.0)),
+                             Int(round((k - j) / 3.0)))
     }
 }
 
-extension Grid.Hexagon {
+extension Hexagon {
     
     public var id: String { vertex.id }
     
@@ -62,16 +59,6 @@ extension Grid.Hexagon {
          .init(vertex.position - .unitY)]
     }
     
-    public var corners: [Corner] {
-        
-        Corner.allCases
-    }
-    
-    public var edges: [Edge] {
-        
-        Edge.allCases
-    }
-    
     public var adjacent: [Self] {
         
         edges.map {
@@ -83,7 +70,7 @@ extension Grid.Hexagon {
     public var perimeter: [Self] { adjacent }
 }
 
-extension Grid.Hexagon {
+extension Hexagon {
     
     public func position(_ scale: Scale) -> Vector {
         
@@ -107,7 +94,7 @@ extension Grid.Hexagon {
         adjacent[edge.rawValue]
     }
     
-    public func translation(_ along: Edge) -> Grid.Coordinate {
+    public func translation(_ along: Edge) -> Coordinate {
         
         switch along {
             
@@ -128,39 +115,46 @@ extension Grid.Hexagon {
         let dx = abs(vector.x - center.x)
         let dz = abs(vector.z - center.z)
         
-        if dx > scale.edgeLength * 1.5 { return false }
-        if dz > scale.edgeLength * .sqrt3  { return false }
+        if dx > scale.length * 1.5 { return false }
+        if dz > scale.length * .sqrt3  { return false }
         
-        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.edgeLength * 2.0
-    }
-    
-    public func mesh(_ scale: Scale) -> Mesh {
-        
-        let vertices = self.vertices.map {
-            
-            Euclid.Vertex($0.position(scale),
-                          .unitY)
-        }
-        
-        guard let polygon = Polygon(vertices) else { fatalError("Degenerate tile vertices") }
-        
-        return .init([polygon])
+        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.length * 2.0
     }
     
     public func closest(_ vector: Vector,
                         _ scale: Scale) -> Vertex {
         
-        let vertices = vertices.map { $0.position(scale) }
+        vertices.closest(vector,
+                         scale)
+    }
+    
+    public func distance(_ other: Self) -> Int {
         
-        let index = vertices.firstIndexOf(closest: vector)
+        vertex.distance(other.vertex)
+    }
+    
+    public func disc(_ radius: Int) -> [Hexagon] {
         
-        return self.vertices[index]
+        var tiles: [Hexagon] = []
+        
+        for i in -radius...radius {
+            
+            let start = max(-radius, -i - radius)
+            let end = min(radius, -i + radius) + 1
+            
+            for j in start..<end {
+                
+                tiles.append(.init(vertex.position + .init(i, j, -i - j)))
+            }
+        }
+        
+        return tiles
     }
 }
 
 // MARK: Corner
 
-extension Grid.Hexagon {
+extension Hexagon {
     
     public enum Corner: Int,
                         Deltille.Corner {
@@ -195,11 +189,16 @@ extension Grid.Hexagon {
             }
         }
     }
+    
+    public var corners: [Corner] {
+        
+        Corner.allCases
+    }
 }
 
 // MARK: Edge
 
-extension Grid.Hexagon {
+extension Hexagon {
     
     public enum Edge: Int,
                       Deltille.Edge {
@@ -234,19 +233,31 @@ extension Grid.Hexagon {
             }
         }
     }
+    
+    public var edges: [Edge] {
+        
+        Edge.allCases
+    }
 }
 
 // MARK: Footprint
 
-extension Grid.Hexagon {
+extension Hexagon {
     
-    final class Footprint: Deltille.Footprint<Scale,
-                                              Grid.Hexagon,
-                                              Rotation,
-                                              Vertex> {
+    public struct Footprint: Deltille.Footprint {
         
-        public convenience init(_ origin: Grid.Hexagon,
-                    _ coordinates: [Grid.Coordinate]) {
+        public let origin: Hexagon
+        public let tiles: [Hexagon]
+        
+        public init(_ origin: Hexagon,
+                    _ tiles: [Hexagon]) {
+         
+            self.origin = origin
+            self.tiles = tiles
+        }
+        
+        public init(_ origin: Hexagon,
+                    _ coordinates: [Coordinate]) {
             
             self.init(origin,
                       coordinates.map {
@@ -255,96 +266,125 @@ extension Grid.Hexagon {
             })
         }
         
-        public override func rotate(_ rotation: Rotation) -> Self {
+        public func rotate(_ rotation: Rotation) -> Self {
         
             let hexagons = tiles.map {
                 
-                let hexagon = Grid.Hexagon($0.vertex.position - origin.vertex.position)
+                let hexagon = Hexagon($0.vertex.position - origin.vertex.position)
                 
                 let rotated = hexagon.rotate(rotation)
                 
-                return Grid.Hexagon(rotated.vertex.position + origin.vertex.position)
+                return Hexagon(rotated.vertex.position + origin.vertex.position)
             }
             
-            return Self(origin,
-                        hexagons)
+            return .init(origin,
+                         hexagons)
         }
     }
 }
 
 // MARK: Rotation
 
-extension Grid.Hexagon: Rotatable {
+extension Hexagon: Rotatable {
     
-    public enum Rotation: String,
-                          Deltille.Rotation {
+    public struct Rotation: Deltille.Rotation {
         
-        public static let inverse: Double = .pi
-        public static let step: Double = .tau / 6.0
+        public static let turns: Int = 6
         
-        case clockwise
-        case counterClockwise
+        public let turns: Int
         
-        public var id: String { rawValue }
+        public init(turns: Int) {
+            
+            self.turns = Self.wrap(turns)
+        }
     }
     
     public func rotate(_ rotation: Rotation) -> Self {
         
-        switch rotation {
+        var rotated = vertex
+        
+        for _ in 0..<rotation.turns {
             
-        case .clockwise:
-            
-            .init(-vertex.position.z,
-                  -vertex.position.x,
-                  -vertex.position.y)
-            
-        case .counterClockwise:
-            
-            .init(-vertex.position.y,
-                  -vertex.position.z,
-                  -vertex.position.x)
+            rotated = .init(-rotated.position.z,
+                            -rotated.position.x,
+                            -rotated.position.y)
         }
+        
+        return .init(rotated)
     }
 }
 
 // MARK: Scale
 
-extension Grid.Hexagon {
+extension Hexagon {
     
     public enum Scale: String,
                        Deltille.Scale {
         
+        public static let `default` = Self.tile
+        
+        case conway
         case tile
         case chunk
         case region
         
         public var id: String { rawValue.capitalized }
         
-        public var edgeLength: Double {
+        public var length: Double {
             
             switch self {
                 
-            case .tile: 0.5
-            case .chunk: 3.5
-            case .region: 14.0
+            case .conway: 0.08247860988 //sqrt(3.0) / 3.0 / 7.0
+            case .tile: .sqrt3d3
+            case .chunk: 3.4641016151   //sqrt(3.0) * 2.0
+            case .region: 13.8564064606 //sqrt(3.0) * 8.0
             }
         }
+    }
+    
+    public func parent(_ radius: Int = 1) -> Self {
+        
+        let area = Double(3 * radius * radius + 3 * radius + 1)
+        let shift = 3 * radius + 2
+        
+        let (x, y, z) = vertex.position.xyz
+        
+        let a = floor(Double(z + y * shift) / area)
+        let b = floor(Double(x + z * shift) / area)
+        let c = floor(Double(y + x * shift) / area)
+        
+        return .init(Int(floor((1 + c - b) / 3)),
+                     Int(floor((1 + a - c) / 3)),
+                     Int(floor((1 + b - a) / 3)))
+    }
+    
+    public func child(_ radius: Int = 1) -> Self {
+        
+        let shift = 3 * radius + 2
+        
+        let (x, y, z) = vertex.position.xyz
+        
+        let a = y - z
+        let b = z - x
+        let c = x - y
+        
+        return .init(Int(floor(Double(shift * c + b) / 3)),
+                     Int(floor(Double(shift * a + c) / 3)),
+                     Int(floor(Double(shift * b + a) / 3)))
     }
 }
 
 // MARK: Vertex
 
-extension Grid.Hexagon {
+extension Hexagon {
     
     public struct Vertex: Deltille.Vertex {
         
         public static let zero = Self(.zero)
         
-        public let position: Grid.Coordinate
-        
-        public var tiles: [Grid.Hexagon] {
+        public var tiles: [Hexagon] {
             
-            Grid.Axis.allCases.map {
+            Axis.allCases.map {
                 
                 .init(position + ($0.unit * (position.equalToOne ? -1 : 1)))
             }
@@ -352,13 +392,15 @@ extension Grid.Hexagon {
         
         public var vertices: [Vertex] {
             
-            Grid.Axis.allCases.map {
+            Axis.allCases.map {
                 
                 .init(position + ((.one - $0.unit) * (position.equalToOne ? -1 : 1)))
             }
         }
         
-        public init(_ position: Grid.Coordinate) {
+        public let position: Coordinate
+        
+        public init(_ position: Coordinate) {
             
             self.position = position
         }
@@ -370,11 +412,17 @@ extension Grid.Hexagon {
             self.position = .init(x, y, z)
         }
         
+        public func distance(_ other: Self) -> Int {
+            
+            (abs(position.x - other.position.x) +
+             abs(position.y - other.position.y) +
+             abs(position.z - other.position.z)) / 2
+        }
+        
         public func position(_ scale: Scale) -> Vector {
             
-            Vector(self,
-                   scale)
+            .init(self,
+                  scale)
         }
     }
 }
-

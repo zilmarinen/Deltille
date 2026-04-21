@@ -22,6 +22,42 @@ extension Vector {
     }
 }
 
+// MARK: Hexagon
+
+extension Vector {
+    
+    public init(_ vertex: Hexagon.Vertex,
+                _ scale: Hexagon.Scale) {
+        
+        let dx = Double(vertex.position.x)
+        let dy = Double(vertex.position.y)
+        let dz = Double(vertex.position.z)
+        
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length,
+                  0.0,
+                  (dx - 0.5 * dy - 0.5 * dz) * scale.length)
+    }
+}
+
+// MARK: Triangle
+
+extension Vector {
+    
+    public init(_ vertex: Triangle.Vertex,
+                _ scale: Triangle.Scale) {
+        
+        let dx = Double(vertex.position.y)
+        let dy = Double(vertex.position.x)
+        let dz = Double(vertex.position.z)
+        
+        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.length,
+                  0.0,
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length)
+    }
+}
+
+// MARK: Array
+
 extension Array where Element == Vector {
     
     public func firstIndexOf(closest vector: Vector) -> Int {
@@ -46,38 +82,3 @@ extension Array where Element == Vector {
         return closestIndex
     }
 }
-
-// MARK: Hexagon
-
-extension Vector {
-    
-    public init(_ vertex: Grid.Hexagon.Vertex,
-                _ scale: Grid.Hexagon.Scale) {
-        
-        let dx = Double(vertex.position.x)
-        let dy = Double(vertex.position.y)
-        let dz = Double(vertex.position.z)
-        
-        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength,
-                  0.0,
-                  (dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength)
-    }
-}
-
-// MARK: Triangle
-
-extension Vector {
-    
-    public init(_ vertex: Grid.Triangle.Vertex,
-                _ scale: Grid.Triangle.Scale) {
-        
-        let dx = Double(vertex.position.y)
-        let dy = Double(vertex.position.x)
-        let dz = Double(vertex.position.z)
-        
-        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
-                  0.0,
-                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
-    }
-}
-

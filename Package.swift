@@ -1,11 +1,11 @@
-// swift-tools-version: 6.1
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "Deltille",
-    platforms: [.macOS(.v14),
+    platforms: [.macOS(.v15),
                 .iOS(.v17)],
     products: [
         .library(name: "Deltille",
@@ -20,6 +20,6 @@ let package = Package(
                 dependencies: ["Euclid"]),
         .testTarget(name: "DeltilleTests",
                     dependencies: ["Deltille",
-                                  "Euclid"]),
+                                   "Euclid"]),
     ]
 )

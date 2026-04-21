@@ -11,11 +11,11 @@ import Euclid
 public protocol Tile: Codable,
                       Hashable,
                       Identifiable,
+                      Rotatable,
                       Sendable {
     
     associatedtype C = Corner
     associatedtype E = Edge
-    associatedtype R = Rotation
     associatedtype S = Scale
     associatedtype V = Vertex
     
@@ -30,20 +30,20 @@ public protocol Tile: Codable,
     
     func position(_ scale: S) -> Vector
     
-    func rotate(_ rotation: R) -> Self
-    
     func vertex(_ corner: C) -> V
     func corner(_ vertex: V) -> C?
     
     func neighbour(_ edge: E) -> Self
     
-    func translation(_ along: E) -> Grid.Coordinate
+    func translation(_ along: E) -> Coordinate
     
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
     
-    func mesh(_ scale: S) -> Mesh
-    
     func closest(_ vector: Vector,
                  _ scale: S) -> V
+    
+    func distance(_ other: Self) -> Int
+    
+    func disc(_ radius: Int) -> [Self]
 }

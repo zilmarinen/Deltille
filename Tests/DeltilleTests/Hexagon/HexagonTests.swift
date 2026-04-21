@@ -10,11 +10,39 @@ import XCTest
 
 final class HexagonTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Hexagon = Grid.Hexagon
     typealias Vertex = Hexagon.Vertex
     
     private let hexagon = Hexagon(Coordinate(2, -1, -1))
+    
+    // MARK: Edges
+    
+    func testEdges() throws {
+        
+        for edge in hexagon.edges {
+            
+            let adjacent = hexagon.neighbour(edge)
+            
+            let vertices = Set(edge.corners.map { hexagon.vertex($0) })
+            
+            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+        }
+    }
+    
+    // MARK: Distance
+    
+    func testDistance() throws {
+        
+        XCTAssertEqual(hexagon.distance(hexagon), 0)
+        XCTAssertEqual(hexagon.distance(.zero), 2)
+    }
+    
+    func testDisc() throws {
+        
+        XCTAssertEqual(hexagon.disc(0).count, 1)
+        XCTAssertEqual(hexagon.disc(1).count, 7)
+        XCTAssertEqual(hexagon.disc(2).count, 19)
+        XCTAssertEqual(hexagon.disc(3).count, 37)
+    }
     
     // MARK: Contains Vector
     
@@ -74,5 +102,67 @@ final class HexagonTests: XCTestCase {
         XCTAssertEqual(hexagonVertices, vertices)
         XCTAssertEqual(hexagonVertices, hexagon.vertices)
         XCTAssertEqual(nil, hexagon.corner(.zero))
+    }
+    
+    // MARK: Transposing
+    
+    func testTransposeToParent() throws {
+        
+        let tiles: [Hexagon] = [.zero,
+                                .init(0, 1, -1),
+                                .init(-1, 0, 1),
+                                .init(1, -1, 0),
+                                .init(-2, -1, 3),
+                                .init(-3, 2, 1),
+                                .init(-1, 3, -2),
+                                .init(2, 1, -3),
+                                .init(3, -2, -1),
+                                .init(1, -3, 2)]
+        
+        let transposed = tiles.map {
+            
+            $0.parent()
+        }
+        
+        let chunks: [Hexagon] = [.zero,
+                                 .zero,
+                                 .zero,
+                                 .zero,
+                                 .init(-1, 0, 1),
+                                 .init(-1, 1, 0),
+                                 .init(0, 1, -1),
+                                 .init(1, 0, -1),
+                                 .init(1, -1, 0),
+                                 .init(0, -1, 1)]
+        
+        XCTAssertEqual(transposed,
+                       chunks)
+    }
+    
+    func testTransposeToChild() throws {
+        
+        let chunks: [Hexagon] = [.zero,
+                                .init(-1, 0, 1),
+                                .init(-1, 1, 0),
+                                .init(0, 1, -1),
+                                .init(1, 0, -1),
+                                .init(1, -1, 0),
+                                .init(0, -1, 1)]
+        
+        let transposed = chunks.map {
+            
+            $0.child()
+        }
+        
+        let tiles: [Hexagon] = [.zero,
+                                .init(-1, -2, 3),
+                                .init(-3, 1, 2),
+                                .init(-2, 3, -1),
+                                .init(1, 2, -3),
+                                .init(3, -1, -2),
+                                .init(2, -3, 1)]
+        
+        XCTAssertEqual(transposed,
+                       tiles)
     }
 }

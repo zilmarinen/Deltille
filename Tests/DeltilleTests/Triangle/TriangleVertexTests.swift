@@ -10,8 +10,6 @@ import XCTest
 
 final class TriangleVertexTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Triangle = Grid.Triangle
     typealias Vertex = Triangle.Vertex
     
     private let vertex = Vertex(.init(3, -1, -1))
@@ -63,6 +61,20 @@ final class TriangleVertexTests: XCTestCase {
         
         XCTAssertEqual(triangle0.vertex, result0.vertex)
         XCTAssertEqual(triangle1.vertex, result1.vertex)
+    }
+    
+    func testClosestVertex() throws {
+        
+        let scale = Triangle.Scale.tile
+        let triangle = Triangle(Coordinate(-3, -2, 4))
+        
+        let center = triangle.position(scale)
+        let vertex = triangle.vertex(.c0)
+        
+        let vector = center.mid(vertex.position(scale))
+        
+        XCTAssertEqual(triangle.closest(vector,
+                                        scale), vertex)
     }
     
     // MARK: Vertex to Vector
@@ -141,21 +153,21 @@ extension TriangleVertexTests {
         let y = Triangle(-.unitY)
         let z = Triangle(-.unitZ)
         
-        let edgeLength = scale.edgeLength
-        let halfEdgeLength = edgeLength / 2.0
-        let sqrt3d2 = .sqrt3d2 * edgeLength
+        let length = scale.length
+        let halfLength = length / 2.0
+        let sqrt3d2 = .sqrt3d2 * length
         
-        let v0 = Vector(-halfEdgeLength, 0.0, .sqrt3d2 * edgeLength)
-        let v1 = Vector(edgeLength,      0.0, 0.0)
-        let v2 = Vector(-halfEdgeLength, 0.0, -.sqrt3d2 * edgeLength)
+        let v0 = Vector(-halfLength, 0.0, .sqrt3d2 * length)
+        let v1 = Vector(length,      0.0, 0.0)
+        let v2 = Vector(-halfLength, 0.0, -.sqrt3d2 * length)
         
-        let v3 = Vector(edgeLength,        0.0, -sqrt3d2 * 2.0)
-        let v4 = Vector(-edgeLength * 2.0, 0.0, 0.0)
-        let v5 = Vector(edgeLength,        0.0, sqrt3d2 * 2.0)
+        let v3 = Vector(length,        0.0, -sqrt3d2 * 2.0)
+        let v4 = Vector(-length * 2.0, 0.0, 0.0)
+        let v5 = Vector(length,        0.0, sqrt3d2 * 2.0)
         
-        let px = Vector(halfEdgeLength, 0.0, -sqrt3d2)
-        let py = Vector(-edgeLength, 0.0, 0.0)
-        let pz = Vector(halfEdgeLength,  0.0, sqrt3d2)
+        let px = Vector(halfLength, 0.0, -sqrt3d2)
+        let py = Vector(-length, 0.0, 0.0)
+        let pz = Vector(halfLength,  0.0, sqrt3d2)
         
         guard   Vector(zero.vertex,
                        scale).isEqual(to: .zero),
@@ -231,8 +243,8 @@ extension TriangleVertexTests {
     
     private func testVectorToTriangle(_ scale: Triangle.Scale) -> Bool {
         
-        let edgeLength = scale.edgeLength
-        let sqrt3d2 = .sqrt3d2 * edgeLength
+        let length = scale.length
+        let sqrt3d2 = .sqrt3d2 * length
         
         let c0 = Coordinate(-2, -2, 4)
         let c1 = Coordinate(-2, 4, -2)
@@ -242,12 +254,12 @@ extension TriangleVertexTests {
         let c4 = Coordinate(-3, 6, -3)
         let c5 = Coordinate(6, -3, -3)
         
-        let v0 = Vector(-edgeLength * 3.0, 0.0, -sqrt3d2 * 6.0)
-        let v1 = Vector( edgeLength * 6.0, 0.0,  0.0)
-        let v2 = Vector(-edgeLength * 3.0, 0.0,  sqrt3d2 * 6.0)
-        let v3 = Vector(-edgeLength * 4.5, 0.0, -sqrt3d2 * 9.0)
-        let v4 = Vector( edgeLength * 9.0, 0.0, 0.0)
-        let v5 = Vector(-edgeLength * 4.5, 0.0,  sqrt3d2 * 9.0)
+        let v0 = Vector(-length * 3.0, 0.0, -sqrt3d2 * 6.0)
+        let v1 = Vector( length * 6.0, 0.0,  0.0)
+        let v2 = Vector(-length * 3.0, 0.0,  sqrt3d2 * 6.0)
+        let v3 = Vector(-length * 4.5, 0.0, -sqrt3d2 * 9.0)
+        let v4 = Vector( length * 9.0, 0.0, 0.0)
+        let v5 = Vector(-length * 4.5, 0.0,  sqrt3d2 * 9.0)
         
         guard   Triangle(v0, scale).vertex.position == c0,
                 Triangle(v1, scale).vertex.position == c1,

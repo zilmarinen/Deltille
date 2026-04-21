@@ -6,14 +6,39 @@
 
 // MARK: Rotation
 
-public protocol Rotation: CaseIterable,
-                          Codable,
+public protocol Rotation: Codable,
                           Hashable,
-                          Identifiable,
                           Sendable {
     
-    static var inverse: Double { get }
-    static var step: Double { get }
+    static var turns: Int { get }
+    
+    static var identity: Self { get }
+    static var clockwise: Self { get }
+    static var counterClockwise: Self { get }
+    
+    static func wrap(_ turns: Int) -> Int
+    
+    init(turns: Int)
+    
+    var turns: Int { get }
+    var radians: Double { get }
+}
+
+extension Rotation {
+    
+    public static var identity: Self { Self(turns: 0) }
+    public static var clockwise: Self { Self(turns: 1) }
+    public static var counterClockwise: Self { Self(turns: -1) }
+    
+    public static func wrap(_ turns: Int) -> Int {
+        
+        ((turns % Self.turns) + Self.turns) % Self.turns
+    }
+    
+    public var radians: Double {
+        
+        (.tau / Double(Self.turns)) * Double(turns)
+    }
 }
 
 // MARK: Rotatable

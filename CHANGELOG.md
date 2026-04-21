@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (21/04/2026)
+
+- Remove `Grid` enum namespace
+
+- Introduce methods for `Hexagon` chunking
+
+- Introduce `.default` property for `Scale`
+
+- Introduce `perimeter` property for `Stencil` 
+
+- Introduce `Tile` methods for distance and proximity
+
+- Introduce `Array` extensions for `Vertex` collections
+
+- Refactor `Rotation` implementation for `Tile`
+
+- Introduce codified `Stencil` subdivisions 
+
 ## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
 
 - Introduce `Hexagon` type

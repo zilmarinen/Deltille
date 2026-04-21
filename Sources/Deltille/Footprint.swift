@@ -8,33 +8,44 @@ import Euclid
 
 // MARK: Footprint
 
-public class Footprint<S: Scale,
-                       T: Tile,
-                       R: Rotation,
-                       V: Vertex>: Codable,
-                                   Hashable,
-                                   Rotatable where T.R == R,
-                                                   T.S == S,
-                                                   T.V == V {
+public protocol Footprint: Codable,
+                           Hashable,
+                           Rotatable,
+                           Sendable where T.V == V,
+                                          V.S == S {
     
-    public let origin: T
-    public let tiles: [T]
+    associatedtype S: Scale
+    associatedtype T: Tile
+    associatedtype V: Vertex
     
-    public required init(_ origin: T,
-                         _ tiles: [T]) {
-     
-        self.origin = origin
-        self.tiles = tiles
-    }
+    var origin: T { get }
+    var tiles: [T] { get }
     
-    open func rotate(_ rotation: R) -> Self { self }
+    var perimeter: [T] { get }
+    var vertices: [V] { get }
+    
+    func center(_ scale: S) -> Vector
+    func intersects(_ footprint: Self) -> Bool
+    func intersects(_ tile: T) -> Bool
 }
 
 extension Footprint {
     
     public var perimeter: [T] {
         
-        Array(Set(tiles.flatMap { $0.perimeter }))
+        let unique = Set(tiles.flatMap { $0.perimeter })
+        
+        let edges = Array(unique.subtracting(tiles))
+        
+        return edges.filter { tile in
+            
+            let intersecting = tile.adjacent.filter {
+                
+                tiles.contains($0)
+            }
+            
+            return intersecting.count <= 1
+        }
     }
     
     public var vertices: [V] {
@@ -45,30 +56,12 @@ extension Footprint {
 
 extension Footprint {
     
-    public func hash(into hasher: inout Hasher) {
-        
-        hasher.combine(origin)
-        hasher.combine(tiles)
-    }
-    
-    public static func == (lhs: Footprint<S, T, R, V>,
-                           rhs: Footprint<S, T, R, V>) -> Bool {
-        
-        lhs.origin == rhs.origin &&
-        lhs.tiles == rhs.tiles
-    }
-    
     public func center(_ scale: S) -> Vector {
         
-        let vector = tiles.reduce(into: Vector.zero) { result, tile in
-            
-            result += tile.position(scale)
-        }
-        
-        return vector / Double(tiles.count)
+        vertices.center(scale)
     }
     
-    public func intersects(_ footprint: Footprint) -> Bool {
+    public func intersects(_ footprint: Self) -> Bool {
         
         for tile in footprint.tiles {
             

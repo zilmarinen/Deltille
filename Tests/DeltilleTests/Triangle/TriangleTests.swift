@@ -10,8 +10,6 @@ import XCTest
 
 final class TriangleTests: XCTestCase {
     
-    typealias Coordinate = Grid.Coordinate
-    typealias Triangle = Grid.Triangle
     typealias Vertex = Triangle.Vertex
     
     private let pointyTriangle = Triangle(4, -2, -2)
@@ -20,6 +18,38 @@ final class TriangleTests: XCTestCase {
     private let x = Triangle(-.unitX)
     private let y = Triangle(-.unitY)
     private let z = Triangle(-.unitZ)
+    
+    // MARK: Edges
+    
+    func testEdges() throws {
+        
+        for edge in unitTriangle.edges {
+            
+            let adjacent = unitTriangle.neighbour(edge)
+            
+            let vertices = Set(edge.corners.map { unitTriangle.vertex($0) })
+            
+            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+        }
+    }
+    
+    // MARK: Distance
+    
+    func testDistance() throws {
+        
+        XCTAssertEqual(pointyTriangle.distance(pointyTriangle), 0)
+        XCTAssertEqual(flatTriangle.distance(flatTriangle), 0)
+        XCTAssertEqual(pointyTriangle.distance(unitTriangle), 8)
+        XCTAssertEqual(flatTriangle.distance(unitTriangle), 7)
+    }
+    
+    func testDisc() throws {
+        
+        XCTAssertEqual(unitTriangle.disc(0).count, 1)
+        XCTAssertEqual(unitTriangle.disc(1).count, 4)
+        XCTAssertEqual(unitTriangle.disc(2).count, 10)
+        XCTAssertEqual(unitTriangle.disc(3).count, 19)
+    }
     
     // MARK: Contains Vector
     
@@ -168,16 +198,21 @@ final class TriangleTests: XCTestCase {
         let regions = [unitTriangle,
                        x,
                        y,
-                       z].map { $0.transpose(.region,
-                                             .tile) }
+                       z]
+            
+        let transposed = regions.map {
+            
+            $0.transpose(.region,
+                         .tile)
+        }
         
-        let triangles: [Triangle] = [.init(0, 0, 0),
-                                     .init(-19, 9, 9),
-                                     .init(9, -19, 9),
-                                     .init(9, 9, -19)]
+        let tiles: [Triangle] = [.init(0, 0, 0),
+                                 .init(-19, 9, 9),
+                                 .init(9, -19, 9),
+                                 .init(9, 9, -19)]
         
-        XCTAssertEqual(regions,
-                       triangles)
+        XCTAssertEqual(transposed,
+                       tiles)
     }
     
     func testTransposeRegionToChunk() throws {
@@ -185,58 +220,49 @@ final class TriangleTests: XCTestCase {
         let regions = [unitTriangle,
                        x,
                        y,
-                       z].map { $0.transpose(.region,
-                                             .chunk) }
+                       z]
+            
+        let transposed = regions.map {
+            
+            $0.transpose(.region,
+                         .chunk)
+        }
         
-        let triangles: [Triangle] = [.init(0, 0, 0),
-                                     .init(-3, 1, 1),
-                                     .init(1, -3, 1),
-                                     .init(1, 1, -3)]
+        let chunks: [Triangle] = [.init(0, 0, 0),
+                                  .init(-3, 1, 1),
+                                  .init(1, -3, 1),
+                                  .init(1, 1, -3)]
         
-        XCTAssertEqual(regions,
-                       triangles)
+        XCTAssertEqual(transposed,
+                       chunks)
     }
     
     func testTransposeChunkToRegion() throws {
         
-        let regions = [Triangle(0, 0, 0),
+        let chunks = [Triangle(0, 0, 0),
+                      x,
+                      y,
+                      z,
+                      Triangle(-3, 1, 1),
+                      Triangle(1, -3, 1),
+                      Triangle(1, 1, -3)]
+            
+        let transposed = chunks.map {
+            
+            $0.transpose(.chunk,
+                         .region)
+        }
+        
+        let regions = [unitTriangle,
+                       unitTriangle,
+                       unitTriangle,
+                       unitTriangle,
                        x,
                        y,
-                       z,
-                       Triangle(-3, 1, 1),
-                       Triangle(1, -3, 1),
-                       Triangle(1, 1, -3)].map { $0.transpose(.chunk,
-                                                              .region) }
+                       z]
         
-        let triangles = [unitTriangle,
-                         unitTriangle,
-                         unitTriangle,
-                         unitTriangle,
-                         x,
-                         y,
-                         z]
-        
-        XCTAssertEqual(regions, triangles)
-        
-        XCTAssertEqual(.zero,
-                       Triangle(2, -1, -1).transpose(.chunk,
-                                                     .region))
-        XCTAssertEqual(.zero,
-                       Triangle(-1, 2, -1).transpose(.chunk,
-                                                     .region))
-        XCTAssertEqual(.zero,
-                       Triangle(-1, -1, 2).transpose(.chunk,
-                                                     .region))
-        
-        XCTAssertEqual(Triangle(-1, -1, 1),
-                       Triangle(-2, -2, 3).transpose(.chunk,
-                                                     .region))
-        XCTAssertEqual(Triangle(-1, 1, -1),
-                       Triangle(-2, 3, -2).transpose(.chunk,
-                                                     .region))
-        XCTAssertEqual(Triangle(1, -1, -1),
-                       Triangle(3, -2, -2).transpose(.chunk,
-                                                     .region))
+        XCTAssertEqual(transposed,
+                       regions)
     }
     
     func testTransposeChunkToTile() throws {
@@ -244,16 +270,21 @@ final class TriangleTests: XCTestCase {
         let chunks = [unitTriangle,
                       x,
                       y,
-                      z].map { $0.transpose(.chunk,
-                                            .tile) }
+                      z]
+            
+        let transposed = chunks.map {
+            
+            $0.transpose(.chunk,
+                         .tile)
+        }
         
-        let triangles = [Triangle(0, 0, 0),
-                         Triangle(-5, 2, 2),
-                         Triangle(2, -5, 2),
-                         Triangle(2, 2, -5)]
+        let tiles: [Triangle] = [.init(0, 0, 0),
+                                 .init(-5, 2, 2),
+                                 .init(2, -5, 2),
+                                 .init(2, 2, -5)]
         
-        XCTAssertEqual(chunks,
-                       triangles)
+        XCTAssertEqual(transposed,
+                       tiles)
     }
     
     func testTransposeTileToChunk() throws {
@@ -264,38 +295,24 @@ final class TriangleTests: XCTestCase {
                      z,
                      Triangle(-5, 2, 2),
                      Triangle(2, -5, 2),
-                     Triangle(2, 2, -5)].map { $0.transpose(.tile,
-                                                                 .chunk) }
+                     Triangle(2, 2, -5)]
+            
+        let transposed = tiles.map {
+            
+            $0.transpose(.tile,
+                         .chunk)
+        }
         
-        let triangles = [unitTriangle,
-                         unitTriangle,
-                         unitTriangle,
-                         unitTriangle,
-                         x,
-                         y,
-                         z]
-        
-        XCTAssertEqual(tiles, triangles)
-        
-        XCTAssertEqual(.zero,
-                       Triangle(2, -1, -1).transpose(.tile,
-                                                     .chunk))
-        XCTAssertEqual(.zero,
-                       Triangle(-1, 2, -1).transpose(.tile,
-                                                     .chunk))
-        XCTAssertEqual(.zero,
-                       Triangle(-1, -1, 2).transpose(.tile,
-                                                     .chunk))
-        
-        XCTAssertEqual(.zero,
-                       Triangle(-2, -2, 4).transpose(.tile,
-                                                     .chunk))
-        XCTAssertEqual(.zero,
-                       Triangle(-2, 4, -2).transpose(.tile,
-                                                     .chunk))
-        XCTAssertEqual(.zero,
-                       Triangle(4, -2, -2).transpose(.tile,
-                                                     .chunk))
+        let chunks = [unitTriangle,
+                      unitTriangle,
+                      unitTriangle,
+                      unitTriangle,
+                      x,
+                      y,
+                      z]
+            
+        XCTAssertEqual(transposed,
+                       chunks)
     }
     
     func testTransposeTileToRegion() throws {
@@ -306,19 +323,24 @@ final class TriangleTests: XCTestCase {
                      z,
                      Triangle(-19, 9, 9),
                      Triangle(9, -19, 9),
-                     Triangle(9, 9, -19)].map { $0.transpose(.tile,
-                                                             .region) }
+                     Triangle(9, 9, -19)]
+            
+        let transposed = tiles.map {
+            
+            $0.transpose(.tile,
+                         .region)
+        }
         
-        let triangles = [unitTriangle,
-                         unitTriangle,
-                         unitTriangle,
-                         unitTriangle,
-                         x,
-                         y,
-                         z]
+        let regions = [unitTriangle,
+                       unitTriangle,
+                       unitTriangle,
+                       unitTriangle,
+                       x,
+                       y,
+                       z]
         
-        XCTAssertEqual(tiles,
-                       triangles)
+        XCTAssertEqual(transposed,
+                       regions)
     }
     
     // MARK: Sieve
@@ -326,23 +348,29 @@ final class TriangleTests: XCTestCase {
     func testPointySierpinskiSieve() throws {
         
         let sieve = pointyTriangle.sieve(for: .sierpinski)
+        let tile = pointyTriangle.transpose(.sierpinski,
+                                            .tile)
         
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatSierpinskiSieve() throws {
         
         let sieve = flatTriangle.sieve(for: .sierpinski)
+        let tile = flatTriangle.transpose(.sierpinski,
+                                          .tile)
         
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .sierpinski)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testPointyTileSieve() throws {
@@ -354,6 +382,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.scale, .tile)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(pointyTriangle))
     }
     
     func testFlatTileSieve() throws {
@@ -365,50 +394,63 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(sieve.scale, .tile)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
+        XCTAssertTrue(sieve.triangles.contains(flatTriangle))
     }
     
     func testPointyChunkSieve() throws {
         
         let sieve = pointyTriangle.sieve(for: .chunk)
+        let tile = pointyTriangle.transpose(.chunk,
+                                            .tile)
         
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
         XCTAssertEqual(sieve.triangles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatChunkSieve() throws {
         
         let sieve = flatTriangle.sieve(for: .chunk)
+        let tile = flatTriangle.transpose(.chunk,
+                                          .tile)
         
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .chunk)
         XCTAssertEqual(sieve.triangles.count, 49)
         XCTAssertEqual(sieve.vertices.count, 36)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testPointyRegionSieve() throws {
         
         let sieve = pointyTriangle.sieve(for: .region)
+        let tile = pointyTriangle.transpose(.region,
+                                            .tile)
         
         XCTAssertEqual(sieve.origin,
                        pointyTriangle)
         XCTAssertEqual(sieve.scale, .region)
         XCTAssertEqual(sieve.triangles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatRegionSieve() throws {
         
         let sieve = flatTriangle.sieve(for: .region)
+        let tile = flatTriangle.transpose(.region,
+                                          .tile)
         
         XCTAssertEqual(sieve.origin,
                        flatTriangle)
         XCTAssertEqual(sieve.scale, .region)
         XCTAssertEqual(sieve.triangles.count, 784)
         XCTAssertEqual(sieve.vertices.count, 435)
+        XCTAssertTrue(sieve.triangles.contains(tile))
     }
 }
 
