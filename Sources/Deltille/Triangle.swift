@@ -35,9 +35,9 @@ public struct Triangle: Tile {
     public init(_ vector: Vector,
                 _ scale: Scale) {
     
-        let j = ceil((vector.x - .sqrt3d3  * vector.z) / scale.edgeLength)
-        let i = floor((     .sqrt3d3 * 2.0 * vector.z) / scale.edgeLength) + 1
-        let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale.edgeLength)
+        let j = ceil((vector.x - .sqrt3d3  * vector.z) / scale.length)
+        let i = floor((     .sqrt3d3 * 2.0 * vector.z) / scale.length) + 1
+        let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale.length)
         
         let triangle = Triangle(Int(round((i - j) / 3.0)),
                                 Int(round((j - k) / 3.0)),
@@ -362,7 +362,7 @@ extension Triangle {
         
         public var id: String { rawValue.capitalized }
         
-        public var edgeLength: Double {
+        public var length: Double {
             
             switch self {
                 
@@ -424,7 +424,7 @@ extension Triangle {
         let origin = Triangle(vertex.position(scale),
                               .tile)
         
-        let columns = Int(max(scale.edgeLength, 1.0))
+        let columns = Int(max(scale.length, 1.0))
         let base = Int(floor(Double(columns) / 1.5))
         let half = Int(floor(Double(base) / 2.0))
         let pointy = isPointy

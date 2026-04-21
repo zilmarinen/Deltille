@@ -129,16 +129,16 @@ extension HexagonVertexTests {
         
         let zero = Hexagon.zero
         
-        let edgeLength = scale.edgeLength
-        let halfEdgeLength = edgeLength / 2.0
-        let sqrt3d2 = .sqrt3d2 * edgeLength
+        let length = scale.length
+        let halfLength = length / 2.0
+        let sqrt3d2 = .sqrt3d2 * length
         
-        let v0 = Vector(0.0,      0.0, edgeLength)
-        let v1 = Vector(sqrt3d2,  0.0, halfEdgeLength)
-        let v2 = Vector(sqrt3d2,  0.0, -halfEdgeLength)
-        let v3 = Vector(0.0,      0.0, -edgeLength)
-        let v4 = Vector(-sqrt3d2, 0.0, -halfEdgeLength)
-        let v5 = Vector(-sqrt3d2, 0.0, halfEdgeLength)
+        let v0 = Vector(0.0,      0.0, length)
+        let v1 = Vector(sqrt3d2,  0.0, halfLength)
+        let v2 = Vector(sqrt3d2,  0.0, -halfLength)
+        let v3 = Vector(0.0,      0.0, -length)
+        let v4 = Vector(-sqrt3d2, 0.0, -halfLength)
+        let v5 = Vector(-sqrt3d2, 0.0, halfLength)
         
         guard   Vector(zero.vertex,
                        scale).isEqual(to: .zero),
@@ -192,9 +192,9 @@ extension HexagonVertexTests {
     
     private func testVectorToHexagon(_ scale: Hexagon.Scale) -> Bool {
         
-        let edgeLength = scale.edgeLength
-        let halfEdgeLength = edgeLength / 2.0
-        let sqrt3d2 = .sqrt3d2 * edgeLength
+        let length = scale.length
+        let halfLength = length / 2.0
+        let sqrt3d2 = .sqrt3d2 * length
         
         let c0 = Coordinate(-1, 1, 0)
         let c1 = Coordinate(1, 0, -1)
@@ -205,11 +205,11 @@ extension HexagonVertexTests {
         let c5 = Coordinate(0, 2, -2)
         let c6 = Coordinate.zero
         
-        let v0 = Vector(sqrt3d2,        0.0, -(edgeLength + halfEdgeLength))
-        let v1 = Vector(sqrt3d2,        0.0, edgeLength + halfEdgeLength)
+        let v0 = Vector(sqrt3d2,        0.0, -(length + halfLength))
+        let v1 = Vector(sqrt3d2,        0.0, length + halfLength)
         let v2 = Vector(-sqrt3d2 * 2.0, 0.0, 0.0)
-        let v3 = Vector(-sqrt3d2 * 2.0, 0.0, (edgeLength + halfEdgeLength) * 2.0)
-        let v4 = Vector(-sqrt3d2 * 2.0, 0.0, -(edgeLength + halfEdgeLength) * 2.0)
+        let v3 = Vector(-sqrt3d2 * 2.0, 0.0, (length + halfLength) * 2.0)
+        let v4 = Vector(-sqrt3d2 * 2.0, 0.0, -(length + halfLength) * 2.0)
         let v5 = Vector(sqrt3d2 * 4.0,  0.0,  0.0)
         let v6 = Vector.zero
         
