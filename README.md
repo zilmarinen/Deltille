@@ -90,16 +90,16 @@ let vertices = vertex.vertices
 ```  
 
 ## Scales
-`Tile` vertices can be translated to / from constrained grid sizes using the `Scale` types.
+Vertices can be translated to and from constrained grid sizes using the `Scale` types.
 
 ```swift
 // MARK: Triangle
-//generate tile vertices for the desired scale
+//calculate tile vertices for the desired scale
 let vertices = triangle.vertices.position(.tile)
 
 // MARK: Hexagon
-//generate tile vertices for the desired scale
-let vertices = hexagon.vertices.position(.chunk)
+//calculate tile vertex for the desired scale
+let vertices = hexagon.vertex.position(.chunk)
 ``` 
 
 ## Stencils & Sieves
