@@ -16,5 +16,5 @@ public protocol Scale: CaseIterable,
     
     static var `default`: Self { get }
     
-    var edgeLength: Double { get }
+    var length: Double { get }
 }

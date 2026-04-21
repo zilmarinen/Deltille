@@ -33,9 +33,9 @@ extension Vector {
         let dy = Double(vertex.position.y)
         let dz = Double(vertex.position.z)
         
-        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength,
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length,
                   0.0,
-                  (dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength)
+                  (dx - 0.5 * dy - 0.5 * dz) * scale.length)
     }
 }
 
@@ -50,9 +50,9 @@ extension Vector {
         let dy = Double(vertex.position.x)
         let dz = Double(vertex.position.z)
         
-        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.edgeLength,
+        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.length,
                   0.0,
-                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.edgeLength)
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length)
     }
 }
 

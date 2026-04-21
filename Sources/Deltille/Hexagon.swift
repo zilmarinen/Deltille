@@ -35,9 +35,9 @@ public struct Hexagon: Tile {
     public init(_ vector: Vector,
                 _ scale: Scale) {
 
-        let i = ceil((vector.z - .sqrt3d3  * vector.x) / scale.edgeLength)
-        let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.edgeLength) + 1
-        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.edgeLength)
+        let i = ceil((vector.z - .sqrt3d3  * vector.x) / scale.length)
+        let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.length) + 1
+        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.length)
         
         self.vertex = Vertex(Int(round((i - k) / 3.0)),
                              Int(round((j - i) / 3.0)),
@@ -115,10 +115,10 @@ extension Hexagon {
         let dx = abs(vector.x - center.x)
         let dz = abs(vector.z - center.z)
         
-        if dx > scale.edgeLength * 1.5 { return false }
-        if dz > scale.edgeLength * .sqrt3  { return false }
+        if dx > scale.length * 1.5 { return false }
+        if dz > scale.length * .sqrt3  { return false }
         
-        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.edgeLength * 2.0
+        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.length * 2.0
     }
     
     public func closest(_ vector: Vector,
@@ -330,7 +330,7 @@ extension Hexagon {
         
         public var id: String { rawValue.capitalized }
         
-        public var edgeLength: Double {
+        public var length: Double {
             
             switch self {
                 
