@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (12/09/2025)
+## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (21/04/2026)
 
 - Remove `Grid` enum namespace
 
