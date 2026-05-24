@@ -206,7 +206,7 @@ final class TriangleTests: XCTestCase {
                          .tile)
         }
         
-        let tiles: [Triangle] = [.init(0, 0, 0),
+        let tiles: [Triangle] = [.zero,
                                  .init(-19, 9, 9),
                                  .init(9, -19, 9),
                                  .init(9, 9, -19)]
@@ -228,7 +228,7 @@ final class TriangleTests: XCTestCase {
                          .chunk)
         }
         
-        let chunks: [Triangle] = [.init(0, 0, 0),
+        let chunks: [Triangle] = [.zero,
                                   .init(-3, 1, 1),
                                   .init(1, -3, 1),
                                   .init(1, 1, -3)]
@@ -239,13 +239,13 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeChunkToRegion() throws {
         
-        let chunks = [Triangle(0, 0, 0),
-                      x,
-                      y,
-                      z,
-                      Triangle(-3, 1, 1),
-                      Triangle(1, -3, 1),
-                      Triangle(1, 1, -3)]
+        let chunks: [Triangle] = [.zero,
+                                  x,
+                                  y,
+                                  z,
+                                  .init(-3, 1, 1),
+                                  .init(1, -3, 1),
+                                  .init(1, 1, -3)]
             
         let transposed = chunks.map {
             
@@ -278,7 +278,7 @@ final class TriangleTests: XCTestCase {
                          .tile)
         }
         
-        let tiles: [Triangle] = [.init(0, 0, 0),
+        let tiles: [Triangle] = [.zero,
                                  .init(-5, 2, 2),
                                  .init(2, -5, 2),
                                  .init(2, 2, -5)]
@@ -289,13 +289,13 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeTileToChunk() throws {
         
-        let tiles = [Triangle(0, 0, 0),
-                     x,
-                     y,
-                     z,
-                     Triangle(-5, 2, 2),
-                     Triangle(2, -5, 2),
-                     Triangle(2, 2, -5)]
+        let tiles: [Triangle] = [.zero,
+                                 x,
+                                 y,
+                                 z,
+                                 .init(-5, 2, 2),
+                                 .init(2, -5, 2),
+                                 .init(2, 2, -5)]
             
         let transposed = tiles.map {
             
@@ -317,13 +317,13 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeTileToRegion() throws {
         
-        let tiles = [Triangle(0, 0, 0),
-                     x,
-                     y,
-                     z,
-                     Triangle(-19, 9, 9),
-                     Triangle(9, -19, 9),
-                     Triangle(9, 9, -19)]
+        let tiles: [Triangle] = [.zero,
+                                 x,
+                                 y,
+                                 z,
+                                 .init(-19, 9, 9),
+                                 .init(9, -19, 9),
+                                 .init(9, 9, -19)]
             
         let transposed = tiles.map {
             

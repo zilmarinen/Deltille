@@ -12,7 +12,7 @@ let package = Package(
                  targets: ["Deltille"]),
     ],
     dependencies: [
-        .package(url: "git@github.com:nicklockwood/Euclid.git",
+        .package(url: "https://github.com/nicklockwood/Euclid.git",
                  branch: "main"),
     ],
     targets: [

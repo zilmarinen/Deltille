@@ -29,9 +29,12 @@ extension Vector {
     public init(_ vertex: Hexagon.Vertex,
                 _ scale: Hexagon.Scale) {
         
-        let dx = Double(vertex.position.x)
-        let dy = Double(vertex.position.y)
-        let dz = Double(vertex.position.z)
+        let hexagon = Hexagon(vertex)
+        let tile = scale == .region ? Hexagon.child(hexagon) : hexagon
+        
+        let dx = Double(tile.vertex.position.x)
+        let dy = Double(tile.vertex.position.y)
+        let dz = Double(tile.vertex.position.z)
         
         self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length,
                   0.0,

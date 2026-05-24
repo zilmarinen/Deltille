@@ -12,7 +12,11 @@ final class HexagonTests: XCTestCase {
     
     typealias Vertex = Hexagon.Vertex
     
-    private let hexagon = Hexagon(Coordinate(2, -1, -1))
+    private let hexagon = Hexagon(2, -1, -1)
+    private let unitHexagon = Hexagon(Vertex.zero)
+    private let x = Hexagon(1, -1, 0)
+    private let y = Hexagon(0, 1, -1)
+    private let z = Hexagon(-1, 0, 1)
     
     // MARK: Edges
     
@@ -48,22 +52,22 @@ final class HexagonTests: XCTestCase {
     
     func testHexagonContainsVector() throws {
         
-        XCTAssertTrue(hexagon.contains(hexagon.position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).position(.tile),
-                                       .tile))
+        XCTAssertTrue(hexagon.contains(hexagon.position(.chunk),
+                                       .chunk))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).position(.chunk),
+                                       .chunk))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.chunk),
+                                       .chunk))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.chunk),
+                                       .chunk))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).position(.chunk),
+                                       .chunk))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).position(.chunk),
+                                       .chunk))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).position(.chunk),
+                                       .chunk))
         
-        XCTAssertFalse(hexagon.contains(.zero, .tile))
+        XCTAssertFalse(hexagon.contains(.zero, .chunk))
     }
     
     // MARK: Neighbours / Adjacency / Perimeter
@@ -106,63 +110,53 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Transposing
     
-    func testTransposeToParent() throws {
+    func testTransposeRegionToChunk() throws {
         
-        let tiles: [Hexagon] = [.zero,
-                                .init(0, 1, -1),
-                                .init(-1, 0, 1),
-                                .init(1, -1, 0),
-                                .init(-2, -1, 3),
-                                .init(-3, 2, 1),
-                                .init(-1, 3, -2),
-                                .init(2, 1, -3),
-                                .init(3, -2, -1),
-                                .init(1, -3, 2)]
-        
-        let transposed = tiles.map {
+        let regions = [unitHexagon,
+                       x,
+                       y,
+                       z]
             
-            $0.parent()
+        let transposed = regions.map {
+            
+            $0.transpose(.region,
+                         .chunk)
         }
         
         let chunks: [Hexagon] = [.zero,
-                                 .zero,
-                                 .zero,
-                                 .zero,
-                                 .init(-1, 0, 1),
-                                 .init(-1, 1, 0),
-                                 .init(0, 1, -1),
-                                 .init(1, 0, -1),
-                                 .init(1, -1, 0),
-                                 .init(0, -1, 1)]
+                                 .init(2, -3, 1),
+                                 .init(1, 2, -3),
+                                 .init(-3, 1, 2)]
         
         XCTAssertEqual(transposed,
                        chunks)
     }
     
-    func testTransposeToChild() throws {
+    func testTransposeChunkToRegion() throws {
         
         let chunks: [Hexagon] = [.zero,
-                                .init(-1, 0, 1),
-                                .init(-1, 1, 0),
-                                .init(0, 1, -1),
-                                .init(1, 0, -1),
-                                .init(1, -1, 0),
-                                .init(0, -1, 1)]
-        
+                                 x,
+                                 y,
+                                 z,
+                                 .init(2, -3, 1),
+                                 .init(1, 2, -3),
+                                 .init(-3, 1, 2)]
+            
         let transposed = chunks.map {
             
-            $0.child()
+            $0.transpose(.chunk,
+                         .region)
         }
         
-        let tiles: [Hexagon] = [.zero,
-                                .init(-1, -2, 3),
-                                .init(-3, 1, 2),
-                                .init(-2, 3, -1),
-                                .init(1, 2, -3),
-                                .init(3, -1, -2),
-                                .init(2, -3, 1)]
+        let regions = [unitHexagon,
+                       unitHexagon,
+                       unitHexagon,
+                       unitHexagon,
+                       x,
+                       y,
+                       z]
         
         XCTAssertEqual(transposed,
-                       tiles)
+                       regions)
     }
 }

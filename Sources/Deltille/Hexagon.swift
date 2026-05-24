@@ -39,9 +39,13 @@ public struct Hexagon: Tile {
         let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.length) + 1
         let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.length)
         
-        self.vertex = Vertex(Int(round((i - k) / 3.0)),
-                             Int(round((j - i) / 3.0)),
-                             Int(round((k - j) / 3.0)))
+        let hexagon = Hexagon(Int(round((i - k) / 3.0)),
+                              Int(round((j - i) / 3.0)),
+                              Int(round((k - j) / 3.0)))
+        
+        let tile = scale == .region ? Hexagon.parent(hexagon) : hexagon
+        
+        self.vertex = tile.vertex
     }
 }
 
@@ -86,7 +90,7 @@ extension Hexagon {
         
         guard let index = vertices.firstIndex(of: vertex) else { return nil }
         
-        return Corner(rawValue: index)
+        return .init(rawValue: index)
     }
     
     public func neighbour(_ edge: Edge) -> Self {
@@ -133,9 +137,9 @@ extension Hexagon {
         vertex.distance(other.vertex)
     }
     
-    public func disc(_ radius: Int) -> [Hexagon] {
+    public func disc(_ radius: Int) -> [Self] {
         
-        var tiles: [Hexagon] = []
+        var tiles: [Self] = []
         
         for i in -radius...radius {
             
@@ -321,33 +325,32 @@ extension Hexagon {
     public enum Scale: String,
                        Deltille.Scale {
         
-        public static let `default` = Self.tile
+        public static let `default` = Self.chunk
         
-        case conway
-        case tile
         case chunk
         case region
         
         public var id: String { rawValue.capitalized }
         
-        public var length: Double {
-            
-            switch self {
-                
-            case .conway: 0.08247860988 //sqrt(3.0) / 3.0 / 7.0
-            case .tile: .sqrt3d3
-            case .chunk: 3.4641016151   //sqrt(3.0) * 2.0
-            case .region: 13.8564064606 //sqrt(3.0) * 8.0
-            }
-        }
+        public var length: Double { (.sqrt3 * 3.0) * 20.0 }
     }
     
-    public func parent(_ radius: Int = 1) -> Self {
+    public func transpose(_ from: Scale,
+                          _ to: Scale) -> Self {
+        
+        guard from != to else { return self }
+        
+        return .init(vertex.position(from),
+                     to)
+    }
+    
+    public static func parent(_ hexagon: Self,
+                              _ radius: Int = 1) -> Self {
         
         let area = Double(3 * radius * radius + 3 * radius + 1)
         let shift = 3 * radius + 2
         
-        let (x, y, z) = vertex.position.xyz
+        let (x, y, z) = hexagon.vertex.position.xyz
         
         let a = floor(Double(z + y * shift) / area)
         let b = floor(Double(x + z * shift) / area)
@@ -358,11 +361,12 @@ extension Hexagon {
                      Int(floor((1 + b - a) / 3)))
     }
     
-    public func child(_ radius: Int = 1) -> Self {
+    public static func child(_ hexagon: Hexagon,
+                             _ radius: Int = 1) -> Self {
         
         let shift = 3 * radius + 2
         
-        let (x, y, z) = vertex.position.xyz
+        let (x, y, z) = hexagon.vertex.position.xyz
         
         let a = y - z
         let b = z - x

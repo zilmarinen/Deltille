@@ -12,6 +12,8 @@ final class HexagonVertexTests: XCTestCase {
     
     typealias Vertex = Hexagon.Vertex
     
+    private let precision = 0.9999
+    
     private let vertex = Vertex(.init(2, -2, 1))
     
     // MARK: Tiles
@@ -42,16 +44,16 @@ final class HexagonVertexTests: XCTestCase {
         let hexagon1 = Hexagon(Coordinate(2, 0, -2))
         
         let corner0 = hexagon0.vertex(.c2)
-        let center0 = Vector(hexagon0.vertex, .tile)
-        let target0 = Vector(corner0, .tile)
-        let vector0 = center0.lerp(target0, 0.9)
-        let result0 = Hexagon(vector0, .tile)
+        let center0 = hexagon0.vertex.position(.chunk)
+        let target0 = corner0.position(.chunk)
+        let vector0 = center0.lerp(target0, precision)
+        let result0 = Hexagon(vector0, .chunk)
         
         let corner1 = hexagon1.vertex(.c1)
-        let center1 = Vector(hexagon1.vertex, .tile)
-        let target1 = Vector(corner1, .tile)
-        let vector1 = center1.lerp(target1, 0.9)
-        let result1 = Hexagon(vector1, .tile)
+        let center1 = hexagon1.vertex.position(.chunk)
+        let target1 = corner1.position(.chunk)
+        let vector1 = center1.lerp(target1, precision)
+        let result1 = Hexagon(vector1, .chunk)
         
         XCTAssertEqual(hexagon0.vertex, result0.vertex)
         XCTAssertEqual(hexagon1.vertex, result1.vertex)
@@ -59,7 +61,7 @@ final class HexagonVertexTests: XCTestCase {
     
     func testClosestVertex() throws {
         
-        let scale = Hexagon.Scale.tile
+        let scale = Hexagon.Scale.chunk
         let triangle = Hexagon(Coordinate(3, -1, -2))
         
         let center = triangle.position(scale)
@@ -73,11 +75,6 @@ final class HexagonVertexTests: XCTestCase {
     
     // MARK: Vertex to Vector
     
-    func testVertexToVectorTile() throws {
-        
-        XCTAssertTrue(testVertexToVector(.tile))
-    }
-    
     func testVertexToVectorChunk() throws {
         
         XCTAssertTrue(testVertexToVector(.chunk))
@@ -90,11 +87,6 @@ final class HexagonVertexTests: XCTestCase {
     
     // MARK: Vector to Hexagon
     
-    func testVectorToHexagonTiile() throws {
-        
-        XCTAssertTrue(testVectorToHexagon(.tile))
-    }
-    
     func testVectorToHexagonChunk() throws {
         
         XCTAssertTrue(testVectorToHexagon(.chunk))
@@ -106,11 +98,6 @@ final class HexagonVertexTests: XCTestCase {
     }
     
     // MARK: Vertices
-    
-    func testTileVertices() throws {
-        
-        XCTAssertTrue(testVertices(.tile))
-    }
     
     func testChunkVertices() throws {
         
@@ -168,19 +155,16 @@ extension HexagonVertexTests {
                                    .init(-.unitX + .unitY),
                                    .init(.unitY - .unitZ)]
         
-        let delta = 0.9999
-        
         for hexagon in hexagons {
             
-            let position = Vector(hexagon.vertex,
-                                  scale)
+            let position = hexagon.vertex.position(scale)
             
             for corner in Hexagon.Corner.allCases {
                 
-                let vertex = Vector(hexagon.vertex(corner),
-                                    scale)
+                let vertex = hexagon.vertex(corner).position(scale)
                 
-                let vector = position.lerp(vertex, delta)
+                let vector = position.lerp(vertex,
+                                           precision)
                 
                 if Hexagon(vector,
                            scale).vertex != hexagon.vertex { return false }

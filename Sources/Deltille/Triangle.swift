@@ -115,7 +115,7 @@ extension Triangle {
         
         guard let index = vertices.firstIndex(of: vertex) else { return nil }
         
-        return Corner(rawValue: index)
+        return .init(rawValue: index)
     }
     
     public func neighbour(_ edge: Edge) -> Self {
@@ -172,9 +172,9 @@ extension Triangle {
         vertex.distance(other.vertex)
     }
     
-    public func disc(_ radius: Int) -> [Triangle] {
+    public func disc(_ radius: Int) -> [Self] {
         
-        var tiles: [Triangle] = []
+        var tiles: [Self] = []
         
         for i in -radius...radius {
             
