@@ -9,6 +9,7 @@ import Euclid
 // MARK: Vertex
 
 public protocol Vertex: Codable,
+                        Equatable,
                         Hashable,
                         Identifiable,
                         Sendable {

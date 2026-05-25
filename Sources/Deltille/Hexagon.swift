@@ -43,7 +43,7 @@ public struct Hexagon: Tile {
                               Int(round((j - i) / 3.0)),
                               Int(round((k - j) / 3.0)))
         
-        let tile = scale == .region ? Hexagon.parent(hexagon) : hexagon
+        let tile = scale == .region ? hexagon.parent : hexagon
         
         self.vertex = tile.vertex
     }
@@ -332,7 +332,7 @@ extension Hexagon {
         
         public var id: String { rawValue.capitalized }
         
-        public var length: Double { (.sqrt3 * 3.0) * 20.0 }
+        public var length: Double { .sqrt3 * 3.0 }
     }
     
     public func transpose(_ from: Scale,
@@ -343,6 +343,9 @@ extension Hexagon {
         return .init(vertex.position(from),
                      to)
     }
+    
+    public var parent: Self { Self.parent(self) }
+    public var child: Self { Self.child(self) }
     
     public static func parent(_ hexagon: Self,
                               _ radius: Int = 1) -> Self {

@@ -124,9 +124,9 @@ final class HexagonTests: XCTestCase {
         }
         
         let chunks: [Hexagon] = [.zero,
-                                 .init(2, -3, 1),
-                                 .init(1, 2, -3),
-                                 .init(-3, 1, 2)]
+                                 .init(3, -1, -2),
+                                 .init(-2, 3, -1),
+                                 .init(-1, -2, 3)]
         
         XCTAssertEqual(transposed,
                        chunks)
@@ -138,9 +138,9 @@ final class HexagonTests: XCTestCase {
                                  x,
                                  y,
                                  z,
-                                 .init(2, -3, 1),
-                                 .init(1, 2, -3),
-                                 .init(-3, 1, 2)]
+                                 .init(3, -1, -2),
+                                 .init(-2, 3, -1),
+                                 .init(-1, -2, 3)]
             
         let transposed = chunks.map {
             

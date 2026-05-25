@@ -16,6 +16,7 @@ public protocol Tile: Codable,
     
     associatedtype C = Corner
     associatedtype E = Edge
+    associatedtype R = Rotation
     associatedtype S = Scale
     associatedtype V = Vertex
     
@@ -46,4 +47,9 @@ public protocol Tile: Codable,
     func distance(_ other: Self) -> Int
     
     func disc(_ radius: Int) -> [Self]
+    
+    func rotate(_ rotation: R) -> Self
+    
+    func transpose(_ from: S,
+                   _ to: S) -> Self
 }
