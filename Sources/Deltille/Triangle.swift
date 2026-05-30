@@ -530,27 +530,3 @@ extension Triangle {
         }
     }
 }
-
-// MARK: Array
-
-extension Array where Element == Triangle {
-    
-    public func transpose(_ from: Element.Scale,
-                          _ to: Element.Scale) -> Self {
-        map {
-            
-            $0.transpose(from,
-                         to)
-        }
-    }
-    
-    public func unique(_ from: Element.Scale,
-                       _ to: Element.Scale) -> Self {
-        
-        Array(Set(map {
-            
-            $0.transpose(from,
-                         to)
-        }))
-    }
-}

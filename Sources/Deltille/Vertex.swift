@@ -79,6 +79,9 @@ extension Array where Element: Vertex {
     
     public func position(_ scale: Element.S) -> [Vector] {
         
-        map { $0.position(scale) }
+        map {
+            
+            $0.position(scale)
+        }
     }
 }

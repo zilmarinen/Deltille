@@ -12,7 +12,8 @@ public protocol Footprint: Codable,
                            Hashable,
                            Rotatable,
                            Sendable where T.V == V,
-                                          V.S == S {
+                                          V.S == S,
+                                          T.S == V.S {
     
     associatedtype S: Scale
     associatedtype T: Tile
@@ -33,19 +34,7 @@ extension Footprint {
     
     public var perimeter: [T] {
         
-        let unique = Set(tiles.flatMap { $0.perimeter })
-        
-        let edges = Array(unique.subtracting(tiles))
-        
-        return edges.filter { tile in
-            
-            let intersecting = tile.adjacent.filter {
-                
-                tiles.contains($0)
-            }
-            
-            return intersecting.count <= 1
-        }
+        tiles.perimeter
     }
     
     public var vertices: [V] {

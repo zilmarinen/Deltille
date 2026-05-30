@@ -53,3 +53,63 @@ public protocol Tile: Codable,
     func transpose(_ from: S,
                    _ to: S) -> Self
 }
+
+extension Array where Element: Tile,
+                      Element.V: Vertex,
+                      Element.V.S == Element.S {
+    
+    public func bounds(_ scale: Element.S) -> Bounds {
+        
+        var min = Vector.zero
+        var max = Vector.zero
+        
+        forEach {
+            
+            for vertex in $0.vertices {
+                
+                let position = vertex.position(scale)
+                
+                min.x = min.x < position.x ? min.x : position.x
+                min.z = min.z < position.z ? min.z : position.z
+                max.x = max.x > position.x ? max.x : position.x
+                max.z = max.z > position.z ? max.z : position.z
+            }
+        }
+        
+        return .init(min: min,
+                     max: max)
+    }
+    
+    public var perimeter: [Element] {
+        
+        let unique = Set(flatMap { $0.perimeter })
+        
+        let edges = Array(unique.subtracting(self))
+        
+        return edges.filter { tile in
+            
+            let intersecting = tile.adjacent.filter {
+                
+                contains($0)
+            }
+            
+            return intersecting.count <= 1
+        }
+    }
+    
+    public func transpose(_ from: Element.S,
+                          _ to: Element.S) -> Self {
+        map {
+            
+            $0.transpose(from,
+                         to)
+        }
+    }
+    
+    public func unique(_ from: Element.S,
+                       _ to: Element.S) -> Self {
+        
+        Array(Set(transpose(from,
+                            to)))
+    }
+}
