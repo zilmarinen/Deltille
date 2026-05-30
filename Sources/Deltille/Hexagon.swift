@@ -43,7 +43,7 @@ public struct Hexagon: Tile {
                               Int(round((j - i) / 3.0)),
                               Int(round((k - j) / 3.0)))
         
-        let tile = scale == .region ? hexagon.parent : hexagon
+        let tile = scale == .region ? hexagon.parent() : hexagon
         
         self.vertex = tile.vertex
     }
@@ -344,16 +344,12 @@ extension Hexagon {
                      to)
     }
     
-    public var parent: Self { Self.parent(self) }
-    public var child: Self { Self.child(self) }
-    
-    public static func parent(_ hexagon: Self,
-                              _ radius: Int = 1) -> Self {
+    public func parent(_ radius: Int = 1) -> Self {
         
         let area = Double(3 * radius * radius + 3 * radius + 1)
         let shift = 3 * radius + 2
         
-        let (x, y, z) = hexagon.vertex.position.xyz
+        let (x, y, z) = vertex.position.xyz
         
         let a = floor(Double(z + y * shift) / area)
         let b = floor(Double(x + z * shift) / area)
@@ -364,12 +360,11 @@ extension Hexagon {
                      Int(floor((1 + b - a) / 3)))
     }
     
-    public static func child(_ hexagon: Hexagon,
-                             _ radius: Int = 1) -> Self {
+    public func child(_ radius: Int = 1) -> Self {
         
         let shift = 3 * radius + 2
         
-        let (x, y, z) = hexagon.vertex.position.xyz
+        let (x, y, z) = vertex.position.xyz
         
         let a = y - z
         let b = z - x

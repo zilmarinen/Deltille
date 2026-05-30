@@ -30,7 +30,7 @@ extension Vector {
                 _ scale: Hexagon.Scale) {
         
         let hexagon = Hexagon(vertex)
-        let tile = scale == .region ? hexagon.child : hexagon
+        let tile = scale == .region ? hexagon.child() : hexagon
         
         let dx = Double(tile.vertex.position.x)
         let dy = Double(tile.vertex.position.y)
