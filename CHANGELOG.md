@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (30/05/2026)
+
+- Refactor `Hexagon.Scale` transposition for parent / child grouping
+
+- Redefine `Hexagon.Scale` cases and lengths
+
 ## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (21/04/2026)
 
 - Remove `Grid` enum namespace
