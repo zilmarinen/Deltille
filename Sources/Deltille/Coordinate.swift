@@ -7,6 +7,7 @@
 // MARK: Coordinate
 
 public struct Coordinate: Codable,
+                          Equatable,
                           Hashable,
                           Identifiable,
                           Sendable {

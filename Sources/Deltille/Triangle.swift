@@ -356,6 +356,7 @@ extension Triangle {
         public static let `default` = Self.tile
         
         case sierpinski
+        case pascal
         case tile
         case chunk
         case region
@@ -366,7 +367,8 @@ extension Triangle {
             
             switch self {
                 
-            case .sierpinski: 0.1428571429   // 1.0 / 7.0
+            case .sierpinski: 0.1428571429  // 1.0 / 7.0
+            case .pascal: 0.5
             case .tile: 1.0
             case .chunk: 7.0
             case .region: 28.0
