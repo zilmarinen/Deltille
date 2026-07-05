@@ -49,11 +49,11 @@ public struct Hexagon: Tile {
     }
 }
 
-extension Hexagon {
+public extension Hexagon {
     
-    public var id: String { vertex.id }
+    var id: String { vertex.id }
     
-    public var vertices: [Vertex] {
+    var vertices: [Vertex] {
         
         [.init(vertex.position + .unitX),
          .init(vertex.position - .unitZ),
@@ -63,7 +63,7 @@ extension Hexagon {
          .init(vertex.position - .unitY)]
     }
     
-    public var adjacent: [Self] {
+    var adjacent: [Self] {
         
         edges.map {
             
@@ -71,34 +71,34 @@ extension Hexagon {
         }
     }
     
-    public var perimeter: [Self] { adjacent }
+    var perimeter: [Self] { adjacent }
 }
 
-extension Hexagon {
+public extension Hexagon {
     
-    public func position(_ scale: Scale) -> Vector {
+    func position(_ scale: Scale) -> Vector {
         
         vertex.position(scale)
     }
     
-    public func vertex(_ corner: Corner) -> Vertex {
+    func vertex(_ corner: Corner) -> Vertex {
         
         vertices[corner.rawValue]
     }
     
-    public func corner(_ vertex: Vertex) -> Corner? {
+    func corner(_ vertex: Vertex) -> Corner? {
         
         guard let index = vertices.firstIndex(of: vertex) else { return nil }
         
         return .init(rawValue: index)
     }
     
-    public func neighbour(_ edge: Edge) -> Self {
+    func neighbour(_ edge: Edge) -> Self {
         
         adjacent[edge.rawValue]
     }
     
-    public func translation(_ along: Edge) -> Coordinate {
+    func translation(_ along: Edge) -> Coordinate {
         
         switch along {
             
@@ -111,8 +111,8 @@ extension Hexagon {
         }
     }
     
-    public func contains(_ vector: Vector,
-                         _ scale: Scale) -> Bool {
+    func contains(_ vector: Vector,
+                  _ scale: Scale) -> Bool {
         
         let center = position(scale)
         
@@ -125,19 +125,19 @@ extension Hexagon {
         return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.length * 2.0
     }
     
-    public func closest(_ vector: Vector,
-                        _ scale: Scale) -> Vertex {
+    func closest(_ vector: Vector,
+                 _ scale: Scale) -> Vertex {
         
         vertices.closest(vector,
                          scale)
     }
     
-    public func distance(_ other: Self) -> Int {
+    func distance(_ other: Self) -> Int {
         
         vertex.distance(other.vertex)
     }
     
-    public func disc(_ radius: Int) -> [Self] {
+    func disc(_ radius: Int) -> [Self] {
         
         var tiles: [Self] = []
         
@@ -158,10 +158,10 @@ extension Hexagon {
 
 // MARK: Corner
 
-extension Hexagon {
+public extension Hexagon {
     
-    public enum Corner: Int,
-                        Deltille.Corner {
+    enum Corner: Int,
+                 Deltille.Corner {
         
         case c0, c1, c2, c3, c4, c5
         
@@ -194,7 +194,7 @@ extension Hexagon {
         }
     }
     
-    public var corners: [Corner] {
+    var corners: [Corner] {
         
         Corner.allCases
     }
@@ -202,10 +202,10 @@ extension Hexagon {
 
 // MARK: Edge
 
-extension Hexagon {
+public extension Hexagon {
     
-    public enum Edge: Int,
-                      Deltille.Edge {
+    enum Edge: Int,
+               Deltille.Edge {
         
         case e0, e1, e2, e3, e4, e5
         
@@ -238,7 +238,7 @@ extension Hexagon {
         }
     }
     
-    public var edges: [Edge] {
+    var edges: [Edge] {
         
         Edge.allCases
     }
@@ -246,9 +246,9 @@ extension Hexagon {
 
 // MARK: Footprint
 
-extension Hexagon {
+public extension Hexagon {
     
-    public struct Footprint: Deltille.Footprint {
+    struct Footprint: Deltille.Footprint {
         
         public let origin: Hexagon
         public let tiles: [Hexagon]
@@ -320,10 +320,10 @@ extension Hexagon: Rotatable {
 
 // MARK: Scale
 
-extension Hexagon {
+public extension Hexagon {
     
-    public enum Scale: String,
-                       Deltille.Scale {
+    enum Scale: String,
+                Deltille.Scale {
         
         public static let `default` = Self.chunk
         
@@ -335,8 +335,8 @@ extension Hexagon {
         public var length: Double { .sqrt3 * 3.0 }
     }
     
-    public func transpose(_ from: Scale,
-                          _ to: Scale) -> Self {
+    func transpose(_ from: Scale,
+                   _ to: Scale) -> Self {
         
         guard from != to else { return self }
         
@@ -344,7 +344,7 @@ extension Hexagon {
                      to)
     }
     
-    public func parent(_ radius: Int = 1) -> Self {
+    func parent(_ radius: Int = 1) -> Self {
         
         let area = Double(3 * radius * radius + 3 * radius + 1)
         let shift = 3 * radius + 2
@@ -360,7 +360,7 @@ extension Hexagon {
                      Int(floor((1 + b - a) / 3)))
     }
     
-    public func child(_ radius: Int = 1) -> Self {
+    func child(_ radius: Int = 1) -> Self {
         
         let shift = 3 * radius + 2
         
@@ -378,9 +378,9 @@ extension Hexagon {
 
 // MARK: Vertex
 
-extension Hexagon {
+public extension Hexagon {
     
-    public struct Vertex: Deltille.Vertex {
+    struct Vertex: Deltille.Vertex {
         
         public static let zero = Self(.zero)
         

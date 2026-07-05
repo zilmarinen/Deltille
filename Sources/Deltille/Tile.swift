@@ -29,6 +29,8 @@ public protocol Tile: Codable,
     var adjacent: [Self] { get }
     var perimeter: [Self] { get }
     
+    init(_ coordinate: Coordinate)
+    
     func position(_ scale: S) -> Vector
     
     func vertex(_ corner: C) -> V
@@ -54,11 +56,11 @@ public protocol Tile: Codable,
                    _ to: S) -> Self
 }
 
-extension Array where Element: Tile,
-                      Element.V: Vertex,
-                      Element.V.S == Element.S {
+public extension Array where Element: Tile,
+                             Element.V: Vertex,
+                             Element.V.S == Element.S {
     
-    public func bounds(_ scale: Element.S) -> Bounds {
+    func bounds(_ scale: Element.S) -> Bounds {
         
         var min = Vector.zero
         var max = Vector.zero
@@ -80,7 +82,7 @@ extension Array where Element: Tile,
                      max: max)
     }
     
-    public var perimeter: [Element] {
+    var perimeter: [Element] {
         
         let unique = Set(flatMap { $0.perimeter })
         
@@ -97,8 +99,8 @@ extension Array where Element: Tile,
         }
     }
     
-    public func transpose(_ from: Element.S,
-                          _ to: Element.S) -> Self {
+    func transpose(_ from: Element.S,
+                   _ to: Element.S) -> Self {
         map {
             
             $0.transpose(from,
@@ -106,8 +108,8 @@ extension Array where Element: Tile,
         }
     }
     
-    public func unique(_ from: Element.S,
-                       _ to: Element.S) -> Self {
+    func unique(_ from: Element.S,
+                _ to: Element.S) -> Self {
         
         Array(Set(transpose(from,
                             to)))

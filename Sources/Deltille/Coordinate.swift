@@ -40,42 +40,44 @@ public struct Coordinate: Codable,
     }
 }
 
-extension Coordinate {
+public extension Coordinate {
     
-    public static func -(lhs: Self,
-                         rhs: Self) -> Self {
+    static func -(lhs: Self,
+                  rhs: Self) -> Self {
         
         .init(lhs.x - rhs.x,
               lhs.y - rhs.y,
               lhs.z - rhs.z)
     }
     
-    public static func +(lhs: Self,
-                         rhs: Self) -> Self {
+    static func +(lhs: Self,
+                  rhs: Self) -> Self {
         
         .init(lhs.x + rhs.x,
               lhs.y + rhs.y,
               lhs.z + rhs.z)
     }
     
-    public static prefix func -(rhs: Self) -> Self {
+    static prefix func -(rhs: Self) -> Self {
         
         .init(-rhs.x,
               -rhs.y,
               -rhs.z)
     }
     
-    public static func *(lhs: Self,
-                         rhs: Int) -> Self {
+    static func *(lhs: Self,
+                  rhs: Int) -> Self {
         
         .init(lhs.x * rhs,
               lhs.y * rhs,
               lhs.z * rhs) }
 }
 
-extension Coordinate {
+public extension Coordinate {
     
-    public var xyz: (x: Int, y: Int, z: Int) {
+    var xyz: (x: Int,
+              y: Int,
+              z: Int) {
         
         (x, y, z)
     }

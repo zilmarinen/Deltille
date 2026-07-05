@@ -55,21 +55,21 @@ public struct Triangle: Tile {
     }
 }
 
-extension Triangle {
+public extension Triangle {
     
-    public var id: String { vertex.id }
+    var id: String { vertex.id }
     
-    public var isPointy: Bool {
+    var isPointy: Bool {
         
         vertex.position.equalToZero
     }
     
-    public var orientation: Double {
+    var orientation: Double {
         
         isPointy ? 0.0 : .pi
     }
     
-    public var vertices: [Vertex] {
+    var vertices: [Vertex] {
         
         edges.map {
             
@@ -77,7 +77,7 @@ extension Triangle {
         }
     }
     
-    public var adjacent: [Self] {
+    var adjacent: [Self] {
         
         edges.map {
             
@@ -85,7 +85,7 @@ extension Triangle {
         }
     }
     
-    public var perimeter: [Self] {
+    var perimeter: [Self] {
         
         Array(vertices.reduce(into: Set<Self>(), { result, vertex in
             
@@ -99,31 +99,31 @@ extension Triangle {
     }
 }
 
-extension Triangle {
+public extension Triangle {
     
-    public func position(_ scale: Scale) -> Vector {
+    func position(_ scale: Scale) -> Vector {
         
         vertex.position(scale)
     }
     
-    public func vertex(_ corner: Corner) -> Vertex {
+    func vertex(_ corner: Corner) -> Vertex {
         
         vertices[corner.rawValue]
     }
     
-    public func corner(_ vertex: Vertex) -> Corner? {
+    func corner(_ vertex: Vertex) -> Corner? {
         
         guard let index = vertices.firstIndex(of: vertex) else { return nil }
         
         return .init(rawValue: index)
     }
     
-    public func neighbour(_ edge: Edge) -> Self {
+    func neighbour(_ edge: Edge) -> Self {
         
         adjacent[edge.rawValue]
     }
     
-    public func translation(_ along: Edge) -> Coordinate {
+    func translation(_ along: Edge) -> Coordinate {
         
         switch along {
             
@@ -133,8 +133,8 @@ extension Triangle {
         }
     }
     
-    public func contains(_ vector: Vector,
-                         _ scale: Scale) -> Bool {
+    func contains(_ vector: Vector,
+                  _ scale: Scale) -> Bool {
         
         let c0 = vertex(.c0).position(scale)
         let c1 = vertex(.c1).position(scale)
@@ -160,19 +160,19 @@ extension Triangle {
         return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0)
     }
     
-    public func closest(_ vector: Vector,
-                        _ scale: Scale) -> Vertex {
+    func closest(_ vector: Vector,
+                 _ scale: Scale) -> Vertex {
         
         vertices.closest(vector,
                          scale)
     }
     
-    public func distance(_ other: Self) -> Int {
+    func distance(_ other: Self) -> Int {
         
         vertex.distance(other.vertex)
     }
     
-    public func disc(_ radius: Int) -> [Self] {
+    func disc(_ radius: Int) -> [Self] {
         
         var tiles: [Self] = []
         
@@ -198,10 +198,10 @@ extension Triangle {
 
 // MARK: Corner
 
-extension Triangle {
+public extension Triangle {
     
-    public enum Corner: Int,
-                        Deltille.Corner {
+    enum Corner: Int,
+                 Deltille.Corner {
         
         case c0, c1, c2
         
@@ -228,7 +228,7 @@ extension Triangle {
         }
     }
     
-    public var corners: [Corner] {
+    var corners: [Corner] {
         
         Corner.allCases
     }
@@ -236,10 +236,10 @@ extension Triangle {
 
 // MARK: Edge
 
-extension Triangle {
+public extension Triangle {
     
-    public enum Edge: Int,
-                      Deltille.Edge {
+    enum Edge: Int,
+               Deltille.Edge {
         
         case e0, e1, e2
         
@@ -266,7 +266,7 @@ extension Triangle {
         }
     }
     
-    public var edges: [Edge] {
+    var edges: [Edge] {
         
         Edge.allCases
     }
@@ -274,9 +274,9 @@ extension Triangle {
 
 // MARK: Footprint
 
-extension Triangle {
+public extension Triangle {
     
-    public struct Footprint: Deltille.Footprint {
+    struct Footprint: Deltille.Footprint {
         
         public let origin: Triangle
         public let tiles: [Triangle]
@@ -348,10 +348,10 @@ extension Triangle: Rotatable {
 
 // MARK: Scale
 
-extension Triangle {
+public extension Triangle {
     
-    public enum Scale: String,
-                       Deltille.Scale {
+    enum Scale: String,
+                Deltille.Scale {
         
         public static let `default` = Self.tile
         
@@ -376,8 +376,8 @@ extension Triangle {
         }
     }
     
-    public func transpose(_ from: Scale,
-                          _ to: Scale) -> Self {
+    func transpose(_ from: Scale,
+                   _ to: Scale) -> Self {
         
         guard from != to else { return self }
         
@@ -388,9 +388,9 @@ extension Triangle {
 
 // MARK: Sieve
 
-extension Triangle {
+public extension Triangle {
     
-    public final class Sieve {
+    final class Sieve {
         
         //
         //  v-------v-------v-------v-------v
@@ -421,7 +421,7 @@ extension Triangle {
         }
     }
     
-    public func sieve(for scale: Scale) -> Sieve {
+    func sieve(for scale: Scale) -> Sieve {
         
         let origin = Triangle(vertex.position(scale),
                               .tile)
@@ -478,9 +478,9 @@ extension Triangle {
 
 // MARK: Vertex
 
-extension Triangle {
+public extension Triangle {
     
-    public struct Vertex: Deltille.Vertex {
+    struct Vertex: Deltille.Vertex {
         
         public static let zero = Self(.zero)
         

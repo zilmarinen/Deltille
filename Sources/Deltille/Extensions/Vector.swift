@@ -14,9 +14,9 @@ extension Vector: @retroactive Identifiable {
     public var id: String { "[\(x), \(y), \(z)]" }
 }
 
-extension Vector {
+public extension Vector {
     
-    public func mid(_ lhs: Self) -> Self {
+    func mid(_ lhs: Self) -> Self {
         
         lerp(lhs, 0.5)
     }
@@ -24,10 +24,10 @@ extension Vector {
 
 // MARK: Hexagon
 
-extension Vector {
+public extension Vector {
     
-    public init(_ vertex: Hexagon.Vertex,
-                _ scale: Hexagon.Scale) {
+    init(_ vertex: Hexagon.Vertex,
+         _ scale: Hexagon.Scale) {
         
         let hexagon = Hexagon(vertex)
         let tile = scale == .region ? hexagon.child() : hexagon
@@ -44,10 +44,10 @@ extension Vector {
 
 // MARK: Triangle
 
-extension Vector {
+public extension Vector {
     
-    public init(_ vertex: Triangle.Vertex,
-                _ scale: Triangle.Scale) {
+    init(_ vertex: Triangle.Vertex,
+         _ scale: Triangle.Scale) {
         
         let dx = Double(vertex.position.y)
         let dy = Double(vertex.position.x)
@@ -61,9 +61,9 @@ extension Vector {
 
 // MARK: Array
 
-extension Array where Element == Vector {
+public extension Array where Element == Vector {
     
-    public func firstIndexOf(closest vector: Vector) -> Int {
+    func firstIndexOf(closest vector: Vector) -> Int {
         
         var distance = Double.greatestFiniteMagnitude
         var closestIndex = 0

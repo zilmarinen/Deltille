@@ -28,29 +28,32 @@ public protocol Footprint: Codable,
     func center(_ scale: S) -> Vector
     func intersects(_ footprint: Self) -> Bool
     func intersects(_ tile: T) -> Bool
+    
+    func unique(_ from: S,
+                _ to: S) -> [T]
 }
 
-extension Footprint {
+public extension Footprint {
     
-    public var perimeter: [T] {
+    var perimeter: [T] {
         
         tiles.perimeter
     }
     
-    public var vertices: [V] {
+    var vertices: [V] {
         
         Array(Set(tiles.flatMap { $0.vertices }))
     }
 }
 
-extension Footprint {
+public extension Footprint {
     
-    public func center(_ scale: S) -> Vector {
+    func center(_ scale: S) -> Vector {
         
         vertices.center(scale)
     }
     
-    public func intersects(_ footprint: Self) -> Bool {
+    func intersects(_ footprint: Self) -> Bool {
         
         for tile in footprint.tiles {
             
@@ -60,9 +63,16 @@ extension Footprint {
         return intersects(footprint.origin)
     }
     
-    public func intersects(_ tile: T) -> Bool {
+    func intersects(_ tile: T) -> Bool {
         
         tiles.contains(tile) ||
         tile == origin
+    }
+    
+    func unique(_ from: S,
+                _ to: S) -> [T] {
+        
+        [origin] + tiles.unique(from,
+                                to)
     }
 }

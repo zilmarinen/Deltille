@@ -27,16 +27,16 @@ public protocol Vertex: Codable,
     func position(_ scale: S) -> Vector
 }
 
-extension Vertex {
+public extension Vertex {
     
-    public var id: String { position.id }
+    var id: String { position.id }
 }
 
 // MARK: Array
 
-extension Array where Element: Vertex {
+public extension Array where Element: Vertex {
     
-    public var perimeter: [Element] {
+    var perimeter: [Element] {
     
         filter {
             
@@ -52,12 +52,12 @@ extension Array where Element: Vertex {
         }
     }
     
-    public var interior: [Element] {
+    var interior: [Element] {
         
         Array(Set(self).subtracting(perimeter))
     }
     
-    public func center(_ scale: Element.S) -> Vector {
+    func center(_ scale: Element.S) -> Vector {
         
         let vector = reduce(into: Vector.zero) { result, vertex in
             
@@ -67,8 +67,8 @@ extension Array where Element: Vertex {
         return vector / Double(count)
     }
     
-    public func closest(_ vector: Vector,
-                        _ scale: Element.S) -> Element {
+    func closest(_ vector: Vector,
+                 _ scale: Element.S) -> Element {
         
         let vectors = position(scale)
         
@@ -77,7 +77,7 @@ extension Array where Element: Vertex {
         return self[index]
     }
     
-    public func position(_ scale: Element.S) -> [Vector] {
+    func position(_ scale: Element.S) -> [Vector] {
         
         map {
             

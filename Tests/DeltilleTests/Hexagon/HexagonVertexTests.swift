@@ -94,6 +94,7 @@ final class HexagonVertexTests: XCTestCase {
     
     func testVectorToHexagonRegion() throws {
         
+        //TODO: Determine how to test regions with rotated verticez
         XCTAssertTrue(testVectorToHexagon(.region))
     }
     
@@ -106,6 +107,7 @@ final class HexagonVertexTests: XCTestCase {
     
     func testRegionVertices() throws {
         
+        //TODO: Determine how to test regions with rotated verticez
         XCTAssertTrue(testVertices(.region))
     }
 }

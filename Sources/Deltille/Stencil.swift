@@ -26,9 +26,9 @@ public protocol Stencil: Sendable {
 
 // MARK: Hexagon
 
-extension Hexagon {
+public extension Hexagon {
     
-    public struct Stencil: Deltille.Stencil {
+    struct Stencil: Deltille.Stencil {
         
         //
         //     0---------1
@@ -88,7 +88,7 @@ extension Hexagon {
         }
     }
     
-    public func stencil(_ scale: Scale) -> Stencil {
+    func stencil(_ scale: Scale) -> Stencil {
         
         return .init(scale: scale,
                      v0: Vector(vertex(.c0),
@@ -108,9 +108,9 @@ extension Hexagon {
 
 // MARK: Triangle
 
-extension Triangle {
+public extension Triangle {
     
-    public struct Stencil: Deltille.Stencil {
+    struct Stencil: Deltille.Stencil {
         
         //
         //  0-------3-------5-------8-------1
@@ -205,7 +205,7 @@ extension Triangle {
         }
     }
     
-    public func stencil(_ scale: Scale) -> Stencil {
+    func stencil(_ scale: Scale) -> Stencil {
         
         let v0 = Vector(vertex(.c0),
                         scale)

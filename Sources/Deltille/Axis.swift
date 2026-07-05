@@ -15,8 +15,11 @@ public enum Axis: CaseIterable,
     case x, y, z
      
     public var id: String { unit.id }
+}
+
+public extension Axis {
     
-    public var unit: Coordinate {
+    var unit: Coordinate {
         
         switch self {
             
