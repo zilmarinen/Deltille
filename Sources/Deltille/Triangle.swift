@@ -312,10 +312,30 @@ public extension Triangle {
     func transpose(_ from: Scale,
                    _ to: Scale) -> Self {
         
-        guard from != to else { return self }
-        
-        return Self.containing(stencil(from).center,
-                               to)
+        switch (from, to) {
+            
+        case (.tile, .chunk),
+             (.chunk, .region):
+            
+            parent()
+            
+        case (.tile, .region):
+            
+            parent().parent()
+            
+        case (.chunk, .tile),
+             (.region, .chunk):
+            
+            child()
+            
+        case (.region, .tile):
+            
+            child().child()
+            
+        default:
+            
+            self
+        }
     }
     
     func child(_ size: Int = 4) -> Self {
@@ -327,24 +347,9 @@ public extension Triangle {
     
     func parent(_ size: Int = 4) -> Self {
         
-        let scale = Scale(rawValue: size * 2 - 1) ?? .default
-        
-        return Self.containing(stencil(.tile).center,
-                               scale)
-    }
-    
-    private static func containing(_ vector: Vector,
-                                   _ scale: Scale) -> Self {
-        
-        let subdivision = Double((scale.size + 1) / 2)
-        let triangle = Self(vector,
-                            subdivision)
-        
-        return ([triangle] + triangle.adjacent).first {
-            
-            $0.contains(vector,
-                        scale)
-        } ?? triangle
+        .init(Int.floorDivision(x - (isPointy ? 0 : 1), size),
+              Int.floorDivision(y - (isPointy ? 0 : 1), size),
+              Int.floorDivision(z - (isPointy ? 0 : 1), size))
     }
 }
 

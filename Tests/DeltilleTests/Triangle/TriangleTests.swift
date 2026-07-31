@@ -12,24 +12,22 @@ final class TriangleTests: XCTestCase {
     
     typealias Vertex = Triangle.Vertex
     
-    private let pointyTriangle = Triangle(4, -2, -2)
-    private let flatTriangle = Triangle(-2, -2, 3)
-    private let unitTriangle = Triangle(Vertex.zero)
-    private let x = Triangle(-.unitX)
-    private let y = Triangle(-.unitY)
-    private let z = Triangle(-.unitZ)
-    
     // MARK: Edges
     
     func testEdges() throws {
         
-        for edge in unitTriangle.edges {
+        let triangle = Triangle.zero
+        
+        for edge in triangle.edges {
             
-            let adjacent = unitTriangle.neighbour(edge)
+            let adjacent = triangle.neighbour(edge)
             
-            let vertices = Set(edge.corners.map { unitTriangle.vertex($0) })
+            let vertices = Set(edge.corners.map {
+                
+                triangle.vertex($0)
+            })
             
-            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices()))
         }
     }
     
@@ -37,168 +35,146 @@ final class TriangleTests: XCTestCase {
     
     func testDistance() throws {
         
-        XCTAssertEqual(pointyTriangle.distance(pointyTriangle), 0)
-        XCTAssertEqual(flatTriangle.distance(flatTriangle), 0)
-        XCTAssertEqual(pointyTriangle.distance(unitTriangle), 8)
-        XCTAssertEqual(flatTriangle.distance(unitTriangle), 7)
+        let lhs = Triangle(-3, 2, 0)
+        let rhs = Triangle(2, -1, 2)
+        
+        XCTAssertEqual(lhs.distance(lhs), 0)
+        XCTAssertEqual(rhs.distance(rhs), 0)
+        XCTAssertEqual(lhs.distance(.zero), 5)
+        XCTAssertEqual(rhs.distance(rhs), 10)
     }
     
     func testDisc() throws {
         
-        XCTAssertEqual(unitTriangle.disc(0).count, 1)
-        XCTAssertEqual(unitTriangle.disc(1).count, 4)
-        XCTAssertEqual(unitTriangle.disc(2).count, 10)
-        XCTAssertEqual(unitTriangle.disc(3).count, 19)
+        let triangle = Triangle.zero
+        
+        XCTAssertEqual(triangle.disc(0).count, 1)
+        XCTAssertEqual(triangle.disc(1).count, 4)
+        XCTAssertEqual(triangle.disc(2).count, 10)
+        XCTAssertEqual(triangle.disc(3).count, 19)
     }
     
     // MARK: Contains Vector
     
     func testTriangleContainsVector() throws {
         
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.position(.tile),
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(.zero,
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c0).position(.tile),
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c1).position(.tile),
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c1).position(.tile),
-                                            .tile))
+        let triangle = Triangle(-2, -1, 3)
         
-        XCTAssertTrue(flatTriangle.contains(flatTriangle.position(.tile),
-                                            .tile))
-        XCTAssertFalse(flatTriangle.contains(.zero,
-                                             .tile))
+        XCTAssertTrue(triangle.contains(triangle.vector,
+                                        .tile))
+        XCTAssertTrue(triangle.contains(.zero,
+                                        .tile))
         
-        XCTAssertTrue(pointyTriangle.contains(pointyTriangle.position(.tile),
-                                              .tile))
-        XCTAssertFalse(pointyTriangle.contains(.zero,
-                                               .tile))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
+                                        .tile))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
+                                        .tile))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
+                                        .tile))
+        
+        XCTAssertFalse(triangle.contains(.zero,
+                                         .tile))
+    }
+    
+    func testVertexConversion() throws {
+        
+        let lhs = Triangle.zero
+        let rhs = Triangle.zero
+        
+        let corner0 = lhs.vertex(.c2)
+        let center0 = lhs.vector
+        let target0 = Vector(corner0)
+        let vector0 = center0.lerp(target0, 0.9)
+        let result0 = Triangle(vector0)
+        
+        let corner1 = rhs.vertex(.c1)
+        let center1 = rhs.vector
+        let target1 = Vector(corner1)
+        let vector1 = center1.lerp(target1, 0.9)
+        let result1 = Triangle(vector1)
+        
+        XCTAssertEqual(lhs.vector,
+                       result0.vector)
+        
+        XCTAssertEqual(rhs.vector,
+                       result1.vector)
+    }
+    
+    func testClosestVertex() throws {
+        
+        let scale = Triangle.Scale.tile
+        let triangle = Triangle(-3, 2, 1)
+        
+        let center = triangle.vector
+        let vertex = triangle.vertex(.c0)
+        
+        let vector = center.mid(vertex.vector)
+        
+        XCTAssertEqual(triangle.closest(vertex: vector,
+                                        scale), vertex)
     }
     
     // MARK: Pointy / Flat
     
     func testUnitTriangleIsPointy() throws {
         
-        XCTAssertTrue(unitTriangle.isPointy)
-        XCTAssertTrue(pointyTriangle.isPointy)
-        XCTAssertFalse(flatTriangle.isPointy)
+        let lhs = Triangle.zero
+        let rhs = Triangle(-11, 5, 5)
+        
+        XCTAssertTrue(lhs.isPointy)
+        XCTAssertFalse(rhs.isPointy)
     }
     
-    // MARK: Neighbours / Adjacency
+    // MARK: Neighbours
     
     func testPointyNeighboursAdjacency() throws {
         
-        let tiles: [Triangle] = [.init(3, -2, -2),
-                                 .init(4, -3, -2),
-                                 .init(4, -2, -3)]
+        let triangle = Triangle(-11, 5, 5)
         
-        let neighbours = pointyTriangle.edges.map { pointyTriangle.neighbour($0) }
+        let tiles: [Triangle] = [.init(-10, 5, 5),
+                                 .init(-11, 6, 5),
+                                 .init(-11, 5, 6)]
         
-        XCTAssertEqual(neighbours, tiles)
-        XCTAssertEqual(pointyTriangle.adjacent, tiles)
+        let neighbours = triangle.edges.map {
+            
+            triangle.neighbour($0)
+        }
+        
+        XCTAssertEqual(neighbours,
+                       tiles)
+        
+        XCTAssertEqual(triangle.adjacent,
+                       tiles)
     }
     
     func testFlatNeighboursAdjacency() throws {
         
-        let tiles: [Triangle] = [.init(-1, -2, 3),
-                                 .init(-2, -1, 3),
-                                 .init(-2, -2, 4)]
+        let triangle = Triangle(16, -16, 0)
         
-        let neighbours = flatTriangle.edges.map { flatTriangle.neighbour($0) }
+        let tiles: [Triangle] = [.init(15, -16, 0),
+                                 .init(16, -17, 0),
+                                 .init(16, -16, -1)]
         
-        XCTAssertEqual(neighbours, tiles)
-        XCTAssertEqual(flatTriangle.adjacent, tiles)
-    }
-    
-    // MARK: Perimeter
-    
-    func testPointyPerimeter() throws {
+        let neighbours = triangle.edges.map {
+            
+            triangle.neighbour($0)
+        }
         
-        let perimeter: [Triangle] = [.init(pointyTriangle.vertex.position + .init(-1, 0, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, 1, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, 1, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(0, 1, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(0, 0, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(1, 0, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(1, -1, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(1, -1, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(0, -1, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(0, -1, 1)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, -1, 1)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, 0, 1))]
+        XCTAssertEqual(neighbours,
+                       tiles)
         
-        let lhs = Set(perimeter)
-        let rhs = Set(pointyTriangle.perimeter)
-        
-        XCTAssertTrue(lhs.isSubset(of: rhs))
-        XCTAssertEqual(perimeter.count, pointyTriangle.perimeter.count)
-    }
-    
-    func testFlatPerimeter() throws {
-        
-        let perimeter: [Triangle] = [.init(flatTriangle.vertex.position + .init(1, 0, 0)),
-                                     .init(flatTriangle.vertex.position + .init(1, -1, 0)),
-                                     .init(flatTriangle.vertex.position + .init(1, -1, 1)),
-                                     .init(flatTriangle.vertex.position + .init(0, -1, 1)),
-                                     .init(flatTriangle.vertex.position + .init(0, 0, 1)),
-                                     .init(flatTriangle.vertex.position + .init(-1, 0, 1)),
-                                     .init(flatTriangle.vertex.position + .init(-1, 1, 1)),
-                                     .init(flatTriangle.vertex.position + .init(-1, 1, 0)),
-                                     .init(flatTriangle.vertex.position + .init(0, 1, 0)),
-                                     .init(flatTriangle.vertex.position + .init(0, 1, -1)),
-                                     .init(flatTriangle.vertex.position + .init(1, 1, -1)),
-                                     .init(flatTriangle.vertex.position + .init(1, 0, -1))]
-        
-        let lhs = Set(perimeter)
-        let rhs = Set(flatTriangle.perimeter)
-        
-        XCTAssertTrue(lhs.isSubset(of: rhs))
-        XCTAssertEqual(perimeter.count, flatTriangle.perimeter.count)
-    }
-    
-    // MARK: Vertices / Corners
-    
-    func testPointyVertices() throws {
-        
-        let vertices: [Vertex] = [.init(5, -2, -2),
-                                  .init(4, -1, -2),
-                                  .init(4, -2, -1)]
-        
-        let center = Vector(-3.0, 0.0, 5.1961)
-        let triangle = Triangle(center, .tile)
-        
-        let triangleCorners = vertices.map { pointyTriangle.corner($0) }
-        
-        XCTAssertEqual(triangleCorners, pointyTriangle.corners)
-        XCTAssertEqual(triangle.vertex, pointyTriangle.vertex)
-    }
-
-    func testFlatVertices() throws {
-        
-        let vertices: [Vertex] = [.init(-2, -1, 4),
-                                  .init(-1, -2, 4),
-                                  .init(-1, -1, 3)]
-        
-        let center = Vector(-2.5, 0.0, -4.3301)
-        let triangle = Triangle(center, .tile)
-        
-        let triangleCorners = vertices.map { flatTriangle.corner($0) }
-        
-        XCTAssertEqual(triangleCorners, flatTriangle.corners)
-        XCTAssertEqual(triangle.vertex, flatTriangle.vertex)
-        
+        XCTAssertEqual(triangle.adjacent,
+                       tiles)
     }
     
     // MARK: Transposing
     
     func testTransposeRegionToTile() throws {
         
-        let regions = [unitTriangle,
-                       x,
-                       y,
-                       z]
+        let regions: [Triangle] = [.zero,
+                                   .init(-1, 0, 0),
+                                   .init(0, -1, 0),
+                                   .init(0, 0, -1)]
             
         let transposed = regions.map {
             
@@ -207,9 +183,9 @@ final class TriangleTests: XCTestCase {
         }
         
         let tiles: [Triangle] = [.zero,
-                                 .init(-19, 9, 9),
-                                 .init(9, -19, 9),
-                                 .init(9, 9, -19)]
+                                 .init(-11, 5, 5),
+                                 .init(5, -11, 5),
+                                 .init(5, 5, -11)]
         
         XCTAssertEqual(transposed,
                        tiles)
@@ -217,10 +193,10 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeRegionToChunk() throws {
         
-        let regions = [unitTriangle,
-                       x,
-                       y,
-                       z]
+        let regions: [Triangle] = [.zero,
+                                   .init(-1, 0, 0),
+                                   .init(0, -1, 0),
+                                   .init(0, 0, -1)]
             
         let transposed = regions.map {
             
@@ -240,9 +216,9 @@ final class TriangleTests: XCTestCase {
     func testTransposeChunkToRegion() throws {
         
         let chunks: [Triangle] = [.zero,
-                                  x,
-                                  y,
-                                  z,
+                                  .init(-1, 0, 0),
+                                  .init(0, -1, 0),
+                                  .init(0, 0, -1),
                                   .init(-3, 1, 1),
                                   .init(1, -3, 1),
                                   .init(1, 1, -3)]
@@ -253,13 +229,13 @@ final class TriangleTests: XCTestCase {
                          .region)
         }
         
-        let regions = [unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       x,
-                       y,
-                       z]
+        let regions: [Triangle] = [.zero,
+                                   .zero,
+                                   .zero,
+                                   .zero,
+                                   .init(-1, 0, 0),
+                                   .init(0, -1, 0),
+                                   .init(0, 0, -1)]
         
         XCTAssertEqual(transposed,
                        regions)
@@ -267,10 +243,10 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeChunkToTile() throws {
         
-        let chunks = [unitTriangle,
-                      x,
-                      y,
-                      z]
+        let chunks: [Triangle] = [.zero,
+                                  .init(-1, 0, 0),
+                                  .init(0, -1, 0),
+                                  .init(0, 0, -1)]
             
         let transposed = chunks.map {
             
@@ -290,9 +266,9 @@ final class TriangleTests: XCTestCase {
     func testTransposeTileToChunk() throws {
         
         let tiles: [Triangle] = [.zero,
-                                 x,
-                                 y,
-                                 z,
+                                 .init(-1, 0, 0),
+                                 .init(0, -1, 0),
+                                 .init(0, 0, -1),
                                  .init(-5, 2, 2),
                                  .init(2, -5, 2),
                                  .init(2, 2, -5)]
@@ -303,13 +279,13 @@ final class TriangleTests: XCTestCase {
                          .chunk)
         }
         
-        let chunks = [unitTriangle,
-                      unitTriangle,
-                      unitTriangle,
-                      unitTriangle,
-                      x,
-                      y,
-                      z]
+        let chunks: [Triangle] = [.zero,
+                                  .zero,
+                                  .zero,
+                                  .zero,
+                                  .init(-1, 0, 0),
+                                  .init(0, -1, 0),
+                                  .init(0, 0, -1)]
             
         XCTAssertEqual(transposed,
                        chunks)
@@ -318,12 +294,12 @@ final class TriangleTests: XCTestCase {
     func testTransposeTileToRegion() throws {
         
         let tiles: [Triangle] = [.zero,
-                                 x,
-                                 y,
-                                 z,
-                                 .init(-19, 9, 9),
-                                 .init(9, -19, 9),
-                                 .init(9, 9, -19)]
+                                 .init(-1, 0, 0),
+                                 .init(0, -1, 0),
+                                 .init(0, 0, -1),
+                                 .init(-11, 5, 5),
+                                 .init(5, -11, 5),
+                                 .init(5, 5, -11)]
             
         let transposed = tiles.map {
             
@@ -331,13 +307,13 @@ final class TriangleTests: XCTestCase {
                          .region)
         }
         
-        let regions = [unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       x,
-                       y,
-                       z]
+        let regions: [Triangle] = [.zero,
+                                   .zero,
+                                   .zero,
+                                   .zero,
+                                   .init(-1, 0, 0),
+                                   .init(0, -1, 0),
+                                   .init(0, 0, -1)]
         
         XCTAssertEqual(transposed,
                        regions)
@@ -345,111 +321,95 @@ final class TriangleTests: XCTestCase {
     
     // MARK: Sieve
     
-    func testPointySierpinskiSieve() throws {
-        
-        let sieve = pointyTriangle.sieve(for: .sierpinski)
-        let tile = pointyTriangle.transpose(.sierpinski,
-                                            .tile)
-        
-        XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
-        XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.triangles.count, 1)
-        XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(tile))
-    }
-    
-    func testFlatSierpinskiSieve() throws {
-        
-        let sieve = flatTriangle.sieve(for: .sierpinski)
-        let tile = flatTriangle.transpose(.sierpinski,
-                                          .tile)
-        
-        XCTAssertEqual(sieve.origin,
-                       flatTriangle)
-        XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.triangles.count, 1)
-        XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(tile))
-    }
-    
     func testPointyTileSieve() throws {
         
-        let sieve = pointyTriangle.sieve(for: .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.tile)
         
         XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
+                       triangle)
+        
         XCTAssertEqual(sieve.scale, .tile)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(pointyTriangle))
+        XCTAssertTrue(sieve.triangles.contains(triangle))
     }
     
     func testFlatTileSieve() throws {
         
-        let sieve = flatTriangle.sieve(for: .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.tile)
         
         XCTAssertEqual(sieve.origin,
-                       flatTriangle)
+                       triangle)
+        
         XCTAssertEqual(sieve.scale, .tile)
         XCTAssertEqual(sieve.triangles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(flatTriangle))
+        XCTAssertTrue(sieve.triangles.contains(triangle))
     }
     
     func testPointyChunkSieve() throws {
         
-        let sieve = pointyTriangle.sieve(for: .chunk)
-        let tile = pointyTriangle.transpose(.chunk,
-                                            .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.chunk)
+        let tile = triangle.transpose(.chunk,
+                                      .tile)
         
         XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
+                       triangle)
+        
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 49)
-        XCTAssertEqual(sieve.vertices.count, 36)
+        XCTAssertEqual(sieve.triangles.count, 16)
+        XCTAssertEqual(sieve.vertices.count, 15)
         XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatChunkSieve() throws {
         
-        let sieve = flatTriangle.sieve(for: .chunk)
-        let tile = flatTriangle.transpose(.chunk,
-                                          .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.chunk)
+        let tile = triangle.transpose(.chunk,
+                                      .tile)
         
         XCTAssertEqual(sieve.origin,
-                       flatTriangle)
+                       triangle)
+        
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 49)
-        XCTAssertEqual(sieve.vertices.count, 36)
+        XCTAssertEqual(sieve.triangles.count, 16)
+        XCTAssertEqual(sieve.vertices.count, 15)
         XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testPointyRegionSieve() throws {
         
-        let sieve = pointyTriangle.sieve(for: .region)
-        let tile = pointyTriangle.transpose(.region,
-                                            .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.region)
+        let tile = triangle.transpose(.region,
+                                      .tile)
         
         XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
+                       triangle)
+        
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 784)
-        XCTAssertEqual(sieve.vertices.count, 435)
+        XCTAssertEqual(sieve.triangles.count, 256)
+        XCTAssertEqual(sieve.vertices.count, 153)
         XCTAssertTrue(sieve.triangles.contains(tile))
     }
     
     func testFlatRegionSieve() throws {
         
-        let sieve = flatTriangle.sieve(for: .region)
-        let tile = flatTriangle.transpose(.region,
-                                          .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.region)
+        let tile = triangle.transpose(.region,
+                                      .tile)
         
         XCTAssertEqual(sieve.origin,
-                       flatTriangle)
+                       triangle)
+        
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 784)
-        XCTAssertEqual(sieve.vertices.count, 435)
+        XCTAssertEqual(sieve.triangles.count, 256)
+        XCTAssertEqual(sieve.vertices.count, 153)
         XCTAssertTrue(sieve.triangles.contains(tile))
     }
 }
