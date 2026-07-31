@@ -137,7 +137,8 @@ public extension Triangle {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let u = (scale.size / 3) + 1
+        let size = (2 * Int(pow(4.0, Double(scale.size - 1)))) - 1
+        let u = (size / 3) + 1
         let v = u / 2
         
         let dx = Vertex(u, -v, -v)

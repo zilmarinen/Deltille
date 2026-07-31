@@ -31,8 +31,7 @@ public extension Hexagon {
     func contains(_ vector: Vector,
                   _ scale: Scale = .default) -> Bool {
         
-        //TODO: Fix scale / sizing
-        let size = 1.0
+        let size = Double(scale.size)
         
         let center = transpose(scale,
                                .chunk).vector
@@ -305,7 +304,7 @@ public extension Hexagon {
             
         case (.tile, .chunk):
             
-            parent()
+            parent(to.size - 1)
             
         case (.chunk, .tile):
             

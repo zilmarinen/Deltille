@@ -164,22 +164,61 @@ final class TriangleTests: XCTestCase {
                        tiles)
     }
     
+    // MARK: Vertices / Corners
+    
+    func testVertices() throws {
+        
+        let triangle = Triangle(-11, 5, 5)
+        
+        let vertices: [Vertex] = [.init(-12, 5, 5),
+                                  .init(-11, 4, 5),
+                                  .init(-11, 5, 4)]
+        
+        let triangleCorners = vertices.map {
+            
+            triangle.corner($0)
+        }
+        
+        let triangleVertices = triangle.corners.map {
+            
+            triangle.vertex($0)
+        }
+        
+        XCTAssertEqual(triangleCorners,
+                       triangle.corners)
+        
+        XCTAssertEqual(triangleVertices,
+                       vertices)
+        
+        XCTAssertEqual(triangleVertices,
+                       triangle.vertices())
+        
+        XCTAssertEqual(nil,
+                       triangle.corner(.zero))
+    }
+    
     // MARK: Transposing
     
     func testTransposeRegionToTile() throws {
         
-        let regions: [Triangle] = [.zero,
-                                   .init(-1, 0, 0),
-                                   .init(0, -1, 0),
-                                   .init(0, 0, -1)]
+        // Regions at the corner of a region
+        let regions: [Triangle] = [.init(-1, 0, 0),
+                                   .init(-1, 1, 0),
+                                   .init(-1, 1, -1),
+                                   .init(0, 1, -1),
+                                   .init(0, 0, -1),
+                                   .zero]
             
         let transposed = regions.transpose(.region,
                                            .tile)
         
-        let tiles: [Triangle] = [.zero,
-                                 .init(-11, 5, 5),
-                                 .init(5, -11, 5),
-                                 .init(5, 5, -11)]
+        // Tiles in the center of a region
+        let tiles: [Triangle] = [.init(-11, 5, 5),
+                                 .init(-16, 16, 0),
+                                 .init(-11, 21, -11),
+                                 .init(0, 16, -16),
+                                 .init(5, 5, -11),
+                                 .zero]
         
         XCTAssertEqual(transposed,
                        tiles)
@@ -187,18 +226,24 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeRegionToChunk() throws {
         
-        let regions: [Triangle] = [.zero,
-                                   .init(-1, 0, 0),
-                                   .init(0, -1, 0),
-                                   .init(0, 0, -1)]
+        // Regions at the corner of a region
+        let regions: [Triangle] = [.init(-1, 0, 0),
+                                   .init(-1, 1, 0),
+                                   .init(-1, 1, -1),
+                                   .init(0, 1, -1),
+                                   .init(0, 0, -1),
+                                   .zero]
             
         let transposed = regions.transpose(.region,
                                            .chunk)
         
-        let chunks: [Triangle] = [.zero,
-                                  .init(-3, 1, 1),
-                                  .init(1, -3, 1),
-                                  .init(1, 1, -3)]
+        // Chunks in the center of a region
+        let chunks: [Triangle] = [.init(-3, 1, 1),
+                                  .init(-4, 4, 0),
+                                  .init(-3, 5, -3),
+                                  .init(0, 4, -4),
+                                  .init(1, 1, -3),
+                                  .zero]
         
         XCTAssertEqual(transposed,
                        chunks)
@@ -206,43 +251,53 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeChunkToRegion() throws {
         
-        let chunks: [Triangle] = [.zero,
-                                  .init(-1, 0, 0),
-                                  .init(0, -1, 0),
-                                  .init(0, 0, -1),
-                                  .init(-3, 1, 1),
-                                  .init(1, -3, 1),
-                                  .init(1, 1, -3)]
-            
-        let transposed = chunks.transpose(.chunk,
-                                          .region)
+        let from = Triangle.Scale.chunk
+        let to = Triangle.Scale.region
         
-        let regions: [Triangle] = [.zero,
-                                   .zero,
-                                   .zero,
-                                   .zero,
-                                   .init(-1, 0, 0),
-                                   .init(0, -1, 0),
-                                   .init(0, 0, -1)]
+        // Chunks at the corner of a region
+        let c0 = Triangle(-2, 2, -1)
+        let c1 = Triangle(-2, 3, -1)
+        let c2 = Triangle(-2, 3, -2)
+        let c3 = Triangle(-1, 3, -2)
+        let c4 = Triangle(-1, 2, -2)
+        let c5 = Triangle(-1, 2, -1)
         
-        XCTAssertEqual(transposed,
-                       regions)
+        // Regions at the corner of a region
+        let r0 = Triangle(-1, 0, 0)
+        let r1 = Triangle(-1, 1, 0)
+        let r2 = Triangle(-1, 1, -1)
+        let r3 = Triangle(0, 1, -1)
+        let r4 = Triangle(0, 0, -1)
+        let r5 = Triangle.zero
+        
+        XCTAssertEqual(c0.transpose(from, to), r0)
+        XCTAssertEqual(c1.transpose(from, to), r1)
+        XCTAssertEqual(c2.transpose(from, to), r2)
+        XCTAssertEqual(c3.transpose(from, to), r3)
+        XCTAssertEqual(c4.transpose(from, to), r4)
+        XCTAssertEqual(c5.transpose(from, to), r5)
     }
     
     func testTransposeChunkToTile() throws {
         
-        let chunks: [Triangle] = [.zero,
-                                  .init(-1, 0, 0),
-                                  .init(0, -1, 0),
-                                  .init(0, 0, -1)]
+        // Chunks at the corner of a region
+        let chunks: [Triangle] = [.init(-2, 2, -1),
+                                  .init(-2, 3, -1),
+                                  .init(-2, 3, -2),
+                                  .init(-1, 3, -2),
+                                  .init(-1, 2, -2),
+                                  .init(-1, 2, -1)]
             
         let transposed = chunks.transpose(.chunk,
                                           .tile)
         
-        let tiles: [Triangle] = [.zero,
-                                 .init(-3, 1, 1),
-                                 .init(1, -3, 1),
-                                 .init(1, 1, -3)]
+        // Tiles in the center of a chunk
+        let tiles: [Triangle] = [.init(-7, 9, -3),
+                                 .init(-8, 12, -4),
+                                 .init(-7, 13, -7),
+                                 .init(-4, 12, -8),
+                                 .init(-3, 9, -7),
+                                 .init(-4, 8, -4)]
         
         XCTAssertEqual(transposed,
                        tiles)
@@ -250,24 +305,24 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeTileToChunk() throws {
         
-        let tiles: [Triangle] = [.zero,
-                                 .init(-1, 0, 0),
-                                 .init(0, -1, 0),
-                                 .init(0, 0, -1),
-                                 .init(-3, 1, 1),
-                                 .init(1, -3, 1),
-                                 .init(1, 1, -3)]
+        // Tiles at the corner of a region
+        let tiles: [Triangle] = [.init(-6, 10, -5),
+                                 .init(-6, 11, -5),
+                                 .init(-6, 11, -6),
+                                 .init(-5, 11, -6),
+                                 .init(-5, 10, -6),
+                                 .init(-5, 10, -5)]
             
         let transposed = tiles.transpose(.tile,
                                          .chunk)
         
-        let chunks: [Triangle] = [.zero,
-                                  .zero,
-                                  .zero,
-                                  .zero,
-                                  .init(-1, 0, 0),
-                                  .init(0, -1, 0),
-                                  .init(0, 0, -1)]
+        // Chunks at the corner of a region
+        let chunks: [Triangle] = [.init(-2, 2, -1),
+                                  .init(-2, 3, -1),
+                                  .init(-2, 3, -2),
+                                  .init(-1, 3, -2),
+                                  .init(-1, 2, -2),
+                                  .init(-1, 2, -1)]
             
         XCTAssertEqual(transposed,
                        chunks)
@@ -275,24 +330,24 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeTileToRegion() throws {
         
-        let tiles: [Triangle] = [.zero,
-                                 .init(-1, 0, 0),
-                                 .init(0, -1, 0),
-                                 .init(0, 0, -1),
-                                 .init(-11, 5, 5),
-                                 .init(5, -11, 5),
-                                 .init(5, 5, -11)]
+        // Tiles at the corner of a region
+        let tiles: [Triangle] = [.init(-6, 10, -5),
+                                 .init(-6, 11, -5),
+                                 .init(-6, 11, -6),
+                                 .init(-5, 11, -6),
+                                 .init(-5, 10, -6),
+                                 .init(-5, 10, -5)]
             
         let transposed = tiles.transpose(.tile,
                                          .region)
         
-        let regions: [Triangle] = [.zero,
-                                   .zero,
-                                   .zero,
-                                   .zero,
-                                   .init(-1, 0, 0),
-                                   .init(0, -1, 0),
-                                   .init(0, 0, -1)]
+        // Regions at the corner of a region
+        let regions: [Triangle] = [.init(-1, 0, 0),
+                                   .init(-1, 1, 0),
+                                   .init(-1, 1, -1),
+                                   .init(0, 1, -1),
+                                   .init(0, 0, -1),
+                                   .zero]
         
         XCTAssertEqual(transposed,
                        regions)

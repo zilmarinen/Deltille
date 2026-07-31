@@ -148,14 +148,14 @@ final class HexagonTests: XCTestCase {
     
     func testVertices() throws {
         
-        let hexagon = Hexagon(2, -1, -1)
+        let hexagon = Hexagon(-3, 5, -2)
         
-        let vertices: [Vertex] = [.init(3, -1, -1),
-                                  .init(2, -1, -2),
-                                  .init(2, 0, -1),
-                                  .init(1, -1, -1),
-                                  .init(2, -1, 0),
-                                  .init(2, -2, -1)]
+        let vertices: [Vertex] = [.init(-2, 5, -2),
+                                  .init(-3, 5, -3),
+                                  .init(-3, 6, -2),
+                                  .init(-4, 5, -2),
+                                  .init(-3, 5, -1),
+                                  .init(-3, 4, -2)]
         
         let hexagonCorners = vertices.map {
             
