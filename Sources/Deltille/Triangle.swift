@@ -1,5 +1,6 @@
 //
 //  Triangle.swift
+//  Deltille
 //
 //  Created by Zack Brown on 23/05/2024.
 //
@@ -11,134 +12,66 @@ import Foundation
 
 public struct Triangle: Tile {
     
-    public static let zero = Self(Vertex.zero)
-    
-    public let vertex: Vertex
-    
-    public init(_ position: Coordinate) {
-                
-        self.vertex = Vertex(position)
-    }
-    
-    public init(_ vertex: Vertex) {
-        
-        self.vertex = vertex
-    }
+    public let x: Int
+    public let y: Int
+    public let z: Int
     
     public init(_ x: Int,
                 _ y: Int,
                 _ z: Int) {
         
-        self.vertex = .init(x, y, z)
+        self.x = x
+        self.y = y
+        self.z = z
     }
     
     public init(_ vector: Vector,
-                _ scale: Scale) {
+                _ scale: Double = 1.0) {
     
-        let j = ceil((vector.x - .sqrt3d3  * vector.z) / scale.length)
-        let i = floor((     .sqrt3d3 * 2.0 * vector.z) / scale.length) + 1
-        let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale.length)
+        let quantised = vector.quantised(scale)
         
-        let triangle = Triangle(Int(round((i - j) / 3.0)),
-                                Int(round((j - k) / 3.0)),
-                                Int(round((k - i) / 3.0)))
+        let triangle = Triangle(quantised.x,
+                                quantised.y,
+                                quantised.z)
         
         let triangles = [triangle] + triangle.adjacent
         
         let closest = triangles.first {
             
-            $0.contains(vector,
-                        scale)
+            $0.contains(vector / scale,
+                        .tile)
         } ?? triangle
         
-        self.init(closest.vertex)
+        self.init(closest.x,
+                  closest.y,
+                  closest.z)
     }
 }
 
 public extension Triangle {
     
-    var id: String { vertex.id }
-    
     var isPointy: Bool {
         
-        vertex.position.equalToZero
+        equalToZero
     }
     
     var orientation: Double {
         
         isPointy ? 0.0 : .pi
     }
-    
-    var vertices: [Vertex] {
-        
-        edges.map {
-            
-            .init(vertex.position + (isPointy ? -translation($0) : .one - translation($0)))
-        }
-    }
-    
-    var adjacent: [Self] {
-        
-        edges.map {
-            
-            .init(vertex.position + translation($0))
-        }
-    }
-    
-    var perimeter: [Self] {
-        
-        Array(vertices.reduce(into: Set<Self>(), { result, vertex in
-            
-            for tile in vertex.tiles {
-                
-                guard tile.vertex != self.vertex else { continue }
-                
-                result.insert(tile)
-            }
-        }))
-    }
 }
 
 public extension Triangle {
     
-    func position(_ scale: Scale) -> Vector {
-        
-        vertex.position(scale)
-    }
-    
-    func vertex(_ corner: Corner) -> Vertex {
-        
-        vertices[corner.rawValue]
-    }
-    
-    func corner(_ vertex: Vertex) -> Corner? {
-        
-        guard let index = vertices.firstIndex(of: vertex) else { return nil }
-        
-        return .init(rawValue: index)
-    }
-    
-    func neighbour(_ edge: Edge) -> Self {
-        
-        adjacent[edge.rawValue]
-    }
-    
-    func translation(_ along: Edge) -> Coordinate {
-        
-        switch along {
-            
-        case .e0: isPointy ? -.unitX : .unitX
-        case .e1: isPointy ? -.unitY : .unitY
-        case .e2: isPointy ? -.unitZ : .unitZ
-        }
-    }
-    
     func contains(_ vector: Vector,
-                  _ scale: Scale) -> Bool {
+                  _ scale: Scale = .default) -> Bool {
         
-        let c0 = vertex(.c0).position(scale)
-        let c1 = vertex(.c1).position(scale)
-        let c2 = vertex(.c2).position(scale)
+        let c0 = vertex(.c0,
+                        scale).vector
+        let c1 = vertex(.c1,
+                        scale).vector
+        let c2 = vertex(.c2,
+                        scale).vector
         
         let v0 = c2 - c0
         let v1 = c1 - c0
@@ -160,18 +93,6 @@ public extension Triangle {
         return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0)
     }
     
-    func closest(_ vector: Vector,
-                 _ scale: Scale) -> Vertex {
-        
-        vertices.closest(vector,
-                         scale)
-    }
-    
-    func distance(_ other: Self) -> Int {
-        
-        vertex.distance(other.vertex)
-    }
-    
     func disc(_ radius: Int) -> [Self] {
         
         var tiles: [Self] = []
@@ -180,19 +101,67 @@ public extension Triangle {
             
             for j in -radius...radius {
              
-                let s = -1 - (vertex.position.sum + i + j)
+                let s = -1 - (sum + i + j)
                 
                 for k in s...(s + 1) {
                     
                     if abs(i) + abs(j) + abs(k) <= radius {
                         
-                        tiles.append(.init(vertex.position + .init(i, j, k)))
+                        tiles.append(self + .init(i, j, k))
                     }
                 }
             }
         }
         
         return tiles
+    }
+    
+    func neighbour(_ edge: Edge) -> Triangle {
+        
+        switch edge {
+            
+        case .e0:
+            
+            self + (isPointy ? -.unitX : .unitX)
+            
+        case .e1:
+            
+            self + (isPointy ? -.unitY : .unitY)
+            
+        case .e2:
+            
+            self + (isPointy ? -.unitZ : .unitZ)
+        }
+    }
+    
+    func vertex(_ corner: Corner,
+                _ scale: Scale = .default) -> Vertex {
+        
+        let u = (scale.size / 3) + 1
+        let v = u / 2
+        
+        let dx = Vertex(u, -v, -v)
+        let dy = Vertex(-v, u, -v)
+        let dz = Vertex(-v, -v, u)
+        
+        let origin = Vertex(dx.x * x + dy.x * y + dz.x * z,
+                            dx.y * x + dy.y * y + dz.y * z,
+                            dx.z * x + dy.z * y + dz.z * z)
+        
+        switch corner {
+            
+        case .c0:
+            
+            return origin + (isPointy ? dx : -dx)
+            
+        case .c1:
+            
+            return origin + (isPointy ? dy : -dy)
+            
+        case .c2:
+            
+            return origin + (isPointy ? dz : -dz)
+        }
     }
 }
 
@@ -205,7 +174,10 @@ public extension Triangle {
         
         case c0, c1, c2
         
-        public var id: String { "\(rawValue)" }
+        public var id: String {
+            
+            "\(rawValue)"
+        }
         
         public var corners: [Corner] {
                     
@@ -227,11 +199,6 @@ public extension Triangle {
             }
         }
     }
-    
-    var corners: [Corner] {
-        
-        Corner.allCases
-    }
 }
 
 // MARK: Edge
@@ -243,7 +210,10 @@ public extension Triangle {
         
         case e0, e1, e2
         
-        public var id: String { "\(rawValue)" }
+        public var id: String {
+            
+            "\(rawValue)"
+        }
         
         public var corners: [Corner] {
             
@@ -265,114 +235,77 @@ public extension Triangle {
             }
         }
     }
-    
-    var edges: [Edge] {
-        
-        Edge.allCases
-    }
 }
 
 // MARK: Footprint
 
-public extension Triangle {
-    
-    struct Footprint: Deltille.Footprint {
-        
-        public let origin: Triangle
-        public let tiles: [Triangle]
-        
-        public init(_ origin: Triangle,
-                    _ tiles: [Triangle]) {
-         
-            self.origin = origin
-            self.tiles = tiles
-        }
-        
-        public init(_ origin: Triangle,
-                    _ coordinates: [Coordinate]) {
-            
-            self.init(origin,
-                      coordinates.map {
-                
-                .init(origin.vertex.position + (origin.isPointy ? $0 : -$0))
-            })
-        }
-        
-        public func rotate(_ rotation: Rotation) -> Self {
-            
-            let triangles = tiles.map {
-                
-                let triangle = Triangle($0.vertex.position - origin.vertex.position)
-                
-                let rotated = triangle.rotate(rotation)
-                
-                return Triangle(rotated.vertex.position + origin.vertex.position)
-            }
-            
-            return .init(origin,
-                         triangles)
-        }
-    }
-}
-
-// MARK: Rotation
-
-extension Triangle: Rotatable {
-    
-    public struct Rotation: Deltille.Rotation {
-        
-        public static let turns: Int = 3
-        
-        public let turns: Int
-        
-        public init(turns: Int) {
-            
-            self.turns = Self.wrap(turns)
-        }
-    }
-    
-    public func rotate(_ rotation: Rotation) -> Self {
-    
-        var rotated = vertex
-        
-        for _ in 0..<rotation.turns {
-            
-            rotated = .init(rotated.position.y,
-                            rotated.position.z,
-                            rotated.position.x)
-        }
-        
-        return .init(rotated)
-    }
-}
+//public extension Triangle {
+//    
+//    struct Footprint: Deltille.Footprint {
+//        
+//        public let origin: Triangle
+//        public let tiles: [Triangle]
+//        
+//        public init(_ origin: Triangle,
+//                    _ tiles: [Triangle]) {
+//         
+//            self.origin = origin
+//            self.tiles = tiles
+//        }
+//        
+//        public init(_ origin: Triangle,
+//                    _ coordinates: [Coordinate]) {
+//            
+//            self.init(origin,
+//                      coordinates.map {
+//                
+//                .init(origin.vertex.position + (origin.isPointy ? $0 : -$0))
+//            })
+//        }
+//        
+//        public func rotate(_ rotation: Rotation) -> Self {
+//            
+//            let triangles = tiles.map {
+//                
+//                let triangle = Triangle($0.vertex.position - origin.vertex.position)
+//                
+//                let rotated = triangle.rotate(rotation)
+//                
+//                return Triangle(rotated.vertex.position + origin.vertex.position)
+//            }
+//            
+//            return .init(origin,
+//                         triangles)
+//        }
+//    }
+//}
 
 // MARK: Scale
 
 public extension Triangle {
     
-    enum Scale: String,
+    enum Scale: Int,
                 Deltille.Scale {
         
         public static let `default` = Self.tile
         
-        case sierpinski
-        case pascal
-        case tile
-        case chunk
-        case region
+        case tile = 1
+        case chunk = 7
+        case region = 31
         
-        public var id: String { rawValue.capitalized }
-        
-        public var length: Double {
+        public var id: String {
             
             switch self {
                 
-            case .sierpinski: 0.1428571429  // 1.0 / 7.0
-            case .pascal: 0.5
-            case .tile: 1.0
-            case .chunk: 7.0
-            case .region: 28.0
+            case .tile: "Tile [\(rawValue)]"
+            case .chunk: "Chunk [\(rawValue)]"
+            case .region: "Region [\(rawValue)]"
             }
+        }
+        
+        public var size: Int {
+            
+            rawValue
         }
     }
     
@@ -381,8 +314,37 @@ public extension Triangle {
         
         guard from != to else { return self }
         
-        return .init(vertex.position(from),
-                     to)
+        return Self.containing(stencil(from).center,
+                               to)
+    }
+    
+    func child(_ size: Int = 4) -> Self {
+     
+        .init(x * size + (isPointy ? 0 : 1),
+              y * size + (isPointy ? 0 : 1),
+              z * size + (isPointy ? 0 : 1))
+    }
+    
+    func parent(_ size: Int = 4) -> Self {
+        
+        let scale = Scale(rawValue: size * 2 - 1) ?? .default
+        
+        return Self.containing(stencil(.tile).center,
+                               scale)
+    }
+    
+    private static func containing(_ vector: Vector,
+                                   _ scale: Scale) -> Self {
+        
+        let subdivision = Double((scale.size + 1) / 2)
+        let triangle = Self(vector,
+                            subdivision)
+        
+        return ([triangle] + triangle.adjacent).first {
+            
+            $0.contains(vector,
+                        scale)
+        } ?? triangle
     }
 }
 
@@ -390,7 +352,7 @@ public extension Triangle {
 
 public extension Triangle {
     
-    final class Sieve {
+    struct Sieve: Deltille.Sieve {
         
         //
         //  v-------v-------v-------v-------v
@@ -421,60 +383,198 @@ public extension Triangle {
         }
     }
     
-    func sieve(for scale: Scale) -> Sieve {
-        
-        let origin = Triangle(vertex.position(scale),
-                              .tile)
-        
-        let columns = Int(max(scale.length, 1.0))
-        let base = Int(floor(Double(columns) / 1.5))
-        let half = Int(floor(Double(base) / 2.0))
-        let pointy = isPointy
+    func sieve(_ scale: Scale) -> Sieve {
         
         var triangles: [Triangle] = []
         var vertices: [Vertex] = []
         
+        let columns = scale.size / 2
+        let offset = -(scale.size / 3) / 2
+        let pointy = isPointy
+        
+        let origin = transpose(scale,
+                               .tile)
+        
         for column in 0...columns {
             
-            let rows = columns - column
+            let rows = scale.size - (column * 2)
             
-            let x = half - column
-            
-            for row in 0...rows {
+            for row in 0..<rows {
                 
-                let y = half - row
-                let z = base + 1 - column - row
+                let x = offset + column
+                let y = offset + (row / 2)
+                let z = -x - y - (row % 2)
                 
-                let other = Triangle.Vertex(pointy ? -x : x + 1,
-                                            pointy ? -y : y + 1,
-                                            pointy ? z : -z + 1)
+                let triangle = origin + Triangle(pointy ? x : -x,
+                                                 pointy ? y : -z,
+                                                 pointy ? z : -y)
                 
-                vertices.append(.init(origin.vertex.position + other.position))
+                triangles.append(triangle)
                 
-                guard row != rows else { continue }
+                guard triangle.isPointy == pointy else { continue }
                 
-                let lhs = Coordinate(pointy ? -x : x,
-                                     pointy ? -y : y,
-                                     pointy ? z - 1 : -z + 1)
+                vertices.append(.init(triangle.x,
+                                      triangle.y - (pointy ? 0 : 1),
+                                      triangle.z + (pointy ? 1 : 0)))
                 
-                triangles.append(.init(origin.vertex.position + lhs))
+                guard row == (rows - 1) else { continue }
                 
-                guard row < (rows - 1) else { continue }
+                vertices.append(.init(triangle.x,
+                                      triangle.y + (pointy ? 1 : 0),
+                                      triangle.z - (pointy ? 0 : 1)))
                 
-                let rhs = Coordinate(pointy ? -x : x,
-                                     pointy ? -y : y,
-                                     pointy ? z - 2 : -z + 2)
+                guard column == columns else { continue }
                 
-                triangles.append(.init(origin.vertex.position + rhs))
+                vertices.append(.init(triangle.x + (pointy ? 1 : -1),
+                                      triangle.y,
+                                      triangle.z))
             }
         }
 
-        return .init(.init(vertex.position),
+        return .init(self,
                      scale,
                      triangles,
                      vertices)
     }
 }
+
+// MARK: Stencil
+
+public extension Triangle {
+    
+    struct Stencil: Deltille.Stencil {
+        
+        //
+        //  0-------3-------5-------8-------1
+        //    \   /   \   /   \   /   \   /
+        //      4-------6-------9-------12
+        //        \   /   \ c /   \   /
+        //          7------10-------13
+        //            \   /   \   /
+        //             11-------14
+        //                \   /
+        //                  2
+        //
+        
+        public enum Division: CaseIterable,
+                              Sendable {
+        
+            case d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15
+        }
+        
+        public enum Vertex: CaseIterable,
+                            Sendable {
+            
+            case v0, v1, v2
+            case v5, v7, v13
+            case v6, v9, v10
+            case v3, v4, v8, v11, v12, v14
+            case center
+        }
+        
+        public var center: Vector { (v0 + v1 + v2) / 3.0 }
+        
+        public var perimeter: [Vector] { [v0, v1, v2] }
+        
+        // Corners
+        public let v0, v1, v2: Vector
+        
+        // Edge midpoints
+        public let v5, v7, v13: Vector
+        
+        // Inner subdivision
+        public let v6, v9, v10: Vector
+        
+        // Outer subdivisions
+        public let v3, v4, v8, v11, v12, v14: Vector
+        
+        public init(v0: Vector,
+                    v1: Vector,
+                    v2: Vector) {
+            
+            let v5 = v0.mid(v1)
+            let v7 = v0.mid(v2)
+            let v13 = v1.mid(v2)
+            
+            self.v0 = v0
+            self.v1 = v1
+            self.v2 = v2
+            self.v5 = v5
+            self.v7 = v7
+            self.v13 = v13
+            self.v6 = v5.mid(v7)
+            self.v9 = v5.mid(v13)
+            self.v10 = v7.mid(v13)
+            self.v3 = v0.mid(v5)
+            self.v4 = v0.mid(v7)
+            self.v8 = v1.mid(v5)
+            self.v11 = v2.mid(v7)
+            self.v12 = v1.mid(v13)
+            self.v14 = v2.mid(v13)
+        }
+        
+        public func division(_ division: Division) -> [Vertex] {
+            
+            switch division {
+                
+            case .d0: [.v0, .v3, .v4]
+            case .d1: [.v3, .v6, .v4]
+            case .d2: [.v3, .v5, .v6]
+            case .d3: [.v5, .v9, .v6]
+            case .d4: [.v5, .v8, .v9]
+            case .d5: [.v8, .v12, .v9]
+            case .d6: [.v8, .v1, .v12]
+            case .d7: [.v4, .v6, .v7]
+            case .d8: [.v6, .v10, .v7]
+            case .d9: [.v6, .v9, .v10]
+            case .d10: [.v9, .v13, .v10]
+            case .d11: [.v9, .v12, .v13]
+            case .d12: [.v7, .v10, .v11]
+            case .d13: [.v10, .v14, .v11]
+            case .d14: [.v10, .v13, .v14]
+            case .d15: [.v11, .v14, .v2]
+            }
+        }
+        
+        public func vertex(_ vertex: Vertex) -> Vector {
+            
+            switch vertex {
+                
+            case .v0: v0
+            case .v1: v1
+            case .v2: v2
+            case .v3: v3
+            case .v4: v4
+            case .v5: v5
+            case .v6: v6
+            case .v7: v7
+            case .v8: v8
+            case .v9: v9
+            case .v10: v10
+            case .v11: v11
+            case .v12: v12
+            case .v13: v13
+            case .v14: v14
+            case .center: center
+            }
+        }
+    }
+    
+    func stencil(_ scale: Scale) -> Stencil {
+
+        let v0 = Vector(vertex(.c0,
+                               scale))
+        let v1 = Vector(vertex(.c1,
+                               scale))
+        let v2 = Vector(vertex(.c2,
+                               scale))
+
+        return .init(v0: v0,
+                     v1: v1,
+                     v2: v2)
+    }
+}
+
 
 // MARK: Vertex
 
@@ -482,53 +582,27 @@ public extension Triangle {
     
     struct Vertex: Deltille.Vertex {
         
-        public static let zero = Self(.zero)
-        
-        public var tiles: [Triangle] {
-            
-            [.init(position - .unitX),
-             .init(position - (.unitX + .unitY)),
-             .init(position - .unitY),
-             .init(position - (.unitY + .unitZ)),
-             .init(position - .unitZ),
-             .init(position - (.unitX + .unitZ))]
-        }
-        
-        public var vertices: [Vertex] {
-            
-            [.init(position + (-.unitX + .unitY)),
-             .init(position + (-.unitX + .unitZ)),
-             .init(position + (-.unitY + .unitZ)),
-             .init(position + (-.unitY + .unitX)),
-             .init(position + (-.unitZ + .unitX)),
-             .init(position + (-.unitZ + .unitY))]
-        }
-        
-        public let position: Coordinate
-        
-        public init(_ position: Coordinate) {
-            
-            self.position = position
-        }
+        public let x: Int
+        public let y: Int
+        public let z: Int
         
         public init(_ x: Int,
                     _ y: Int,
                     _ z: Int) {
             
-            self.position = .init(x, y, z)
+            self.x = x
+            self.y = y
+            self.z = z
         }
         
-        public func distance(_ other: Self) -> Int {
+        public var tiles: [Triangle] {
             
-            abs(position.x - other.position.x) +
-            abs(position.y - other.position.y) +
-            abs(position.z - other.position.z)
+            []
         }
         
-        public func position(_ scale: Scale) -> Vector {
+        public var vertices: [Self] {
             
-            .init(self,
-                  scale)
+            []
         }
     }
 }

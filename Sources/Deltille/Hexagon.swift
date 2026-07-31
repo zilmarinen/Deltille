@@ -1,5 +1,6 @@
 //
 //  Hexagon.swift
+//  Deltille
 //
 //  Created by Zack Brown on 05/06/2024.
 //
@@ -11,130 +12,35 @@ import Foundation
 
 public struct Hexagon: Tile {
     
-    public static let zero = Self(Vertex.zero)
-    
-    public let vertex: Vertex
-    
-    public init(_ position: Coordinate) {
-                
-        self.vertex = Vertex(position)
-    }
-    
-    public init(_ vertex: Vertex) {
-        
-        self.vertex = vertex
-    }
+    public let x: Int
+    public let y: Int
+    public let z: Int
     
     public init(_ x: Int,
                 _ y: Int,
                 _ z: Int) {
         
-        self.vertex = Vertex(x, y, z)
-    }
-    
-    public init(_ vector: Vector,
-                _ scale: Scale) {
-
-        let i = ceil((vector.z - .sqrt3d3  * vector.x) / scale.length)
-        let j = floor((     .sqrt3d3 * 2.0 * vector.x) / scale.length) + 1
-        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale.length)
-        
-        let hexagon = Hexagon(Int(round((i - k) / 3.0)),
-                              Int(round((j - i) / 3.0)),
-                              Int(round((k - j) / 3.0)))
-        
-        let tile = scale == .region ? hexagon.parent() : hexagon
-        
-        self.vertex = tile.vertex
+        self.x = x
+        self.y = y
+        self.z = z
     }
 }
 
 public extension Hexagon {
-    
-    var id: String { vertex.id }
-    
-    var vertices: [Vertex] {
-        
-        [.init(vertex.position + .unitX),
-         .init(vertex.position - .unitZ),
-         .init(vertex.position + .unitY),
-         .init(vertex.position - .unitX),
-         .init(vertex.position + .unitZ),
-         .init(vertex.position - .unitY)]
-    }
-    
-    var adjacent: [Self] {
-        
-        edges.map {
-            
-            .init(vertex.position + translation($0))
-        }
-    }
-    
-    var perimeter: [Self] { adjacent }
-}
-
-public extension Hexagon {
-    
-    func position(_ scale: Scale) -> Vector {
-        
-        vertex.position(scale)
-    }
-    
-    func vertex(_ corner: Corner) -> Vertex {
-        
-        vertices[corner.rawValue]
-    }
-    
-    func corner(_ vertex: Vertex) -> Corner? {
-        
-        guard let index = vertices.firstIndex(of: vertex) else { return nil }
-        
-        return .init(rawValue: index)
-    }
-    
-    func neighbour(_ edge: Edge) -> Self {
-        
-        adjacent[edge.rawValue]
-    }
-    
-    func translation(_ along: Edge) -> Coordinate {
-        
-        switch along {
-            
-        case .e0: .unitX - .unitZ
-        case .e1: .unitY - .unitZ
-        case .e2: .unitY - .unitX
-        case .e3: .unitZ - .unitX
-        case .e4: .unitZ - .unitY
-        case .e5: .unitX - .unitY
-        }
-    }
     
     func contains(_ vector: Vector,
-                  _ scale: Scale) -> Bool {
+                  _ scale: Scale = .default) -> Bool {
         
-        let center = position(scale)
+        let center = transpose(scale,
+                               .chunk).vector
         
         let dx = abs(vector.x - center.x)
         let dz = abs(vector.z - center.z)
         
-        if dx > scale.length * 1.5 { return false }
-        if dz > scale.length * .sqrt3  { return false }
+        if dx > Double(scale.size) * 1.5 { return false }
+        if dz > Double(scale.size) * .sqrt3  { return false }
         
-        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * scale.length * 2.0
-    }
-    
-    func closest(_ vector: Vector,
-                 _ scale: Scale) -> Vertex {
-        
-        vertices.closest(vector,
-                         scale)
-    }
-    
-    func distance(_ other: Self) -> Int {
-        
-        vertex.distance(other.vertex)
+        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * Double(scale.size) * 2.0
     }
     
     func disc(_ radius: Int) -> [Self] {
@@ -148,11 +54,90 @@ public extension Hexagon {
             
             for j in start..<end {
                 
-                tiles.append(.init(vertex.position + .init(i, j, -i - j)))
+                tiles.append(self + .init(i, j, -i - j))
             }
         }
         
         return tiles
+    }
+    
+    func distance(_ other: Self) -> Int {
+        
+        (abs(x - other.x) +
+         abs(y - other.y) +
+         abs(z - other.z)) / 2
+    }
+    
+    func neighbour(_ edge: Edge) -> Hexagon {
+    
+        switch edge {
+            
+        case .e0:
+            
+            self + .unitX - .unitZ
+            
+        case .e1:
+            
+            self + .unitY - .unitZ
+            
+        case .e2:
+            
+            self + .unitY - .unitX
+            
+        case .e3:
+            
+            self + .unitZ - .unitX
+            
+        case .e4:
+            
+            self + .unitZ - .unitY
+            
+        case .e5:
+            
+            self + .unitX - .unitY
+        }
+    }
+    
+    func vertex(_ corner: Corner,
+                _ scale: Scale = .default) -> Vertex {
+        
+        let u = scale.size
+        let v = u - 1
+        
+        let dx = Vertex(u, 1, -v)
+        let dy = Vertex(-v, u, 1)
+        let dz = Vertex(1, -v, u)
+        
+        let origin = scale != .chunk ? Vertex(dx.x * x + dy.x * y + dz.x * z,
+                                              dx.y * x + dy.y * y + dz.y * z,
+                                              dx.z * x + dy.z * y + dz.z * z) : Vertex(x, y, z)
+        
+        switch corner {
+            
+        case .c0:
+            
+            return origin + dx
+            
+        case .c1:
+            
+            return origin - dz
+            
+        case .c2:
+            
+            return origin + dy
+            
+        case .c3:
+            
+            return origin - dx
+            
+        case .c4:
+            
+            return origin + dz
+            
+        case .c5:
+            
+            return origin - dy
+        }
     }
 }
 
@@ -165,7 +150,10 @@ public extension Hexagon {
         
         case c0, c1, c2, c3, c4, c5
         
-        public var id: String { "\(rawValue)" }
+        public var id: String {
+            
+            "\(rawValue)"
+        }
         
         public var corners: [Corner] {
             
@@ -193,11 +181,6 @@ public extension Hexagon {
             }
         }
     }
-    
-    var corners: [Corner] {
-        
-        Corner.allCases
-    }
 }
 
 // MARK: Edge
@@ -209,7 +192,10 @@ public extension Hexagon {
         
         case e0, e1, e2, e3, e4, e5
         
-        public var id: String { "\(rawValue)" }
+        public var id: String {
+            
+            "\(rawValue)"
+        }
         
         public var corners: [Corner] {
             
@@ -237,134 +223,108 @@ public extension Hexagon {
             }
         }
     }
-    
-    var edges: [Edge] {
-        
-        Edge.allCases
-    }
 }
 
 // MARK: Footprint
 
-public extension Hexagon {
-    
-    struct Footprint: Deltille.Footprint {
-        
-        public let origin: Hexagon
-        public let tiles: [Hexagon]
-        
-        public init(_ origin: Hexagon,
-                    _ tiles: [Hexagon]) {
-         
-            self.origin = origin
-            self.tiles = tiles
-        }
-        
-        public init(_ origin: Hexagon,
-                    _ coordinates: [Coordinate]) {
-            
-            self.init(origin,
-                      coordinates.map {
-                
-                .init(origin.vertex.position + $0)
-            })
-        }
-        
-        public func rotate(_ rotation: Rotation) -> Self {
-        
-            let hexagons = tiles.map {
-                
-                let hexagon = Hexagon($0.vertex.position - origin.vertex.position)
-                
-                let rotated = hexagon.rotate(rotation)
-                
-                return Hexagon(rotated.vertex.position + origin.vertex.position)
-            }
-            
-            return .init(origin,
-                         hexagons)
-        }
-    }
-}
-
-// MARK: Rotation
-
-extension Hexagon: Rotatable {
-    
-    public struct Rotation: Deltille.Rotation {
-        
-        public static let turns: Int = 6
-        
-        public let turns: Int
-        
-        public init(turns: Int) {
-            
-            self.turns = Self.wrap(turns)
-        }
-    }
-    
-    public func rotate(_ rotation: Rotation) -> Self {
-        
-        var rotated = vertex
-        
-        for _ in 0..<rotation.turns {
-            
-            rotated = .init(-rotated.position.z,
-                            -rotated.position.x,
-                            -rotated.position.y)
-        }
-        
-        return .init(rotated)
-    }
-}
+//public extension Hexagon {
+//    
+//    struct Footprint: Deltille.Footprint {
+//        
+//        public let origin: Hexagon
+//        public let tiles: [Hexagon]
+//        
+//        public init(_ origin: Hexagon,
+//                    _ tiles: [Hexagon]) {
+//         
+//            self.origin = origin
+//            self.tiles = tiles
+//        }
+//        
+//        public init(_ origin: Hexagon,
+//                    _ coordinates: [Coordinate]) {
+//            
+//            self.init(origin,
+//                      coordinates.map {
+//                
+//                .init(origin.vertex.position + $0)
+//            })
+//        }
+//        
+//        public func rotate(_ rotation: Rotation) -> Self {
+//        
+//            let hexagons = tiles.map {
+//                
+//                let hexagon = Hexagon($0.vertex.position - origin.vertex.position)
+//                
+//                let rotated = hexagon.rotate(rotation)
+//                
+//                return Hexagon(rotated.vertex.position + origin.vertex.position)
+//            }
+//            
+//            return .init(origin,
+//                         hexagons)
+//        }
+//    }
+//}
 
 // MARK: Scale
 
 public extension Hexagon {
     
-    enum Scale: String,
-                Deltille.Scale {
+    enum Scale: Deltille.Scale {
         
         public static let `default` = Self.chunk
         
         case chunk
-        case region
+        case region(size: Int = 1)
         
-        public var id: String { rawValue.capitalized }
+        public var id: String {
+            
+            switch self {
+                
+            case .chunk: "Chunk [\(size)]"
+            case .region: "Region [\(size)]"
+            }
+        }
         
-        public var length: Double { .sqrt3 * 3.0 }
+        public var size: Int {
+            
+            switch self {
+                
+            case .chunk:
+                
+                1
+                
+            case .region(let size):
+                
+                1 + max(size, 1)
+            }
+        }
     }
     
     func transpose(_ from: Scale,
                    _ to: Scale) -> Self {
         
-        guard from != to else { return self }
-        
-        return .init(vertex.position(from),
-                     to)
+        switch (from, to) {
+            
+        case (.chunk, .region):
+            
+            parent(to.size - 1)
+            
+        case (.region, .chunk):
+            
+            child(from.size - 1)
+            
+        default:
+            
+            self
+        }
     }
     
-    func parent(_ radius: Int = 1) -> Self {
+    func child(_ size: Int = 1) -> Self {
         
-        let area = Double(3 * radius * radius + 3 * radius + 1)
-        let shift = 3 * radius + 2
-        
-        let (x, y, z) = vertex.position.xyz
-        
-        let a = floor(Double(z + y * shift) / area)
-        let b = floor(Double(x + z * shift) / area)
-        let c = floor(Double(y + x * shift) / area)
-        
-        return .init(Int(floor((1 + c - b) / 3)),
-                     Int(floor((1 + a - c) / 3)),
-                     Int(floor((1 + b - a) / 3)))
-    }
-    
-    func child(_ radius: Int = 1) -> Self {
-        
-        let shift = 3 * radius + 2
-        
-        let (x, y, z) = vertex.position.xyz
+        let shift = 3 * size + 2
         
         let a = y - z
         let b = z - x
@@ -374,7 +334,147 @@ public extension Hexagon {
                      Int(floor(Double(shift * a + c) / 3)),
                      Int(floor(Double(shift * b + a) / 3)))
     }
+    
+    func parent(_ size: Int = 1) -> Self {
+        
+        let area = Double(3 * size * size + 3 * size + 1)
+        let shift = 3 * size + 2
+        
+        let a = floor(Double(z + y * shift) / area)
+        let b = floor(Double(x + z * shift) / area)
+        let c = floor(Double(y + x * shift) / area)
+        
+        return .init(Int(floor((1 + c - b) / 3)),
+                     Int(floor((1 + a - c) / 3)),
+                     Int(floor((1 + b - a) / 3)))
+    }
 }
+
+// MARK: Sieve
+
+public extension Hexagon {
+    
+    struct Sieve: Deltille.Sieve {
+        
+        //
+        //                   v-------v
+        //                 /           \
+        //       v-------v       h       v-------v
+        //     /           \           /           \
+        //   v       h       v-------v       h       v
+        //     \           /           \           /
+        //       v-------v       h       v-------v
+        //     /           \           /           \
+        //   v       h       v-------v       h       v
+        //     \           /           \           /
+        //       v-------v       h       v-------v
+        //                 \           /
+        //                   v-------v
+        //
+    }
+    
+    func sieve(_ scale: Scale) -> Sieve {
+        
+        //TODO: Implement Hexagonal Sieve
+        .init()
+    }
+}
+
+// MARK: Stencil
+
+public extension Hexagon {
+    
+    struct Stencil: Deltille.Stencil {
+        
+        //
+        //     0---------1
+        //    /   \   /   \
+        //   5------c------2
+        //    \   /   \   /
+        //     4---------3
+        //
+        
+        public enum Division: CaseIterable,
+                              Sendable {
+        
+            case d0, d1, d2, d3, d4, d5
+        }
+        
+        public enum Vertex: CaseIterable,
+                            Sendable {
+            
+            case v0, v1, v2, v3, v4, v5
+            case center
+        }
+        
+        public var center: Vector { (v0 + v1 + v2 + v3 + v4 + v5) / 6.0 }
+        
+        public var perimeter: [Vector] { [v0, v1, v2, v3, v4, v5] }
+        
+        // Corners
+        public let v0, v1, v2, v3, v4, v5: Vector
+        
+        public init(v0: Vector,
+                    v1: Vector,
+                    v2: Vector,
+                    v3: Vector,
+                    v4: Vector,
+                    v5: Vector) {
+            
+            self.v0 = v0
+            self.v1 = v1
+            self.v2 = v2
+            self.v3 = v3
+            self.v4 = v4
+            self.v5 = v5
+        }
+        
+        public func division(_ division: Division) -> [Vertex] {
+            
+            switch division {
+                
+            case .d0: [.center, .v0, .v1]
+            case .d1: [.center, .v1, .v2]
+            case .d2: [.center, .v2, .v3]
+            case .d3: [.center, .v3, .v4]
+            case .d4: [.center, .v4, .v5]
+            case .d5: [.center, .v5, .v0]
+            }
+        }
+        
+        public func vertex(_ vertex: Vertex) -> Vector {
+            
+            switch vertex {
+                
+            case .v0: v0
+            case .v1: v1
+            case .v2: v2
+            case .v3: v3
+            case .v4: v4
+            case .v5: v5
+            case .center: center
+            }
+        }
+    }
+    
+    func stencil(_ scale: Scale) -> Stencil {
+        
+        return .init(v0: Vector(vertex(.c0,
+                                       scale)),
+                     v1: Vector(vertex(.c1,
+                                       scale)),
+                     v2: Vector(vertex(.c2,
+                                       scale)),
+                     v3: Vector(vertex(.c3,
+                                       scale)),
+                     v4: Vector(vertex(.c4,
+                                       scale)),
+                     v5: Vector(vertex(.c5,
+                                       scale)))
+    }
+}
+
+
 
 // MARK: Vertex
 
@@ -382,49 +482,27 @@ public extension Hexagon {
     
     struct Vertex: Deltille.Vertex {
         
-        public static let zero = Self(.zero)
-        
-        public var tiles: [Hexagon] {
-            
-            Axis.allCases.map {
-                
-                .init(position + ($0.unit * (position.equalToOne ? -1 : 1)))
-            }
-        }
-        
-        public var vertices: [Vertex] {
-            
-            Axis.allCases.map {
-                
-                .init(position + ((.one - $0.unit) * (position.equalToOne ? -1 : 1)))
-            }
-        }
-        
-        public let position: Coordinate
-        
-        public init(_ position: Coordinate) {
-            
-            self.position = position
-        }
+        public let x: Int
+        public let y: Int
+        public let z: Int
         
         public init(_ x: Int,
                     _ y: Int,
                     _ z: Int) {
             
-            self.position = .init(x, y, z)
+            self.x = x
+            self.y = y
+            self.z = z
         }
         
-        public func distance(_ other: Self) -> Int {
+        public var tiles: [Hexagon] {
             
-            (abs(position.x - other.position.x) +
-             abs(position.y - other.position.y) +
-             abs(position.z - other.position.z)) / 2
+            []
         }
         
-        public func position(_ scale: Scale) -> Vector {
+        public var vertices: [Self] {
             
-            .init(self,
-                  scale)
+            []
         }
     }
 }
