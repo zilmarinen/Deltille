@@ -348,9 +348,9 @@ public extension Triangle {
     
     func parent(_ size: Int = 4) -> Self {
         
-        .init(Int.floorDivision(x + (isPointy ? 0 : 1), size),
-              Int.floorDivision(y + (isPointy ? 0 : 1), size),
-              Int.floorDivision(z + (isPointy ? 0 : 1), size))
+        .init(Int.floorDivision(x + 1, size),
+              Int.floorDivision(y + 1, size),
+              Int.floorDivision(z + 1, size))
     }
 }
 

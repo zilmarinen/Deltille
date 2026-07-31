@@ -304,11 +304,11 @@ public extension Hexagon {
             
         case (.tile, .chunk):
             
-            parent(to.size - 1)
+            parent(4)
             
         case (.chunk, .tile):
             
-            child()
+            child(from.size - 1)
             
         default:
             

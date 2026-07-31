@@ -251,31 +251,27 @@ final class TriangleTests: XCTestCase {
     
     func testTransposeChunkToRegion() throws {
         
-        let from = Triangle.Scale.chunk
-        let to = Triangle.Scale.region
-        
         // Chunks at the corner of a region
-        let c0 = Triangle(-2, 2, -1)
-        let c1 = Triangle(-2, 3, -1)
-        let c2 = Triangle(-2, 3, -2)
-        let c3 = Triangle(-1, 3, -2)
-        let c4 = Triangle(-1, 2, -2)
-        let c5 = Triangle(-1, 2, -1)
+        let chunks: [Triangle] = [.init(-2, 2, -1),
+                                  .init(-2, 3, -1),
+                                  .init(-2, 3, -2),
+                                  .init(-1, 3, -2),
+                                  .init(-1, 2, -2),
+                                  .init(-1, 2, -1)]
+        
+        let transposed = chunks.transpose(.chunk,
+                                          .region)
         
         // Regions at the corner of a region
-        let r0 = Triangle(-1, 0, 0)
-        let r1 = Triangle(-1, 1, 0)
-        let r2 = Triangle(-1, 1, -1)
-        let r3 = Triangle(0, 1, -1)
-        let r4 = Triangle(0, 0, -1)
-        let r5 = Triangle.zero
+        let regions: [Triangle] = [.init(-1, 0, 0),
+                                   .init(-1, 1, 0),
+                                   .init(-1, 1, -1),
+                                   .init(0, 1, -1),
+                                   .init(0, 0, -1),
+                                   .zero]
         
-        XCTAssertEqual(c0.transpose(from, to), r0)
-        XCTAssertEqual(c1.transpose(from, to), r1)
-        XCTAssertEqual(c2.transpose(from, to), r2)
-        XCTAssertEqual(c3.transpose(from, to), r3)
-        XCTAssertEqual(c4.transpose(from, to), r4)
-        XCTAssertEqual(c5.transpose(from, to), r5)
+        XCTAssertEqual(transposed,
+                       regions)
     }
     
     func testTransposeChunkToTile() throws {
