@@ -137,7 +137,8 @@ public extension Triangle {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let u = (scale.size / 3) + 1
+        let size = scale == .tile ? 1 : scale == .chunk ? 2 : 3
+        let u = (size / 3) + 1
         let v = u / 2
         
         let dx = Vertex(u, -v, -v)
@@ -284,28 +285,18 @@ public extension Triangle {
 
 public extension Triangle {
     
-    enum Scale: Int,
+    enum Scale: String,
                 Deltille.Scale {
         
         public static let `default` = Self.tile
         
-        case tile = 1
-        case chunk = 7
-        case region = 31
+        case tile
+        case chunk
+        case region
         
         public var id: String {
             
-            switch self {
-                
-            case .tile: "Tile [\(rawValue)]"
-            case .chunk: "Chunk [\(rawValue)]"
-            case .region: "Region [\(rawValue)]"
-            }
-        }
-        
-        public var size: Int {
-            
-            rawValue
+            rawValue.capitalized
         }
     }
     
@@ -393,8 +384,9 @@ public extension Triangle {
         var triangles: [Triangle] = []
         var vertices: [Vertex] = []
         
-        let columns = scale.size / 2
-        let offset = -(scale.size / 3) / 2
+        let size = 1
+        let columns = size / 2
+        let offset = -(size / 3) / 2
         let pointy = isPointy
         
         let origin = transpose(scale,
@@ -402,7 +394,7 @@ public extension Triangle {
         
         for column in 0...columns {
             
-            let rows = scale.size - (column * 2)
+            let rows = size - (column * 2)
             
             for row in 0..<rows {
                 

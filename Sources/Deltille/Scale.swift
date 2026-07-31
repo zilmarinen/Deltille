@@ -17,6 +17,4 @@ public protocol Scale: Codable,
     static var `default`: Self { get }
     
     var id: String { get }
-    
-    var size: Int { get }
 }

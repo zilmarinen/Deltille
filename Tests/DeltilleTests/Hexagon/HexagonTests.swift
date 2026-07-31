@@ -182,60 +182,54 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Transposing
     
-    func testTransposeRegionToChunk() throws {
-        
-        let regions: [Hexagon] = [.zero,
-                                  .init(1, 0, -1),
-                                  .init(0, 1, -1),
-                                  .init(-1, 1, 0),
-                                  .init(-1, 0, 1),
-                                  .init(0, -1, 1),
-                                  .init(1, -1, 0)]
-            
-        let transposed = regions.map {
-            
-            $0.transpose(.region(size: 1),
-                         .chunk)
-        }
+    func testTransposeChunkToTile() throws {
         
         let chunks: [Hexagon] = [.zero,
-                                 .init(1, 2, -3),
-                                 .init(-2, 3, -1),
-                                 .init(-3, 1, 2),
-                                 .init(-1, -2, 3),
-                                 .init(2, -3, 1),
-                                 .init(3, -1, -2)]
+                                 .init(1, 0, -1),
+                                 .init(0, 1, -1),
+                                 .init(-1, 1, 0),
+                                 .init(-1, 0, 1),
+                                 .init(0, -1, 1),
+                                 .init(1, -1, 0)]
+        
+        let transposed = chunks.transpose(.chunk,
+                                          .tile)
+    
+        let tiles: [Hexagon] = [.zero,
+                                .init(1, 2, -3),
+                                .init(-2, 3, -1),
+                                .init(-3, 1, 2),
+                                .init(-1, -2, 3),
+                                .init(2, -3, 1),
+                                .init(3, -1, -2)]
+        
+        XCTAssertEqual(transposed,
+                       tiles)
+    }
+    
+    func testTransposeTileToChunk() throws {
+        
+        let tiles: [Hexagon] = [.zero,
+                                .init(1, 2, -3),
+                                .init(-2, 3, -1),
+                                .init(-3, 1, 2),
+                                .init(-1, -2, 3),
+                                .init(2, -3, 1),
+                                .init(3, -1, -2)]
+            
+        let transposed = tiles.transpose(.tile,
+                                         .chunk)
+        
+        let chunks: [Hexagon] = [.zero,
+                                 .init(1, 0, -1),
+                                 .init(0, 1, -1),
+                                 .init(-1, 1, 0),
+                                 .init(-1, 0, 1),
+                                 .init(0, -1, 1),
+                                 .init(1, -1, 0)]
         
         XCTAssertEqual(transposed,
                        chunks)
-    }
-    
-    func testTransposeChunkToRegion() throws {
-        
-        let chunks: [Hexagon] = [.zero,
-                                 .init(1, 2, -3),
-                                 .init(-2, 3, -1),
-                                 .init(-3, 1, 2),
-                                 .init(-1, -2, 3),
-                                 .init(2, -3, 1),
-                                 .init(3, -1, -2)]
-            
-        let transposed = chunks.map {
-            
-            $0.transpose(.chunk,
-                         .region(size: 1))
-        }
-        
-        let regions: [Hexagon] = [.zero,
-                                  .init(1, 0, -1),
-                                  .init(0, 1, -1),
-                                  .init(-1, 1, 0),
-                                  .init(-1, 0, 1),
-                                  .init(0, -1, 1),
-                                  .init(1, -1, 0)]
-        
-        XCTAssertEqual(transposed,
-                       regions)
     }
     
     // MARK: Sieve

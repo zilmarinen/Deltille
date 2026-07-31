@@ -176,11 +176,8 @@ final class TriangleTests: XCTestCase {
                                    .init(0, -1, 0),
                                    .init(0, 0, -1)]
             
-        let transposed = regions.map {
-            
-            $0.transpose(.region,
-                         .tile)
-        }
+        let transposed = regions.transpose(.region,
+                                           .tile)
         
         let tiles: [Triangle] = [.zero,
                                  .init(-11, 5, 5),
@@ -198,11 +195,8 @@ final class TriangleTests: XCTestCase {
                                    .init(0, -1, 0),
                                    .init(0, 0, -1)]
             
-        let transposed = regions.map {
-            
-            $0.transpose(.region,
-                         .chunk)
-        }
+        let transposed = regions.transpose(.region,
+                                           .chunk)
         
         let chunks: [Triangle] = [.zero,
                                   .init(-3, 1, 1),
@@ -223,11 +217,8 @@ final class TriangleTests: XCTestCase {
                                   .init(1, -3, 1),
                                   .init(1, 1, -3)]
             
-        let transposed = chunks.map {
-            
-            $0.transpose(.chunk,
-                         .region)
-        }
+        let transposed = chunks.transpose(.chunk,
+                                          .region)
         
         let regions: [Triangle] = [.zero,
                                    .zero,
@@ -248,11 +239,8 @@ final class TriangleTests: XCTestCase {
                                   .init(0, -1, 0),
                                   .init(0, 0, -1)]
             
-        let transposed = chunks.map {
-            
-            $0.transpose(.chunk,
-                         .tile)
-        }
+        let transposed = chunks.transpose(.chunk,
+                                          .tile)
         
         let tiles: [Triangle] = [.zero,
                                  .init(-5, 2, 2),
@@ -273,11 +261,8 @@ final class TriangleTests: XCTestCase {
                                  .init(2, -5, 2),
                                  .init(2, 2, -5)]
             
-        let transposed = tiles.map {
-            
-            $0.transpose(.tile,
-                         .chunk)
-        }
+        let transposed = tiles.transpose(.tile,
+                                         .chunk)
         
         let chunks: [Triangle] = [.zero,
                                   .zero,
@@ -301,11 +286,8 @@ final class TriangleTests: XCTestCase {
                                  .init(5, -11, 5),
                                  .init(5, 5, -11)]
             
-        let transposed = tiles.map {
-            
-            $0.transpose(.tile,
-                         .region)
-        }
+        let transposed = tiles.transpose(.tile,
+                                         .region)
         
         let regions: [Triangle] = [.zero,
                                    .zero,

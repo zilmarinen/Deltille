@@ -31,16 +31,19 @@ public extension Hexagon {
     func contains(_ vector: Vector,
                   _ scale: Scale = .default) -> Bool {
         
+        //TODO: Fix scale / sizing
+        let size = 1.0
+        
         let center = transpose(scale,
                                .chunk).vector
         
         let dx = abs(vector.x - center.x)
         let dz = abs(vector.z - center.z)
         
-        if dx > Double(scale.size) * 1.5 { return false }
-        if dz > Double(scale.size) * .sqrt3  { return false }
+        if dx > size * 1.5 { return false }
+        if dz > size * .sqrt3  { return false }
         
-        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * Double(scale.size) * 2.0
+        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * size * 2.0
     }
     
     func disc(_ radius: Int) -> [Self] {
@@ -101,7 +104,7 @@ public extension Hexagon {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let u = scale.size
+        let u = scale == .chunk ? 1 : 2
         let v = u - 1
         
         let dx = Vertex(u, 1, -v)
@@ -272,34 +275,17 @@ public extension Hexagon {
 
 public extension Hexagon {
     
-    enum Scale: Deltille.Scale {
+    enum Scale: String,
+                Deltille.Scale {
         
         public static let `default` = Self.chunk
         
+        case tile
         case chunk
-        case region(size: Int = 1)
         
         public var id: String {
             
-            switch self {
-                
-            case .chunk: "Chunk [\(size)]"
-            case .region: "Region [\(size)]"
-            }
-        }
-        
-        public var size: Int {
-            
-            switch self {
-                
-            case .chunk:
-                
-                1
-                
-            case .region(let size):
-                
-                1 + max(size, 1)
-            }
+            rawValue.capitalized
         }
     }
     
@@ -308,13 +294,13 @@ public extension Hexagon {
         
         switch (from, to) {
             
-        case (.chunk, .region):
+        case (.tile, .chunk):
             
-            parent(to.size - 1)
+            parent()
             
-        case (.region, .chunk):
+        case (.chunk, .tile):
             
-            child(from.size - 1)
+            child()
             
         default:
             
