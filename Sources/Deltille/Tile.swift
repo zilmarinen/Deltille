@@ -1,5 +1,6 @@
 //
 //  Tile.swift
+//  Deltille
 //
 //  Created by Zack Brown on 27/11/2024.
 //
@@ -8,68 +9,117 @@ import Euclid
 
 // MARK: Tile
 
-public protocol Tile: Codable,
-                      Hashable,
-                      Identifiable,
-                      Rotatable,
-                      Sendable {
+public protocol Tile: Coordinate {
     
-    associatedtype C = Corner
-    associatedtype E = Edge
-    associatedtype R = Rotation
-    associatedtype S = Scale
-    associatedtype V = Vertex
+    associatedtype C: Corner
+    associatedtype E: Edge
+    associatedtype S: Scale
+    associatedtype SI: Sieve
+    associatedtype ST: Stencil
+    associatedtype V: Vertex
     
-    var vertex: V { get }
-    
-    var vertices: [V] { get }
-    var corners: [C] { get }
-    var edges: [E] { get }
+    var corners: C.AllCases { get }
+    var edges: E.AllCases { get }
     
     var adjacent: [Self] { get }
-    var perimeter: [Self] { get }
-    
-    init(_ coordinate: Coordinate)
-    
-    func position(_ scale: S) -> Vector
-    
-    func vertex(_ corner: C) -> V
-    func corner(_ vertex: V) -> C?
-    
-    func neighbour(_ edge: E) -> Self
-    
-    func translation(_ along: E) -> Coordinate
     
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
     
-    func closest(_ vector: Vector,
-                 _ scale: S) -> V
-    
-    func distance(_ other: Self) -> Int
-    
     func disc(_ radius: Int) -> [Self]
     
-    func rotate(_ rotation: R) -> Self
+    func neighbour(_ edge: E) -> Self
+    func vertex(_ corner: C,
+                _ scale: S) -> V
+    
+    func vertices(_ scale: S) -> [V]
+    
+    func corner(_ vertex: V,
+                _ scale: S) -> C?
+    
+    func closest(vertex vector: Vector,
+                 _ scale: S) -> V
+    
+    func child(_ size: Int) -> Self
+    func parent(_ size: Int) -> Self
     
     func transpose(_ from: S,
                    _ to: S) -> Self
+    
+    func sieve(_ scale: S) -> SI
+    
+    func stencil(_ scale: S) -> ST
+}
+
+public extension Tile {
+    
+    var adjacent: [Self] {
+     
+        edges.map {
+            
+            neighbour($0)
+        }
+    }
+    
+    var corners: C.AllCases {
+        
+        C.allCases
+    }
+    
+    var edges: E.AllCases {
+        
+        E.allCases
+    }
+}
+
+public extension Tile {
+    
+    func closest(vertex vector: Vector,
+                 _ scale: S = .default) -> V {
+        
+        let vertices = vertices(scale)
+        
+        let vectors = vertices.map {
+            
+            $0.vector
+        }
+        
+        let index = vectors.firstIndex(closest: vector)
+        
+        return vertices[index]
+    }
+    
+    func corner(_ vertex: V,
+                _ scale: S = .default) -> C? {
+        
+        guard let index = vertices(scale).firstIndex(of: vertex) else { return nil }
+        
+        return .init(rawValue: index)
+    }
+    
+    func vertices(_ scale: S = .default) -> [V] {
+        
+        corners.map {
+            
+            vertex($0,
+                   scale)
+        }
+    }
 }
 
 public extension Array where Element: Tile,
-                             Element.V: Vertex,
-                             Element.V.S == Element.S {
+                             Element.V: Vertex {
     
-    func bounds(_ scale: Element.S) -> Bounds {
+    func bounds(_ scale: Element.S = .default) -> Bounds {
         
         var min = Vector.zero
         var max = Vector.zero
         
         forEach {
             
-            for vertex in $0.vertices {
+            for vertex in $0.vertices(scale) {
                 
-                let position = vertex.position(scale)
+                let position = vertex.vector
                 
                 min.x = min.x < position.x ? min.x : position.x
                 min.z = min.z < position.z ? min.z : position.z
@@ -80,23 +130,6 @@ public extension Array where Element: Tile,
         
         return .init(min: min,
                      max: max)
-    }
-    
-    var perimeter: [Element] {
-        
-        let unique = Set(flatMap { $0.perimeter })
-        
-        let edges = Array(unique.subtracting(self))
-        
-        return edges.filter { tile in
-            
-            let intersecting = tile.adjacent.filter {
-                
-                contains($0)
-            }
-            
-            return intersecting.count <= 1
-        }
     }
     
     func transpose(_ from: Element.S,
