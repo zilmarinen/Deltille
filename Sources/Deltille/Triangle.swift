@@ -137,8 +137,7 @@ public extension Triangle {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let size = scale == .tile ? 1 : scale == .chunk ? 2 : 3
-        let u = (size / 3) + 1
+        let u = (scale.size / 3) + 1
         let v = u / 2
         
         let dx = Vertex(u, -v, -v)
@@ -285,18 +284,28 @@ public extension Triangle {
 
 public extension Triangle {
     
-    enum Scale: String,
+    enum Scale: Int,
                 Deltille.Scale {
         
         public static let `default` = Self.tile
         
-        case tile
-        case chunk
-        case region
+        case tile = 1
+        case chunk = 2
+        case region = 3
         
         public var id: String {
             
-            rawValue.capitalized
+            switch self {
+                
+            case .tile: "Tile"
+            case .chunk: "Chunk"
+            case .region: "Region"
+            }
+        }
+        
+        public var size: Int {
+            
+            rawValue
         }
     }
     
@@ -338,9 +347,9 @@ public extension Triangle {
     
     func parent(_ size: Int = 4) -> Self {
         
-        .init(Int.floorDivision(x - (isPointy ? 0 : 1), size),
-              Int.floorDivision(y - (isPointy ? 0 : 1), size),
-              Int.floorDivision(z - (isPointy ? 0 : 1), size))
+        .init(Int.floorDivision(x + (isPointy ? 0 : 1), size),
+              Int.floorDivision(y + (isPointy ? 0 : 1), size),
+              Int.floorDivision(z + (isPointy ? 0 : 1), size))
     }
 }
 
@@ -384,7 +393,7 @@ public extension Triangle {
         var triangles: [Triangle] = []
         var vertices: [Vertex] = []
         
-        let size = 1
+        let size = (2 * Int(pow(4.0, Double(scale.size - 1)))) - 1
         let columns = size / 2
         let offset = -(size / 3) / 2
         let pointy = isPointy

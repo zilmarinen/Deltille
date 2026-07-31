@@ -41,7 +41,7 @@ final class TriangleTests: XCTestCase {
         XCTAssertEqual(lhs.distance(lhs), 0)
         XCTAssertEqual(rhs.distance(rhs), 0)
         XCTAssertEqual(lhs.distance(.zero), 5)
-        XCTAssertEqual(rhs.distance(rhs), 10)
+        XCTAssertEqual(lhs.distance(rhs), 10)
     }
     
     func testDisc() throws {
@@ -62,8 +62,8 @@ final class TriangleTests: XCTestCase {
         
         XCTAssertTrue(triangle.contains(triangle.vector,
                                         .tile))
-        XCTAssertTrue(triangle.contains(.zero,
-                                        .tile))
+        XCTAssertFalse(triangle.contains(.zero,
+                                         .tile))
         
         XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
                                         .tile))
@@ -71,9 +71,6 @@ final class TriangleTests: XCTestCase {
                                         .tile))
         XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
                                         .tile))
-        
-        XCTAssertFalse(triangle.contains(.zero,
-                                         .tile))
     }
     
     func testVertexConversion() throws {
@@ -243,9 +240,9 @@ final class TriangleTests: XCTestCase {
                                           .tile)
         
         let tiles: [Triangle] = [.zero,
-                                 .init(-5, 2, 2),
-                                 .init(2, -5, 2),
-                                 .init(2, 2, -5)]
+                                 .init(-3, 1, 1),
+                                 .init(1, -3, 1),
+                                 .init(1, 1, -3)]
         
         XCTAssertEqual(transposed,
                        tiles)
@@ -257,9 +254,9 @@ final class TriangleTests: XCTestCase {
                                  .init(-1, 0, 0),
                                  .init(0, -1, 0),
                                  .init(0, 0, -1),
-                                 .init(-5, 2, 2),
-                                 .init(2, -5, 2),
-                                 .init(2, 2, -5)]
+                                 .init(-3, 1, 1),
+                                 .init(1, -3, 1),
+                                 .init(1, 1, -3)]
             
         let transposed = tiles.transpose(.tile,
                                          .chunk)

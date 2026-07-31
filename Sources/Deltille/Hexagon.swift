@@ -104,7 +104,7 @@ public extension Hexagon {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let u = scale == .chunk ? 1 : 2
+        let u = scale.size
         let v = u - 1
         
         let dx = Vertex(u, 1, -v)
@@ -275,17 +275,26 @@ public extension Hexagon {
 
 public extension Hexagon {
     
-    enum Scale: String,
+    enum Scale: Int,
                 Deltille.Scale {
         
         public static let `default` = Self.chunk
         
-        case tile
-        case chunk
+        case tile = 1
+        case chunk = 3
         
         public var id: String {
             
-            rawValue.capitalized
+            switch self {
+            
+            case .tile: "Tile"
+            case .chunk: "Chunk"
+            }
+        }
+        
+        public var size: Int {
+            
+            rawValue
         }
     }
     
