@@ -1,5 +1,6 @@
 //
 //  Vector.swift
+//  Deltille
 //
 //  Created by Zack Brown on 24/05/2024.
 //
@@ -11,7 +12,10 @@ import Foundation
 
 extension Vector: @retroactive Identifiable {
     
-    public var id: String { "[\(x), \(y), \(z)]" }
+    public var id: String {
+        
+        "[\(x), \(y), \(z)]"
+    }
 }
 
 public extension Vector {
@@ -22,40 +26,33 @@ public extension Vector {
     }
 }
 
-// MARK: Hexagon
+// MARK: Coordinate
 
 public extension Vector {
     
-    init(_ vertex: Hexagon.Vertex,
-         _ scale: Hexagon.Scale) {
+    init(_ coordinate: any Coordinate,
+         _ scale: Double = 1.0) {
         
-        let hexagon = Hexagon(vertex)
-        let tile = scale == .region ? hexagon.child() : hexagon
+        let dx = Double(coordinate.x)
+        let dy = Double(coordinate.y)
+        let dz = Double(coordinate.z)
         
-        let dx = Double(tile.vertex.position.x)
-        let dy = Double(tile.vertex.position.y)
-        let dz = Double(tile.vertex.position.z)
-        
-        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length,
+        self.init((dx - 0.5 * dy - 0.5 * dz) * scale,
                   0.0,
-                  (dx - 0.5 * dy - 0.5 * dz) * scale.length)
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale)
     }
-}
-
-// MARK: Triangle
-
-public extension Vector {
     
-    init(_ vertex: Triangle.Vertex,
-         _ scale: Triangle.Scale) {
+    func quantised(_ scale: Double = 1.0) -> (x: Int,
+                                              y: Int,
+                                              z: Int) {
         
-        let dx = Double(vertex.position.y)
-        let dy = Double(vertex.position.x)
-        let dz = Double(vertex.position.z)
+        let i = ceil((x - .sqrt3d3 * z) / scale)
+        let j = floor((.sqrt3d3 * 2.0 * z) / scale) + 1
+        let k = ceil((-x - .sqrt3d3 * z) / scale)
         
-        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.length,
-                  0.0,
-                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length)
+        return (Int(round((i - k) / 3.0)),
+                Int(round((j - i) / 3.0)),
+                Int(round((k - j) / 3.0)))
     }
 }
 
@@ -63,7 +60,7 @@ public extension Vector {
 
 public extension Array where Element == Vector {
     
-    func firstIndexOf(closest vector: Vector) -> Int {
+    func firstIndex(closest vector: Vector) -> Int {
         
         var distance = Double.greatestFiniteMagnitude
         var closestIndex = 0

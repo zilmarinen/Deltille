@@ -1,5 +1,6 @@
 //
 //  Rotation.swift
+//  Deltille
 //
 //  Created by Zack Brown on 24/05/2024.
 //
@@ -26,9 +27,20 @@ public protocol Rotation: Codable,
 
 public extension Rotation {
     
-    static var identity: Self { Self(turns: 0) }
-    static var clockwise: Self { Self(turns: 1) }
-    static var counterClockwise: Self { Self(turns: -1) }
+    static var identity: Self {
+        
+        .init(turns: 0)
+    }
+    
+    static var clockwise: Self {
+        
+        .init(turns: 1)
+    }
+    
+    static var counterClockwise: Self {
+        
+        .init(turns: -1)
+    }
     
     static func wrap(_ turns: Int) -> Int {
         

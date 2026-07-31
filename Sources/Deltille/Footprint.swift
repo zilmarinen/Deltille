@@ -1,5 +1,6 @@
 //
 //  Footprint.swift
+//  Deltille
 //
 //  Created by Zack Brown on 24/05/2024.
 //
@@ -12,8 +13,7 @@ public protocol Footprint: Codable,
                            Hashable,
                            Rotatable,
                            Sendable where T.V == V,
-                                          V.S == S,
-                                          T.S == V.S {
+                                          T.S == S {
     
     associatedtype S: Scale
     associatedtype T: Tile
@@ -22,10 +22,12 @@ public protocol Footprint: Codable,
     var origin: T { get }
     var tiles: [T] { get }
     
-    var perimeter: [T] { get }
-    var vertices: [V] { get }
+    var footprint: [T] { get }
     
-    func center(_ scale: S) -> Vector
+    func perimeter(_ size: Int) -> [T]
+    
+    func vertices(_ scale: S) -> [V]
+    
     func intersects(_ footprint: Self) -> Bool
     func intersects(_ tile: T) -> Bool
     
@@ -35,23 +37,13 @@ public protocol Footprint: Codable,
 
 public extension Footprint {
     
-    var perimeter: [T] {
+    var footprint: [T] {
         
-        tiles.perimeter
-    }
-    
-    var vertices: [V] {
-        
-        Array(Set(tiles.flatMap { $0.vertices }))
+        [origin] + tiles
     }
 }
 
 public extension Footprint {
-    
-    func center(_ scale: S) -> Vector {
-        
-        vertices.center(scale)
-    }
     
     func intersects(_ footprint: Self) -> Bool {
         
@@ -69,10 +61,30 @@ public extension Footprint {
         tile == origin
     }
     
+    func perimeter(_ size: Int) -> [T] {
+        
+        let surface = Set(footprint.flatMap {
+            
+            $0.disc(size)
+            
+        })
+        
+        return Array(surface.subtracting(footprint))
+    }
+    
     func unique(_ from: S,
                 _ to: S) -> [T] {
         
         [origin] + tiles.unique(from,
                                 to)
     }
+    
+    func vertices(_ scale: S) -> [V] {
+        
+        Array(Set(footprint.flatMap {
+            
+            $0.vertices(scale)
+        }))
+    }
 }
+
