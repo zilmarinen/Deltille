@@ -1,5 +1,6 @@
 //
 //  Edge.swift
+//  Deltille
 //
 //  Created by Zack Brown on 24/05/2024.
 //
@@ -12,7 +13,7 @@ public protocol Edge: CaseIterable,
                       Identifiable,
                       Sendable {
     
-    associatedtype C = Corner
+    associatedtype C: Corner
     
     var corners: [C] { get }
     
