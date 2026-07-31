@@ -304,7 +304,7 @@ public extension Hexagon {
             
         case (.tile, .chunk):
             
-            parent(4)
+            parent(to.size - 1)
             
         case (.chunk, .tile):
             

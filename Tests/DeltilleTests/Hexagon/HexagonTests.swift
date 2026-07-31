@@ -204,9 +204,9 @@ final class HexagonTests: XCTestCase {
     func testTransposeTileToChunk() throws {
         
         // Tiles at the corner of a region
-        let tiles: [Hexagon] = [.init(-2, 2, 0),
-                                .init(-3, -3, 0),
-                                .init(-3, 2, 1)]
+        let tiles: [Hexagon] = [.init(-3, 3, 0),
+                                .init(-3, 2, 1),
+                                .init(-2, 2, 0)]
             
         let transposed = tiles.transpose(.tile,
                                          .chunk)
