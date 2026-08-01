@@ -153,15 +153,15 @@ public extension Triangle {
             
         case .c0:
             
-            return origin + (isPointy ? dx : -dx)
+            return origin + (isPointy ? dx : .one - dx)
             
         case .c1:
             
-            return origin + (isPointy ? dy : -dy)
+            return origin + (isPointy ? dy : .one - dy)
             
         case .c2:
             
-            return origin + (isPointy ? dz : -dz)
+            return origin + (isPointy ? dz : .one - dz)
         }
     }
 }
