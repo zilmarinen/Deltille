@@ -184,15 +184,15 @@ final class HexagonTests: XCTestCase {
     
     func testChunkVerticesAndCorners() throws {
         
-        let hexagon = Hexagon(0, 1, -1)
+        let hexagon = Hexagon(5, -3, -2)
         
-        let vertices: [Vertex] = [.init(0, 3, -2),
-                                  .init(-1, 5, -5),
-                                  .init(-3, 8, -4),
-                                  .init(-6, 7, -2),
-                                  .init(-5, 5, 1),
-                                  .init(-3, 2, 0)]
-        
+        let vertices: [Vertex] = [.init(22, 1, -21),
+                                  .init(18, 2, -22),
+                                  .init(17, 3, -18),
+                                  .init(16, -1, -17),
+                                  .init(20, -2, -16),
+                                  .init(21, -3, -20)]
+
         let hexagonCorners = vertices.map {
             
             hexagon.corner($0,

@@ -105,14 +105,15 @@ public extension Hexagon {
         
         let u = scale.size
         let v = u - 1
+        let t = scale == .tile ? 0 : 1
         
-        let dx = Vertex(u, 1, -v)
-        let dy = Vertex(-v, u, 1)
-        let dz = Vertex(1, -v, u)
+        let dx = Vertex(u, t, -v)
+        let dy = Vertex(-v, u, t)
+        let dz = Vertex(t, -v, u)
         
-        let origin = scale != .tile ? Vertex(dx.x * x + dy.x * y + dz.x * z,
-                                             dx.y * x + dy.y * y + dz.y * z,
-                                             dx.z * x + dy.z * y + dz.z * z) : Vertex(x, y, z)
+        let origin = Vertex(dx.x * x + dy.x * y + dz.x * z,
+                            dx.y * x + dy.y * y + dz.y * z,
+                            dx.z * x + dy.z * y + dz.z * z)
         
         switch corner {
             

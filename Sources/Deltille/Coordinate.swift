@@ -106,7 +106,6 @@ public extension Coordinate {
               lhs.z * rhs) }
 }
 
-
 public extension Coordinate {
     
     var id: String {
