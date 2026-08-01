@@ -166,23 +166,27 @@ final class TriangleTests: XCTestCase {
     
     // MARK: Vertices / Corners
     
-    func testVertices() throws {
+    func testPointyVerticesAndCorners() throws {
         
-        let triangle = Triangle(-11, 5, 5)
+        let triangle = Triangle(-5, 10, -5)
         
-        let vertices: [Vertex] = [.init(-12, 5, 5),
-                                  .init(-11, 4, 5),
-                                  .init(-11, 5, 4)]
+        let vertices: [Vertex] = [.init(-4, 10, -5),
+                                  .init(-5, 11, -5),
+                                  .init(-5, 10, -4)]
         
         let triangleCorners = vertices.map {
             
-            triangle.corner($0)
+            triangle.corner($0,
+                            .tile)
         }
         
         let triangleVertices = triangle.corners.map {
             
-            triangle.vertex($0)
+            triangle.vertex($0,
+                            .tile)
         }
+        
+        XCTAssertTrue(triangle.isPointy)
         
         XCTAssertEqual(triangleCorners,
                        triangle.corners)
@@ -191,10 +195,91 @@ final class TriangleTests: XCTestCase {
                        vertices)
         
         XCTAssertEqual(triangleVertices,
-                       triangle.vertices())
+                       triangle.vertices(.tile))
         
         XCTAssertEqual(nil,
                        triangle.corner(.zero))
+    }
+    
+    func testFlatVerticesAndCorners() throws {
+        
+        let triangle = Triangle(-13, 8, 4)
+        
+        let vertices: [Vertex] = [.init(-13, 9, 5),
+                                  .init(-12, 8, 5),
+                                  .init(-12, 9, 4)]
+        
+        let triangleCorners = vertices.map {
+            
+            triangle.corner($0,
+                            .tile)
+        }
+        
+        let triangleVertices = triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .tile)
+        }
+        
+        XCTAssertFalse(triangle.isPointy)
+        
+        XCTAssertEqual(triangleCorners,
+                       triangle.corners)
+        
+        XCTAssertEqual(triangleVertices,
+                       vertices)
+        
+        XCTAssertEqual(triangleVertices,
+                       triangle.vertices(.tile))
+        
+        XCTAssertEqual(nil,
+                       triangle.corner(.zero))
+    }
+    
+    func testPointyChunkVertices() throws {
+        
+        let triangle = Triangle(-4, 4, 0)
+        
+        let vertices: [Vertex] = [.init(-13, 15, -1),
+                                  .init(-17, 19, -1),
+                                  .init(-17, 15, 3)]
+        
+        let triangleVertices = triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .chunk)
+        }
+        
+        XCTAssertTrue(triangle.isPointy)
+        
+        XCTAssertEqual(triangleVertices,
+                       vertices)
+        
+        XCTAssertEqual(triangleVertices,
+                       triangle.vertices(.chunk))
+    }
+    
+    func testFlatRegionVertices() throws {
+        
+        let triangle = Triangle(1, -1, -1)
+        
+        let vertices: [Vertex] = [.init(11, -5, -5),
+                                  .init(27, -21, -5),
+                                  .init(27, -5, -21)]
+        
+        let triangleVertices = triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .region)
+        }
+        
+        XCTAssertFalse(triangle.isPointy)
+        
+        XCTAssertEqual(triangleVertices,
+                       vertices)
+        
+        XCTAssertEqual(triangleVertices,
+                       triangle.vertices(.region))
     }
     
     // MARK: Transposing

@@ -146,25 +146,27 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Vertices / Corners
     
-    func testVertices() throws {
+    func testTileVerticesAndCorners() throws {
         
-        let hexagon = Hexagon(-3, 5, -2)
+        let hexagon = Hexagon(-3, 2, 1)
         
-        let vertices: [Vertex] = [.init(-2, 5, -2),
-                                  .init(-3, 5, -3),
-                                  .init(-3, 6, -2),
-                                  .init(-4, 5, -2),
-                                  .init(-3, 5, -1),
-                                  .init(-3, 4, -2)]
+        let vertices: [Vertex] = [.init(-2, 2, 1),
+                                  .init(-3, 2, 0),
+                                  .init(-3, 3, 1),
+                                  .init(-4, 2, 1),
+                                  .init(-3, 2, 2),
+                                  .init(-3, 1, 1)]
         
         let hexagonCorners = vertices.map {
             
-            hexagon.corner($0)
+            hexagon.corner($0,
+                           .tile)
         }
         
         let hexagonVertices = hexagon.corners.map {
             
-            hexagon.vertex($0)
+            hexagon.vertex($0,
+                           .tile)
         }
         
         XCTAssertEqual(hexagonCorners,
@@ -174,7 +176,43 @@ final class HexagonTests: XCTestCase {
                        vertices)
         
         XCTAssertEqual(hexagonVertices,
-                       hexagon.vertices())
+                       hexagon.vertices(.tile))
+        
+        XCTAssertEqual(nil,
+                       hexagon.corner(.zero))
+    }
+    
+    func testChunkVerticesAndCorners() throws {
+        
+        let hexagon = Hexagon(0, 1, -1)
+        
+        let vertices: [Vertex] = [.init(0, 3, -2),
+                                  .init(-1, 5, -5),
+                                  .init(-3, 8, -4),
+                                  .init(-6, 7, -2),
+                                  .init(-5, 5, 1),
+                                  .init(-3, 2, 0)]
+        
+        let hexagonCorners = vertices.map {
+            
+            hexagon.corner($0,
+                           .chunk)
+        }
+        
+        let hexagonVertices = hexagon.corners.map {
+            
+            hexagon.vertex($0,
+                           .chunk)
+        }
+        
+        XCTAssertEqual(hexagonCorners,
+                       hexagon.corners)
+        
+        XCTAssertEqual(hexagonVertices,
+                       vertices)
+        
+        XCTAssertEqual(hexagonVertices,
+                       hexagon.vertices(.chunk))
         
         XCTAssertEqual(nil,
                        hexagon.corner(.zero))

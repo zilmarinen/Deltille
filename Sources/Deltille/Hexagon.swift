@@ -110,9 +110,9 @@ public extension Hexagon {
         let dy = Vertex(-v, u, 1)
         let dz = Vertex(1, -v, u)
         
-        let origin = scale != .chunk ? Vertex(dx.x * x + dy.x * y + dz.x * z,
-                                              dx.y * x + dy.y * y + dz.y * z,
-                                              dx.z * x + dy.z * y + dz.z * z) : Vertex(x, y, z)
+        let origin = scale != .tile ? Vertex(dx.x * x + dy.x * y + dz.x * z,
+                                             dx.y * x + dy.y * y + dz.y * z,
+                                             dx.z * x + dy.z * y + dz.z * z) : Vertex(x, y, z)
         
         switch corner {
             
@@ -277,7 +277,7 @@ public extension Hexagon {
     enum Scale: Int,
                 Deltille.Scale {
         
-        public static let `default` = Self.chunk
+        public static let `default` = Self.tile
         
         case tile = 1
         case chunk = 3
