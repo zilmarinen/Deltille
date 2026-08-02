@@ -492,12 +492,16 @@ public extension Hexagon {
         
         public var tiles: [Hexagon] {
             
-            []
+            [.init(x, y, z) + (equalToOne ? -.unitX : .unitX),
+             .init(x, y, z) + (equalToOne ? -.unitY : .unitY),
+             .init(x, y, z) + (equalToOne ? -.unitZ : .unitZ)]
         }
         
         public var vertices: [Self] {
             
-            []
+            [self + ((.unitY + .unitZ) * (equalToOne ? -1 : 1)),
+             self + ((.unitX + .unitZ) * (equalToOne ? -1 : 1)),
+             self + ((.unitX + .unitY) * (equalToOne ? -1 : 1))]
         }
     }
 }

@@ -12,18 +12,18 @@ final class TriangleVertexTests: XCTestCase {
     
     typealias Vertex = Triangle.Vertex
     
-    private let vertex = Vertex(.init(3, -1, -1))
-    
     // MARK: Tiles
     
     func testVertexTiles() throws {
         
-        let tiles: [Triangle] = [.init(2, -1, -1),
-                                 .init(2, -2, -1),
-                                 .init(3, -2, -1),
-                                 .init(3, -2, -2),
-                                 .init(3, -1, -2),
-                                 .init(2, -1, -2)]
+        let vertex = Vertex(-7, -8, 16)
+        
+        let tiles: [Triangle] = [.init(-8, -8, 15),
+                                 .init(-8, -8, 16),
+                                 .init(-8, -9, 16),
+                                 .init(-7, -9, 16),
+                                 .init(-7, -9, 15),
+                                 .init(-7, -8, 15)]
         
         XCTAssertEqual(vertex.tiles,
                        tiles)
@@ -33,12 +33,14 @@ final class TriangleVertexTests: XCTestCase {
     
     func testVertexVertices() throws {
         
-        let vertices: [Vertex] = [.init(2, 0, -1),
-                                  .init(2, -1, 0),
-                                  .init(3, -2, 0),
-                                  .init(4, -2, -1),
-                                  .init(4, -1, -2),
-                                  .init(3, 0, -2)]
+        let vertex = Vertex(-7, -8, 16)
+        
+        let vertices: [Vertex] = [.init(-6, -9, 16),
+                                  .init(-6, -8, 15),
+                                  .init(-7, -7, 15),
+                                  .init(-8, -7, 16),
+                                  .init(-8, -8, 17),
+                                  .init(-7, -9, 17)]
         
         XCTAssertEqual(vertex.vertices,
                        vertices)

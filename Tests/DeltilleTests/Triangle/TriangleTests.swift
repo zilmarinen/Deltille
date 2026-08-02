@@ -56,21 +56,58 @@ final class TriangleTests: XCTestCase {
     
     // MARK: Contains Vector
     
-    func testTriangleContainsVector() throws {
+    func testTriangleTileContainsVector() throws {
         
-        let triangle = Triangle(-2, -1, 3)
+        let scale = Triangle.Scale.tile
+        let triangle = Triangle(-6, 11, -6)
         
         XCTAssertTrue(triangle.contains(triangle.vector,
-                                        .tile))
+                                        scale))
         XCTAssertFalse(triangle.contains(.zero,
-                                         .tile))
+                                         scale))
         
         XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
-                                        .tile))
+                                        scale))
         XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        .tile))
+                                        scale))
         XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        .tile))
+                                        scale))
+    }
+    
+    func testTriangleChunkContainsVector() throws {
+        
+        let scale = Triangle.Scale.chunk
+        let triangle = Triangle(-2, 3, -2)
+        
+        XCTAssertTrue(triangle.contains(triangle.vector,
+                                        scale))
+        XCTAssertFalse(triangle.contains(.zero,
+                                         scale))
+        
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
+                                        scale))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
+                                        scale))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
+                                        scale))
+    }
+    
+    func testTriangleRegionContainsVector() throws {
+        
+        let scale = Triangle.Scale.region
+        let triangle = Triangle(-1, 1, -1)
+        
+        XCTAssertTrue(triangle.contains(triangle.vector,
+                                        scale))
+        XCTAssertFalse(triangle.contains(.zero,
+                                         scale))
+        
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
+                                        scale))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
+                                        scale))
+        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
+                                        scale))
     }
     
     func testVertexConversion() throws {
@@ -97,13 +134,44 @@ final class TriangleTests: XCTestCase {
                        result1.vector)
     }
     
-    func testClosestVertex() throws {
+    func testClosestTileVertex() throws {
         
         let scale = Triangle.Scale.tile
         let triangle = Triangle(-3, 2, 1)
         
         let center = triangle.vector
-        let vertex = triangle.vertex(.c0)
+        let vertex = triangle.vertex(.c0,
+                                     scale)
+        
+        let vector = center.mid(vertex.vector)
+        
+        XCTAssertEqual(triangle.closest(vertex: vector,
+                                        scale), vertex)
+    }
+    
+    func testClosestChunkVertex() throws {
+        
+        let scale = Triangle.Scale.chunk
+        let triangle = Triangle(-3, 2, 1)
+        
+        let center = triangle.vector
+        let vertex = triangle.vertex(.c0,
+                                     scale)
+        
+        let vector = center.mid(vertex.vector)
+        
+        XCTAssertEqual(triangle.closest(vertex: vector,
+                                        scale), vertex)
+    }
+    
+    func testClosestRegionVertex() throws {
+        
+        let scale = Triangle.Scale.region
+        let triangle = Triangle(-3, 2, 1)
+        
+        let center = triangle.vector
+        let vertex = triangle.vertex(.c0,
+                                     scale)
         
         let vector = center.mid(vertex.vector)
         

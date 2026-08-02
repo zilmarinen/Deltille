@@ -56,27 +56,54 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Contains Vector
     
-    func testHexagonContainsVector() throws {
+    func testHexagonTileContainsVector() throws {
         
-        let hexagon = Hexagon(2, -2, 0)
+        let scale = Hexagon.Scale.tile
+        let hexagon = Hexagon(19, 0, -19)
         
         XCTAssertTrue(hexagon.contains(hexagon.vector,
-                                       .chunk))
+                                       scale))
         
         XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).vector,
-                                       .chunk))
+                                       scale))
         XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
-                                       .chunk))
+                                       scale))
         XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
-                                       .chunk))
+                                       scale))
         XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).vector,
-                                       .chunk))
+                                       scale))
         XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).vector,
-                                       .chunk))
+                                       scale))
         XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).vector,
-                                       .chunk))
+                                       scale))
         
-        XCTAssertFalse(hexagon.contains(.zero))
+        XCTAssertFalse(hexagon.contains(.zero,
+                                        scale))
+    }
+    
+    func testHexagonChunkContainsVector() throws {
+        
+        let scale = Hexagon.Scale.chunk
+        let hexagon = Hexagon(5, -3, -2)
+        
+        XCTAssertTrue(hexagon.contains(hexagon.vector,
+                                       scale))
+        
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).vector,
+                                       scale))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
+                                       scale))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
+                                       scale))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).vector,
+                                       scale))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).vector,
+                                       scale))
+        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).vector,
+                                       scale))
+        
+        XCTAssertFalse(hexagon.contains(.zero,
+                                        scale))
     }
     
     func testVertexConversion() throws {
@@ -105,13 +132,29 @@ final class HexagonTests: XCTestCase {
                        result1.vector)
     }
     
-    func testClosestVertex() throws {
+    func testClosestTileVertex() throws {
         
-        let scale = Hexagon.Scale.chunk
-        let triangle = Hexagon(3, -1, -2)
+        let scale = Hexagon.Scale.tile
+        let triangle = Hexagon(19, 0, -19)
         
         let center = triangle.vector
-        let vertex = triangle.vertex(.c0)
+        let vertex = triangle.vertex(.c0,
+                                     scale)
+        
+        let vector = center.mid(vertex.vector)
+        
+        XCTAssertEqual(triangle.closest(vertex: vector,
+                                        scale), vertex)
+    }
+    
+    func testClosestChunkVertex() throws {
+        
+        let scale = Hexagon.Scale.chunk
+        let triangle = Hexagon(-3, 2, 1)
+        
+        let center = triangle.vector
+        let vertex = triangle.vertex(.c0,
+                                     scale)
         
         let vector = center.mid(vertex.vector)
         

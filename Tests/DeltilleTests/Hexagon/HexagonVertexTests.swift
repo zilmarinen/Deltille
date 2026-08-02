@@ -12,15 +12,27 @@ final class HexagonVertexTests: XCTestCase {
     
     typealias Vertex = Hexagon.Vertex
     
-    private let vertex = Vertex(2, -2, 1)
-    
     // MARK: Tiles
     
-    func testVertexTiles() throws {
+    func testVertexPositiveTiles() throws {
         
-        let tiles: [Hexagon] = [.init(1, -2, 1),
-                                .init(2, -3, 1),
-                                .init(2, -2, 0)]
+        let vertex = Vertex(-12, 7, 6)
+        
+        let tiles: [Hexagon] = [.init(-13, 7, 6),
+                                .init(-12, 6, 6),
+                                .init(-12, 7, 5)]
+        
+        XCTAssertEqual(vertex.tiles,
+                       tiles)
+    }
+    
+    func testVertexNegativeTiles() throws {
+        
+        let vertex = Vertex(-12, 6, 5)
+        
+        let tiles: [Hexagon] = [.init(-11, 6, 5),
+                                .init(-12, 7, 5),
+                                .init(-12, 6, 6)]
         
         XCTAssertEqual(vertex.tiles,
                        tiles)
@@ -28,11 +40,25 @@ final class HexagonVertexTests: XCTestCase {
     
     // MARK: Vertices
     
-    func testVertexVertices() throws {
+    func testVertexPositiveVertices() throws {
         
-        let vertices: [Vertex] = [.init(2, -3, 0),
-                                  .init(1, -2, 0),
-                                  .init(1, -3, 1)]
+        let vertex = Vertex(-12, 7, 6)
+        
+        let vertices: [Vertex] = [.init(-12, 6, 5),
+                                  .init(-13, 7, 5),
+                                  .init(-13, 6, 6)]
+        
+        XCTAssertEqual(vertex.vertices,
+                       vertices)
+    }
+    
+    func testVertexNegativeVertices() throws {
+        
+        let vertex = Vertex(-12, 6, 5)
+        
+        let vertices: [Vertex] = [.init(-12, 7, 6),
+                                  .init(-11, 6, 6),
+                                  .init(-11, 7, 5)]
         
         XCTAssertEqual(vertex.vertices,
                        vertices)

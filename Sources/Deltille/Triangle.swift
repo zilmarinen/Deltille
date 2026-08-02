@@ -604,12 +604,22 @@ public extension Triangle {
         
         public var tiles: [Triangle] {
             
-            []
+            [.init(x, y, z) - (.unitX + .unitZ),
+             .init(x, y, z) - .unitX,
+             .init(x, y, z) - (.unitX + .unitY),
+             .init(x, y, z) - .unitY,
+             .init(x, y, z) - (.unitY + .unitZ),
+             .init(x, y, z) - .unitZ]
         }
         
         public var vertices: [Self] {
             
-            []
+            [self + (.unitX - .unitY),
+             self + (.unitX - .unitZ),
+             self + (.unitY - .unitZ),
+             self + (.unitY - .unitX),
+             self + (.unitZ - .unitX),
+             self + (.unitZ - .unitY)]
         }
     }
 }
