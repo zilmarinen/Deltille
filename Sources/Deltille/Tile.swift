@@ -9,7 +9,8 @@ import Euclid
 
 // MARK: Tile
 
-public protocol Tile: Coordinate {
+public protocol Tile: Coordinate,
+                      Rotatable {
     
     associatedtype C: Corner
     associatedtype E: Edge

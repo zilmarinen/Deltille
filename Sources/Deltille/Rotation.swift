@@ -13,34 +13,15 @@ public protocol Rotation: Codable,
     
     static var turns: Int { get }
     
-    static var identity: Self { get }
-    static var clockwise: Self { get }
-    static var counterClockwise: Self { get }
-    
     static func wrap(_ turns: Int) -> Int
     
-    init(turns: Int)
+    init(_ turns: Int)
     
     var turns: Int { get }
     var radians: Double { get }
 }
 
 public extension Rotation {
-    
-    static var identity: Self {
-        
-        .init(turns: 0)
-    }
-    
-    static var clockwise: Self {
-        
-        .init(turns: 1)
-    }
-    
-    static var counterClockwise: Self {
-        
-        .init(turns: -1)
-    }
     
     static func wrap(_ turns: Int) -> Int {
         

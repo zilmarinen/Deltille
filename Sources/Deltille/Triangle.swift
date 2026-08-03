@@ -240,46 +240,67 @@ public extension Triangle {
 
 // MARK: Footprint
 
-//public extension Triangle {
-//    
-//    struct Footprint: Deltille.Footprint {
-//        
-//        public let origin: Triangle
-//        public let tiles: [Triangle]
-//        
-//        public init(_ origin: Triangle,
-//                    _ tiles: [Triangle]) {
-//         
-//            self.origin = origin
-//            self.tiles = tiles
-//        }
-//        
-//        public init(_ origin: Triangle,
-//                    _ coordinates: [Coordinate]) {
-//            
-//            self.init(origin,
-//                      coordinates.map {
-//                
-//                .init(origin.vertex.position + (origin.isPointy ? $0 : -$0))
-//            })
-//        }
-//        
-//        public func rotate(_ rotation: Rotation) -> Self {
-//            
-//            let triangles = tiles.map {
-//                
-//                let triangle = Triangle($0.vertex.position - origin.vertex.position)
-//                
-//                let rotated = triangle.rotate(rotation)
-//                
-//                return Triangle(rotated.vertex.position + origin.vertex.position)
-//            }
-//            
-//            return .init(origin,
-//                         triangles)
-//        }
-//    }
-//}
+public extension Triangle {
+    
+    struct Footprint: Deltille.Footprint {
+        
+        public let origin: Triangle
+        public let tiles: [Triangle]
+        
+        public init(_ origin: Triangle,
+                    _ tiles: [Triangle]) {
+         
+            self.origin = origin
+            self.tiles = tiles
+        }
+        
+        public func rotate(_ rotation: Rotation) -> Self {
+            
+            let triangles = tiles.map {
+                
+                let triangle = $0 - origin
+                
+                let rotated = triangle.rotate(rotation)
+                
+                return rotated + origin
+            }
+            
+            return .init(origin,
+                         triangles)
+        }
+    }
+}
+
+// MARK: Rotation
+
+public extension Triangle {
+    
+    struct Rotation: Deltille.Rotation {
+        
+        public static let turns: Int = 3
+        
+        public let turns: Int
+        
+        public init(_ turns: Int) {
+            
+            self.turns = Self.wrap(turns)
+        }
+    }
+    
+    func rotate(_ rotation: Rotation) -> Self {
+        
+        var rotated = self
+                
+        for _ in 0..<rotation.turns {
+            
+            rotated = .init(rotated.y,
+                            rotated.z,
+                            rotated.x)
+        }
+        
+        return rotated
+    }
+}
 
 // MARK: Scale
 

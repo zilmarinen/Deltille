@@ -7,6 +7,10 @@
 
 extension Int {
     
+    static let identity: Int = 0
+    static let clockwise: Int = 1
+    static let counterClockwise: Int = -1
+    
     static func floorDivision(_ a: Int, _ b: Int) -> Int {
         
         let q = a / b

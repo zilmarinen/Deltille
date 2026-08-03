@@ -247,46 +247,67 @@ public extension Hexagon {
 
 // MARK: Footprint
 
-//public extension Hexagon {
-//    
-//    struct Footprint: Deltille.Footprint {
-//        
-//        public let origin: Hexagon
-//        public let tiles: [Hexagon]
-//        
-//        public init(_ origin: Hexagon,
-//                    _ tiles: [Hexagon]) {
-//         
-//            self.origin = origin
-//            self.tiles = tiles
-//        }
-//        
-//        public init(_ origin: Hexagon,
-//                    _ coordinates: [Coordinate]) {
-//            
-//            self.init(origin,
-//                      coordinates.map {
-//                
-//                .init(origin.vertex.position + $0)
-//            })
-//        }
-//        
-//        public func rotate(_ rotation: Rotation) -> Self {
-//        
-//            let hexagons = tiles.map {
-//                
-//                let hexagon = Hexagon($0.vertex.position - origin.vertex.position)
-//                
-//                let rotated = hexagon.rotate(rotation)
-//                
-//                return Hexagon(rotated.vertex.position + origin.vertex.position)
-//            }
-//            
-//            return .init(origin,
-//                         hexagons)
-//        }
-//    }
-//}
+public extension Hexagon {
+    
+    struct Footprint: Deltille.Footprint {
+        
+        public let origin: Hexagon
+        public let tiles: [Hexagon]
+        
+        public init(_ origin: Hexagon,
+                    _ tiles: [Hexagon]) {
+         
+            self.origin = origin
+            self.tiles = tiles
+        }
+        
+        public func rotate(_ rotation: Rotation) -> Self {
+        
+            let hexagons = tiles.map {
+                
+                let hexagon = $0 - origin
+                
+                let rotated = hexagon.rotate(rotation)
+                
+                return rotated + origin
+            }
+            
+            return .init(origin,
+                         hexagons)
+        }
+    }
+}
+
+// MARK: Rotation
+
+public extension Hexagon {
+    
+    struct Rotation: Deltille.Rotation {
+        
+        public static let turns: Int = 6
+        
+        public let turns: Int
+        
+        public init(_ turns: Int) {
+            
+            self.turns = Self.wrap(turns)
+        }
+    }
+    
+    func rotate(_ rotation: Rotation) -> Self {
+        
+        var rotated = self
+                
+        for _ in 0..<rotation.turns {
+            
+            rotated = .init(-rotated.z,
+                            -rotated.x,
+                            -rotated.y)
+        }
+        
+        return rotated
+    }
+}
 
 // MARK: Scale
 
