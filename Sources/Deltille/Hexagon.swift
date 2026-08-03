@@ -31,18 +31,35 @@ public extension Hexagon {
     func contains(_ vector: Vector,
                   _ scale: Scale = .default) -> Bool {
         
-        let size = Double(scale.size)
+        let vertices = vertices(scale).map {
+            
+            $0.vector
+        }
         
-        let center = transpose(scale,
-                               .chunk).vector
+        var sign = 0.0
         
-        let dx = abs(vector.x - center.x)
-        let dz = abs(vector.z - center.z)
+        for corner in corners {
+            
+            let c0 = vertices[corner.rawValue]
+            let c1 = vertices[(corner.rawValue + 1) % vertices.count]
+            
+            let dx = c1.x - c0.x
+            let dz = c1.z - c0.z
+            
+            let px = vector.x - c0.x
+            let pz = vector.z - c0.z
+            
+            let cross = dx * pz - dz * px
+            
+            guard sign * cross >= 0.0 else {
+                
+                return false
+            }
+            
+            sign = cross
+        }
         
-        if dx > size * 1.5 { return false }
-        if dz > size * .sqrt3  { return false }
-        
-        return (dz * 2.0 + dx * .sqrt3) <= .sqrt3 * size * 2.0
+        return true
     }
     
     func disc(_ radius: Int) -> [Self] {
@@ -366,12 +383,31 @@ public extension Hexagon {
         //                 \           /
         //                   v-------v
         //
+        
+        public let origin: Hexagon
+        public let scale: Scale
+        public let tiles: [Hexagon]
+        public let vertices: [Vertex]
+        
+        public init(_ origin: Hexagon,
+                    _ scale: Scale,
+                    _ tiles: [Hexagon],
+                    _ vertices: [Vertex]) {
+            
+            self.origin = origin
+            self.scale = scale
+            self.tiles = tiles
+            self.vertices = vertices
+        }
     }
     
     func sieve(_ scale: Scale) -> Sieve {
         
         //TODO: Implement Hexagonal Sieve
-        .init()
+        .init(self,
+              scale,
+              [],
+              [])
     }
 }
 

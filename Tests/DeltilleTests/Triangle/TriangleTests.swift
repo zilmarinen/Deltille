@@ -60,54 +60,85 @@ final class TriangleTests: XCTestCase {
         
         let scale = Triangle.Scale.tile
         let triangle = Triangle(-6, 11, -6)
+        let center = triangle.vector
+        let neighbour = triangle.neighbour(.e0)
+        let outside = neighbour.vector
         
-        XCTAssertTrue(triangle.contains(triangle.vector,
+        XCTAssertTrue(triangle.contains(center,
                                         scale))
+        
         XCTAssertFalse(triangle.contains(.zero,
                                          scale))
         
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
-                                        scale))
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        scale))
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        scale))
+        XCTAssertFalse(triangle.contains(outside,
+                                         scale))
+        
+        for corner in triangle.corners {
+            
+            let vertex = triangle.vertex(corner,
+                                         scale)
+            
+            XCTAssertTrue(triangle.contains(vertex.vector,
+                                            scale))
+        }
     }
     
     func testTriangleChunkContainsVector() throws {
         
         let scale = Triangle.Scale.chunk
         let triangle = Triangle(-2, 3, -2)
+        let center = triangle.transpose(.chunk,
+                                        .tile).vector
+        let neighbour = triangle.neighbour(.e0)
+        let outside = neighbour.transpose(.chunk,
+                                          .tile).vector
         
-        XCTAssertTrue(triangle.contains(triangle.vector,
+        XCTAssertTrue(triangle.contains(center,
                                         scale))
+        
         XCTAssertFalse(triangle.contains(.zero,
                                          scale))
         
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
-                                        scale))
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        scale))
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        scale))
+        XCTAssertFalse(triangle.contains(outside,
+                                         scale))
+        
+        for corner in triangle.corners {
+            
+            let vertex = triangle.vertex(corner,
+                                         scale)
+            
+            XCTAssertTrue(triangle.contains(vertex.vector,
+                                            scale))
+        }
     }
     
     func testTriangleRegionContainsVector() throws {
         
         let scale = Triangle.Scale.region
         let triangle = Triangle(-1, 1, -1)
+        let center = triangle.transpose(.region,
+                                        .tile).vector
+        let neighbour = triangle.neighbour(.e0)
+        let outside = neighbour.transpose(.region,
+                                          .tile).vector
         
-        XCTAssertTrue(triangle.contains(triangle.vector,
+        XCTAssertTrue(triangle.contains(center,
                                         scale))
-        XCTAssertFalse(triangle.contains(.zero,
+         
+         XCTAssertFalse(triangle.contains(.zero,
+                                          scale))
+        
+        XCTAssertFalse(triangle.contains(outside,
                                          scale))
-        
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c0).vector,
-                                        scale))
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        scale))
-        XCTAssertTrue(triangle.contains(triangle.vertex(.c1).vector,
-                                        scale))
+         
+         for corner in triangle.corners {
+             
+             let vertex = triangle.vertex(corner,
+                                          scale)
+             
+             XCTAssertTrue(triangle.contains(vertex.vector,
+                                             scale))
+         }
     }
     
     func testVertexConversion() throws {
@@ -513,9 +544,9 @@ final class TriangleTests: XCTestCase {
                        triangle)
         
         XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.tiles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(triangle))
+        XCTAssertTrue(sieve.tiles.contains(triangle))
     }
     
     func testFlatTileSieve() throws {
@@ -527,9 +558,9 @@ final class TriangleTests: XCTestCase {
                        triangle)
         
         XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.triangles.count, 1)
+        XCTAssertEqual(sieve.tiles.count, 1)
         XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(triangle))
+        XCTAssertTrue(sieve.tiles.contains(triangle))
     }
     
     func testPointyChunkSieve() throws {
@@ -543,9 +574,9 @@ final class TriangleTests: XCTestCase {
                        triangle)
         
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 16)
+        XCTAssertEqual(sieve.tiles.count, 16)
         XCTAssertEqual(sieve.vertices.count, 15)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        XCTAssertTrue(sieve.tiles.contains(tile))
     }
     
     func testFlatChunkSieve() throws {
@@ -559,9 +590,9 @@ final class TriangleTests: XCTestCase {
                        triangle)
         
         XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 16)
+        XCTAssertEqual(sieve.tiles.count, 16)
         XCTAssertEqual(sieve.vertices.count, 15)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        XCTAssertTrue(sieve.tiles.contains(tile))
     }
     
     func testPointyRegionSieve() throws {
@@ -575,9 +606,9 @@ final class TriangleTests: XCTestCase {
                        triangle)
         
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 256)
+        XCTAssertEqual(sieve.tiles.count, 256)
         XCTAssertEqual(sieve.vertices.count, 153)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        XCTAssertTrue(sieve.tiles.contains(tile))
     }
     
     func testFlatRegionSieve() throws {
@@ -591,9 +622,8 @@ final class TriangleTests: XCTestCase {
                        triangle)
         
         XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 256)
+        XCTAssertEqual(sieve.tiles.count, 256)
         XCTAssertEqual(sieve.vertices.count, 153)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        XCTAssertTrue(sieve.tiles.contains(tile))
     }
 }
-

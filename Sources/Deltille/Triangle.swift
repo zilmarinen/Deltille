@@ -137,7 +137,7 @@ public extension Triangle {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let size = (2 * Int(pow(4.0, Double(scale.size - 1)))) - 1
+        let size = scale.size
         let u = (size / 3) + 1
         let v = u / 2
         
@@ -291,8 +291,8 @@ public extension Triangle {
         public static let `default` = Self.tile
         
         case tile = 1
-        case chunk = 2
-        case region = 3
+        case chunk = 7
+        case region = 31
         
         public var id: String {
             
@@ -374,27 +374,27 @@ public extension Triangle {
         
         public let origin: Triangle
         public let scale: Scale
-        public let triangles: [Triangle]
+        public let tiles: [Triangle]
         public let vertices: [Vertex]
         
         public init(_ origin: Triangle,
                     _ scale: Scale,
-                    _ triangles: [Triangle],
+                    _ tiles: [Triangle],
                     _ vertices: [Vertex]) {
             
             self.origin = origin
             self.scale = scale
-            self.triangles = triangles
+            self.tiles = tiles
             self.vertices = vertices
         }
     }
     
     func sieve(_ scale: Scale) -> Sieve {
         
-        var triangles: [Triangle] = []
+        var tiles: [Triangle] = []
         var vertices: [Vertex] = []
         
-        let size = (2 * Int(pow(4.0, Double(scale.size - 1)))) - 1
+        let size = scale.size
         let columns = size / 2
         let offset = -(size / 3) / 2
         let pointy = isPointy
@@ -416,7 +416,7 @@ public extension Triangle {
                                                  pointy ? y : -z,
                                                  pointy ? z : -y)
                 
-                triangles.append(triangle)
+                tiles.append(triangle)
                 
                 guard triangle.isPointy == pointy else { continue }
                 
@@ -440,7 +440,7 @@ public extension Triangle {
 
         return .init(self,
                      scale,
-                     triangles,
+                     tiles,
                      vertices)
     }
 }

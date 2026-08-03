@@ -60,50 +60,56 @@ final class HexagonTests: XCTestCase {
         
         let scale = Hexagon.Scale.tile
         let hexagon = Hexagon(19, 0, -19)
+        let center = hexagon.vector
+        let neighbour = hexagon.neighbour(.e0)
+        let outside = neighbour.vector
         
-        XCTAssertTrue(hexagon.contains(hexagon.vector,
-                                       scale))
-        
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).vector,
+        XCTAssertTrue(hexagon.contains(center,
                                        scale))
         
         XCTAssertFalse(hexagon.contains(.zero,
                                         scale))
+        
+        XCTAssertFalse(hexagon.contains(outside,
+                                        scale))
+        
+        for corner in hexagon.corners {
+            
+            let vertex = hexagon.vertex(corner,
+                                        scale)
+            
+            XCTAssertTrue(hexagon.contains(vertex.vector,
+                                           scale))
+        }
     }
     
     func testHexagonChunkContainsVector() throws {
         
         let scale = Hexagon.Scale.chunk
         let hexagon = Hexagon(5, -3, -2)
+        let center = hexagon.transpose(.chunk,
+                                       .tile).vector
+        let neighbour = hexagon.neighbour(.e0)
+        let outside = neighbour.transpose(.chunk,
+                                          .tile).vector
         
-        XCTAssertTrue(hexagon.contains(hexagon.vector,
-                                       scale))
-        
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).vector,
-                                       scale))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).vector,
+        XCTAssertTrue(hexagon.contains(center,
                                        scale))
         
         XCTAssertFalse(hexagon.contains(.zero,
                                         scale))
+        
+        XCTAssertFalse(hexagon.contains(outside,
+                                        scale))
+        
+        for corner in hexagon.corners {
+            
+            let vertex = hexagon.vertex(corner,
+                                        scale)
+            
+            XCTAssertTrue(hexagon.contains(vertex.vector,
+                                           scale))
+        }
     }
     
     func testVertexConversion() throws {
