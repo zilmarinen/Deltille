@@ -50,15 +50,17 @@ public extension Hexagon {
             let pz = vector.z - c0.z
             
             let cross = dx * pz - dz * px
-            
-            guard sign * cross >= 0.0 else {
-                
+
+            guard cross != 0.0 else { continue }
+
+            guard sign == 0.0 || (sign < 0.0) == (cross < 0.0) else {
+
                 return false
             }
-            
+
             sign = cross
         }
-        
+
         return true
     }
     
