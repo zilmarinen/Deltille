@@ -5,11 +5,7 @@
 //  Created by Zack Brown on 25/07/2026.
 //
 
-extension Int {
-    
-    static let identity: Int = 0
-    static let clockwise: Int = 1
-    static let counterClockwise: Int = -1
+internal extension Int {
     
     static func floorDivision(_ a: Int, _ b: Int) -> Int {
         
