@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (30/05/2026)
+## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.4.0) (30/05/2026)
 
 - Refactor `Hexagon.Scale` transposition for parent / child grouping
 

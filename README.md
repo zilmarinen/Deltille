@@ -1,5 +1,5 @@
 [![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac-lightgray.svg)]()
-[![Swift 6.1](https://img.shields.io/badge/swift-6.1-red.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 6.1](https://img.shields.io/badge/swift-6.2-red.svg?style=flat)](https://developer.apple.com/swift)
 [![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-red?style=flat)](https://www.swift.org/documentation/package-manager/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -95,11 +95,11 @@ Vertices can be translated to and from constrained grid sizes using the `Scale` 
 ```swift
 // MARK: Triangle
 //calculate tile vertices for the desired scale
-let vertices = triangle.vertices.position(.tile)
+let vertices = triangle.vertices(.tile)
 
 // MARK: Hexagon
-//calculate tile vertex for the desired scale
-let vertices = hexagon.vertex.position(.chunk)
+//calculate a single corner vertex for the desired scale
+let vertex = hexagon.vertex(.c0, .chunk)
 ``` 
 
 ## Stencils & Sieves
@@ -120,7 +120,7 @@ let vector = stencil.vertex(.center)
 
 ```swift
 //MARK: Sieve
-let sieve = triangle.sieve(for: .chunk)
+let sieve = triangle.sieve(.chunk)
 
 //sub divided triangles in grid space
 let triangles = sieve.tiles
@@ -134,10 +134,10 @@ A `Tile` `Rotation` encodes a sequence of fixed step turns around the world orig
 
 ```swift
 //MARK: Triangle
-let rotated = triangle.rotate(.clockwise)
+let rotated = triangle.rotate(.init(1))  //one clockwise turn
 
 // MARK: Hexagon
-let rotated = hexagon.rotate(.counterClockwise)
+let rotated = hexagon.rotate(.init(-1)) //wrapped to a non-negative value
 
 ```
 
@@ -146,19 +146,19 @@ A `Footprint` defines a collection of tiles which can be intersected and rotated
 
 ```swift
 //MARK: Footprint
-let coordinates: [Coordinate] = [.zero,
-                                 -.unitX,
-                                 -.unitY,
-                                 -.unitZ]
+let tiles: [Triangle] = [.zero,
+                         -.unitX,
+                         -.unitY,
+                         -.unitZ]
 
 let footprint = Triangle.Footprint(.zero,
-                                   coordinates)
+                                   tiles)
 
 //rotate footprint around its origin
-let rotated = footprint.rotate(.init(turns: -1)) //wrapped to a non-negative value
+let rotated = footprint.rotate(.init(-1)) //wrapped to a non-negative value
 
-//explore footprint perimeter
-let perimeter = rotated.perimeter
+//explore footprint perimeter one ring out
+let perimeter = rotated.perimeter(1)
 ```
 
 # Examples
