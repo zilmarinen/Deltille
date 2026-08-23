@@ -24,8 +24,7 @@ public protocol Coordinate: Codable,
          _ y: Int,
          _ z: Int)
     
-    init(_ vector: Vector,
-         _ scale: Double)
+    init(_ coordinate: any Coordinate)
     
     var id: String { get }
     
@@ -35,8 +34,6 @@ public protocol Coordinate: Codable,
     var equalToNegativeOne: Bool { get }
     
     var adjacent: [Self] { get }
-    
-    var vector: Vector { get }
     
     var xyz: (x: Int,
               y: Int,
@@ -144,11 +141,6 @@ public extension Coordinate {
          self - .unitY]
     }
     
-    var vector: Vector {
-        
-        .init(self)
-    }
-    
     var xyz: (x: Int,
               y: Int,
               z: Int) {
@@ -159,14 +151,11 @@ public extension Coordinate {
 
 public extension Coordinate {
     
-    init(_ vector: Vector,
-         _ scale: Double = 1.0) {
+    public init(_ coordinate: any Coordinate) {
         
-        let quantised = vector.quantised(scale)
-        
-        self.init(quantised.x,
-                  quantised.y,
-                  quantised.z)
+        self.init(coordinate.x,
+                  coordinate.y,
+                  coordinate.z)
     }
     
     func distance(_ other: Self) -> Int {

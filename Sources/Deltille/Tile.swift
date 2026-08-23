@@ -24,6 +24,8 @@ public protocol Tile: Coordinate,
     
     var adjacent: [Self] { get }
     
+    var vertex: V { get }
+    
     func contains(_ vector: Vector,
                   _ scale: S) -> Bool
     
@@ -71,6 +73,11 @@ public extension Tile {
         
         E.allCases
     }
+    
+    var vertex: V {
+    
+        .init(x, y, z)
+    }
 }
 
 public extension Tile {
@@ -108,8 +115,8 @@ public extension Tile {
     }
 }
 
-public extension Array where Element: Tile,
-                             Element.V: Vertex {
+public extension Collection where Element: Tile,
+                                  Element.V: Vertex {
     
     func bounds(_ scale: Element.S = .default) -> Bounds {
         
@@ -134,7 +141,7 @@ public extension Array where Element: Tile,
     }
     
     func transpose(_ from: Element.S,
-                   _ to: Element.S) -> Self {
+                   _ to: Element.S) -> [Element] {
         map {
             
             $0.transpose(from,
@@ -143,7 +150,7 @@ public extension Array where Element: Tile,
     }
     
     func unique(_ from: Element.S,
-                _ to: Element.S) -> Self {
+                _ to: Element.S) -> [Element] {
         
         Array(Set(transpose(from,
                             to)))

@@ -60,9 +60,9 @@ final class HexagonTests: XCTestCase {
         
         let scale = Hexagon.Scale.tile
         let hexagon = Hexagon(19, 0, -19)
-        let center = hexagon.vector
+        let center = hexagon.vertex.vector
         let neighbour = hexagon.neighbour(.e0)
-        let outside = neighbour.vector
+        let outside = neighbour.vertex.vector
         
         XCTAssertTrue(hexagon.contains(center,
                                        scale))
@@ -88,10 +88,10 @@ final class HexagonTests: XCTestCase {
         let scale = Hexagon.Scale.chunk
         let hexagon = Hexagon(5, -3, -2)
         let center = hexagon.transpose(.chunk,
-                                       .tile).vector
+                                       .tile).vertex.vector
         let neighbour = hexagon.neighbour(.e0)
         let outside = neighbour.transpose(.chunk,
-                                          .tile).vector
+                                          .tile).vertex.vector
         
         XCTAssertTrue(hexagon.contains(center,
                                        scale))
@@ -118,24 +118,24 @@ final class HexagonTests: XCTestCase {
         let rhs = Hexagon(-5, 2, 3)
         
         let corner0 = lhs.vertex(.c2)
-        let center0 = lhs.vector
+        let center0 = lhs.vertex.vector
         let target0 = corner0.vector
         let vector0 = center0.lerp(target0,
                                    precision)
         let result0 = Hexagon(vector0)
         
         let corner1 = rhs.vertex(.c1)
-        let center1 = rhs.vector
+        let center1 = rhs.vertex.vector
         let target1 = corner1.vector
         let vector1 = center1.lerp(target1,
                                    precision)
         let result1 = Hexagon(vector1)
         
-        XCTAssertEqual(lhs.vector,
-                       result0.vector)
+        XCTAssertEqual(lhs.vertex.vector,
+                       result0.vertex.vector)
         
-        XCTAssertEqual(rhs.vector,
-                       result1.vector)
+        XCTAssertEqual(rhs.vertex.vector,
+                       result1.vertex.vector)
     }
     
     func testClosestTileVertex() throws {
@@ -143,7 +143,7 @@ final class HexagonTests: XCTestCase {
         let scale = Hexagon.Scale.tile
         let triangle = Hexagon(19, 0, -19)
         
-        let center = triangle.vector
+        let center = triangle.vertex.vector
         let vertex = triangle.vertex(.c0,
                                      scale)
         
@@ -158,7 +158,7 @@ final class HexagonTests: XCTestCase {
         let scale = Hexagon.Scale.chunk
         let triangle = Hexagon(-3, 2, 1)
         
-        let center = triangle.vector
+        let center = triangle.vertex.vector
         let vertex = triangle.vertex(.c0,
                                      scale)
         

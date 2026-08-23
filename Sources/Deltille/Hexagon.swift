@@ -24,6 +24,18 @@ public struct Hexagon: Tile {
         self.y = y
         self.z = z
     }
+    
+    public init(_ vector: Vector,
+                _ scale: Double = 1.0) {
+        
+        let i = ceil((vector.x - .sqrt3d3 * vector.z) / scale)
+        let j = floor((.sqrt3d3 * 2.0 * vector.z) / scale) + 1
+        let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale)
+        
+        self.init(Int(round((i - k) / 3.0)),
+                  Int(round((j - i) / 3.0)),
+                  Int(round((k - j) / 3.0)))
+    }
 }
 
 public extension Hexagon {
@@ -322,6 +334,7 @@ public extension Hexagon {
         
         case tile = 1
         case chunk = 3
+        case region = 7
         
         public var id: String {
             
@@ -329,6 +342,7 @@ public extension Hexagon {
             
             case .tile: "Tile"
             case .chunk: "Chunk"
+            case .region: "Region"
             }
         }
         
@@ -513,22 +527,20 @@ public extension Hexagon {
     
     func stencil(_ scale: Scale) -> Stencil {
         
-        return .init(v0: Vector(vertex(.c0,
-                                       scale)),
-                     v1: Vector(vertex(.c1,
-                                       scale)),
-                     v2: Vector(vertex(.c2,
-                                       scale)),
-                     v3: Vector(vertex(.c3,
-                                       scale)),
-                     v4: Vector(vertex(.c4,
-                                       scale)),
-                     v5: Vector(vertex(.c5,
-                                       scale)))
+        return .init(v0: .init(vertex(.c0,
+                                      scale)),
+                     v1: .init(vertex(.c1,
+                                      scale)),
+                     v2: .init(vertex(.c2,
+                                      scale)),
+                     v3: .init(vertex(.c3,
+                                      scale)),
+                     v4: .init(vertex(.c4,
+                                      scale)),
+                     v5: .init(vertex(.c5,
+                                      scale)))
     }
 }
-
-
 
 // MARK: Vertex
 
@@ -561,6 +573,11 @@ public extension Hexagon {
             [self + ((.unitY + .unitZ) * (equalToOne ? -1 : 1)),
              self + ((.unitX + .unitZ) * (equalToOne ? -1 : 1)),
              self + ((.unitX + .unitY) * (equalToOne ? -1 : 1))]
+        }
+        
+        public var vector: Vector {
+            
+            .init(self)
         }
     }
 }

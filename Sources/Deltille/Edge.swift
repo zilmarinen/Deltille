@@ -15,6 +15,8 @@ public protocol Edge: CaseIterable,
     
     associatedtype C: Corner
     
+    init?(rawValue: Int)
+    
     var corners: [C] { get }
     
     var edges: [Self] { get }

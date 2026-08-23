@@ -26,33 +26,37 @@ public extension Vector {
     }
 }
 
-// MARK: Coordinate
+// MARK: Hexagon
 
 public extension Vector {
     
-    init(_ coordinate: any Coordinate,
+    init(_ vertex: Hexagon.Vertex,
          _ scale: Double = 1.0) {
         
-        let dx = Double(coordinate.x)
-        let dy = Double(coordinate.y)
-        let dz = Double(coordinate.z)
+        let dx = Double(vertex.x)
+        let dy = Double(vertex.y)
+        let dz = Double(vertex.z)
         
         self.init((dx - 0.5 * dy - 0.5 * dz) * scale,
                   0.0,
                   ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale)
     }
+}
+
+// MARK: Triangle
+
+public extension Vector {
     
-    func quantised(_ scale: Double = 1.0) -> (x: Int,
-                                              y: Int,
-                                              z: Int) {
+    init(_ vertex: Triangle.Vertex,
+         _ scale: Double = 1.0) {
         
-        let i = ceil((x - .sqrt3d3 * z) / scale)
-        let j = floor((.sqrt3d3 * 2.0 * z) / scale) + 1
-        let k = ceil((-x - .sqrt3d3 * z) / scale)
+        let dx = Double(vertex.x)
+        let dy = Double(vertex.y)
+        let dz = Double(vertex.z)
         
-        return (Int(round((i - k) / 3.0)),
-                Int(round((j - i) / 3.0)),
-                Int(round((k - j) / 3.0)))
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale,
+                  0.0,
+                  (dx - 0.5 * dy - 0.5 * dz) * scale)
     }
 }
 

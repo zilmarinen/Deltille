@@ -15,11 +15,13 @@ public protocol Vertex: Coordinate {
     
     var tiles: [T] { get }
     var vertices: [Self] { get }
+    
+    var vector: Vector { get }
 }
 
 // MARK: Array
 
-public extension Array where Element: Vertex {
+public extension Collection where Element: Vertex {
     
     var center: Vector {
         
@@ -31,4 +33,3 @@ public extension Array where Element: Vertex {
         return vector / Double(count)
     }
 }
-

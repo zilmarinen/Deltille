@@ -60,9 +60,9 @@ final class TriangleTests: XCTestCase {
         
         let scale = Triangle.Scale.tile
         let triangle = Triangle(-6, 11, -6)
-        let center = triangle.vector
+        let center = triangle.vertex.vector
         let neighbour = triangle.neighbour(.e0)
-        let outside = neighbour.vector
+        let outside = neighbour.vertex.vector
         
         XCTAssertTrue(triangle.contains(center,
                                         scale))
@@ -88,10 +88,10 @@ final class TriangleTests: XCTestCase {
         let scale = Triangle.Scale.chunk
         let triangle = Triangle(-2, 3, -2)
         let center = triangle.transpose(.chunk,
-                                        .tile).vector
+                                        .tile).vertex.vector
         let neighbour = triangle.neighbour(.e0)
         let outside = neighbour.transpose(.chunk,
-                                          .tile).vector
+                                          .tile).vertex.vector
         
         XCTAssertTrue(triangle.contains(center,
                                         scale))
@@ -117,10 +117,10 @@ final class TriangleTests: XCTestCase {
         let scale = Triangle.Scale.region
         let triangle = Triangle(-1, 1, -1)
         let center = triangle.transpose(.region,
-                                        .tile).vector
+                                        .tile).vertex.vector
         let neighbour = triangle.neighbour(.e0)
         let outside = neighbour.transpose(.region,
-                                          .tile).vector
+                                          .tile).vertex.vector
         
         XCTAssertTrue(triangle.contains(center,
                                         scale))
@@ -147,22 +147,22 @@ final class TriangleTests: XCTestCase {
         let rhs = Triangle.zero
         
         let corner0 = lhs.vertex(.c2)
-        let center0 = lhs.vector
+        let center0 = lhs.vertex.vector
         let target0 = Vector(corner0)
         let vector0 = center0.lerp(target0, 0.9)
         let result0 = Triangle(vector0)
         
         let corner1 = rhs.vertex(.c1)
-        let center1 = rhs.vector
+        let center1 = rhs.vertex.vector
         let target1 = Vector(corner1)
         let vector1 = center1.lerp(target1, 0.9)
         let result1 = Triangle(vector1)
         
-        XCTAssertEqual(lhs.vector,
-                       result0.vector)
+        XCTAssertEqual(lhs.vertex.vector,
+                       result0.vertex.vector)
         
-        XCTAssertEqual(rhs.vector,
-                       result1.vector)
+        XCTAssertEqual(rhs.vertex.vector,
+                       result1.vertex.vector)
     }
     
     func testClosestTileVertex() throws {
@@ -170,7 +170,7 @@ final class TriangleTests: XCTestCase {
         let scale = Triangle.Scale.tile
         let triangle = Triangle(-3, 2, 1)
         
-        let center = triangle.vector
+        let center = triangle.vertex.vector
         let vertex = triangle.vertex(.c0,
                                      scale)
         
@@ -185,7 +185,7 @@ final class TriangleTests: XCTestCase {
         let scale = Triangle.Scale.chunk
         let triangle = Triangle(-3, 2, 1)
         
-        let center = triangle.vector
+        let center = triangle.vertex.vector
         let vertex = triangle.vertex(.c0,
                                      scale)
         
@@ -200,7 +200,7 @@ final class TriangleTests: XCTestCase {
         let scale = Triangle.Scale.region
         let triangle = Triangle(-3, 2, 1)
         
-        let center = triangle.vector
+        let center = triangle.vertex.vector
         let vertex = triangle.vertex(.c0,
                                      scale)
         

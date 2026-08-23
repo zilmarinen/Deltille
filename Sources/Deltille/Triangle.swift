@@ -27,12 +27,14 @@ public struct Triangle: Tile {
     
     public init(_ vector: Vector,
                 _ scale: Double = 1.0) {
-    
-        let quantised = vector.quantised(scale)
         
-        let triangle = Triangle(quantised.x,
-                                quantised.y,
-                                quantised.z)
+        let i = ceil((vector.z - .sqrt3d3 * vector.x) / scale)
+        let j = floor((.sqrt3d3 * 2.0 * vector.x) / scale) + 1
+        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale)
+        
+        let triangle = Triangle(Int(round((i - k) / 3.0)),
+                                Int(round((j - i) / 3.0)),
+                                Int(round((k - j) / 3.0)))
         
         let triangles = [triangle] + triangle.adjacent
         
@@ -603,7 +605,6 @@ public extension Triangle {
     }
 }
 
-
 // MARK: Vertex
 
 public extension Triangle {
@@ -641,6 +642,11 @@ public extension Triangle {
              self + (.unitY - .unitX),
              self + (.unitZ - .unitX),
              self + (.unitZ - .unitY)]
+        }
+        
+        public var vector: Vector {
+            
+            .init(self)
         }
     }
 }
