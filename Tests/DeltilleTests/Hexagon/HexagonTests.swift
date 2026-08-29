@@ -269,20 +269,77 @@ final class HexagonTests: XCTestCase {
     
     // MARK: Transposing
     
+    func testTransposeRegionToTile() throws {
+        
+        // Regions at the corner of a region
+        let regions: [Hexagon] = [.init(1, 0, -1),
+                                  .init(1, -1, 0),
+                                  .init(2, -1, -1)]
+            
+        let transposed = regions.transpose(.region,
+                                           .tile)
+        
+        // Tiles in the center of a region
+        let tiles: [Hexagon] = [.init(9, 4, -13),
+                                .init(13, -9, -4),
+                                .init(22, -5, -17)]
+        
+        XCTAssertEqual(transposed,
+                       tiles)
+    }
+    
+    func testTransposeRegionToChunk() throws {
+        
+        // Regions at the corner of a region
+        let regions: [Hexagon] = [.init(1, 0, -1),
+                                  .init(1, -1, 0),
+                                  .init(2, -1, -1)]
+            
+        let transposed = regions.transpose(.region,
+                                           .chunk)
+        
+        // Chunks in the center of a region
+        let chunks: [Hexagon] = [.init(3, -1, -2),
+                                 .init(2, -3, 1),
+                                 .init(5, -4, -1)]
+        
+        XCTAssertEqual(transposed,
+                       chunks)
+    }
+    
+    func testTransposeChunkToRegion() throws {
+        
+        // Chunks at the corner of a region
+        let chunks: [Hexagon] = [.init(3, -2, -1),
+                                 .init(3, -3, 0),
+                                 .init(4, -3, -1)]
+            
+        let transposed = chunks.transpose(.chunk,
+                                          .region)
+        
+        // Regions at the corner of a region
+        let regions: [Hexagon] = [.init(1, 0, -1),
+                                  .init(1, -1, 0),
+                                  .init(2, -1, -1)]
+        
+        XCTAssertEqual(transposed,
+                       regions)
+    }
+    
     func testTransposeChunkToTile() throws {
         
         // Chunks at the corner of a region
-        let chunks: [Hexagon] = [.init(0, 1, -1),
-                                 .init(-1, 1, 0),
-                                 .zero]
-        
+        let chunks: [Hexagon] = [.init(3, -2, -1),
+                                 .init(3, -3, 0),
+                                 .init(4, -3, -1)]
+            
         let transposed = chunks.transpose(.chunk,
                                           .tile)
-    
+        
         // Tiles in the center of a chunk
-        let tiles: [Hexagon] = [.init(-3, 5, -2),
-                                .init(-5, 2, 3),
-                                .zero]
+        let tiles: [Hexagon] = [.init(12, -1, -11),
+                                .init(15, -6, -9),
+                                .init(17, -3, -14)]
         
         XCTAssertEqual(transposed,
                        tiles)
@@ -290,24 +347,83 @@ final class HexagonTests: XCTestCase {
     
     func testTransposeTileToChunk() throws {
         
-        // Tiles at the corner of a region
-        let tiles: [Hexagon] = [.init(-3, 3, 0),
-                                .init(-3, 2, 1),
-                                .init(-2, 2, 0)]
+        // Tiles at the corner of a chunk
+        let tiles: [Hexagon] = [.init(14, -3, -11),
+                                .init(15, -4, -11),
+                                .init(15, -3, -12)]
             
         let transposed = tiles.transpose(.tile,
                                          .chunk)
         
         // Chunks at the corner of a region
-        let chunks: [Hexagon] = [.init(0, 1, -1),
-                                 .init(-1, 1, 0),
-                                 .zero]
+        let chunks: [Hexagon] = [.init(3, -2, -1),
+                                 .init(3, -3, 0),
+                                 .init(4, -3, -1)]
         
         XCTAssertEqual(transposed,
                        chunks)
     }
     
+    func testTransposeTileToRegion() throws {
+        
+        // Tiles at the corner of a chunk
+        let tiles: [Hexagon] = [.init(14, -3, -11),
+                                .init(15, -4, -11),
+                                .init(15, -3, -12)]
+            
+        let transposed = tiles.transpose(.tile,
+                                         .region)
+        
+        // Regions at the corner of a region
+        let regions: [Hexagon] = [.init(1, 0, -1),
+                                  .init(1, -1, 0),
+                                  .init(2, -1, -1)]
+        
+        XCTAssertEqual(transposed,
+                       regions)
+    }
+    
     // MARK: Sieve
     
+    func testTileSieve() throws {
+        
+        let hexagon = Hexagon.zero
+        let sieve = hexagon.sieve(.tile)
+        
+        XCTAssertEqual(sieve.origin,
+                       hexagon)
+        
+        XCTAssertEqual(sieve.scale, .tile)
+        XCTAssertEqual(sieve.tiles.count, 0)
+        XCTAssertEqual(sieve.vertices.count, 0)
+        XCTAssertTrue(sieve.tiles.contains(hexagon))
+    }
     
+    func testChunkSieve() throws {
+        
+        let hexagon = Hexagon.zero
+        let sieve = hexagon.sieve(.chunk)
+        
+        XCTAssertEqual(sieve.origin,
+                       hexagon)
+        
+        XCTAssertEqual(sieve.scale, .chunk)
+        XCTAssertEqual(sieve.tiles.count, 0)
+        XCTAssertEqual(sieve.vertices.count, 0)
+        XCTAssertTrue(sieve.tiles.contains(hexagon))
+    }
+    
+    func testRegionSieve() throws {
+        
+        let hexagon = Hexagon.zero
+        let sieve = hexagon.sieve(.region)
+        
+        XCTAssertEqual(sieve.origin,
+                       hexagon)
+        
+        XCTAssertEqual(sieve.scale, .region)
+        XCTAssertEqual(sieve.tiles.count, 0)
+        XCTAssertEqual(sieve.vertices.count, 0)
+        XCTAssertTrue(sieve.tiles.contains(hexagon))
+    }
 }
