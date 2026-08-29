@@ -23,6 +23,10 @@ public protocol Rotation: Codable,
 
 public extension Rotation {
     
+    static var identity: Self { .init(0) }
+    static var clockwise: Self { .init(1) }
+    static var counterClockwise: Self { .init(-1) }
+    
     static func wrap(_ turns: Int) -> Int {
         
         ((turns % Self.turns) + Self.turns) % Self.turns

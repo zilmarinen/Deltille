@@ -14,10 +14,11 @@ public protocol Tile: Coordinate,
     
     associatedtype C: Corner
     associatedtype E: Edge
-    associatedtype S: Scale
     associatedtype SI: Sieve
     associatedtype ST: Stencil
     associatedtype V: Vertex
+    
+    static func size(for scale: Scale) -> Int
     
     var corners: C.AllCases { get }
     var edges: E.AllCases { get }
@@ -27,31 +28,31 @@ public protocol Tile: Coordinate,
     var vertex: V { get }
     
     func contains(_ vector: Vector,
-                  _ scale: S) -> Bool
+                  _ scale: Scale) -> Bool
     
     func disc(_ radius: Int) -> [Self]
     
     func neighbour(_ edge: E) -> Self
     func vertex(_ corner: C,
-                _ scale: S) -> V
+                _ scale: Scale) -> V
     
-    func vertices(_ scale: S) -> [V]
+    func vertices(_ scale: Scale) -> [V]
     
     func corner(_ vertex: V,
-                _ scale: S) -> C?
+                _ scale: Scale) -> C?
     
     func closest(vertex vector: Vector,
-                 _ scale: S) -> V
+                 _ scale: Scale) -> V
     
     func child(_ size: Int) -> Self
     func parent(_ size: Int) -> Self
     
-    func transpose(_ from: S,
-                   _ to: S) -> Self
+    func transpose(_ from: Scale,
+                   _ to: Scale) -> Self
     
-    func sieve(_ scale: S) -> SI
+    func sieve(_ scale: Scale) -> SI
     
-    func stencil(_ scale: S) -> ST
+    func stencil(_ scale: Scale) -> ST
 }
 
 public extension Tile {
@@ -83,7 +84,7 @@ public extension Tile {
 public extension Tile {
     
     func closest(vertex vector: Vector,
-                 _ scale: S = .default) -> V {
+                 _ scale: Scale = .default) -> V {
         
         let vertices = vertices(scale)
         
@@ -98,14 +99,14 @@ public extension Tile {
     }
     
     func corner(_ vertex: V,
-                _ scale: S = .default) -> C? {
+                _ scale: Scale = .default) -> C? {
         
         guard let index = vertices(scale).firstIndex(of: vertex) else { return nil }
         
         return .init(rawValue: index)
     }
     
-    func vertices(_ scale: S = .default) -> [V] {
+    func vertices(_ scale: Scale = .default) -> [V] {
         
         corners.map {
             
@@ -118,7 +119,7 @@ public extension Tile {
 public extension Collection where Element: Tile,
                                   Element.V: Vertex {
     
-    func bounds(_ scale: Element.S = .default) -> Bounds {
+    func bounds(_ scale: Scale = .default) -> Bounds {
         
         var min = Vector.zero
         var max = Vector.zero
@@ -140,8 +141,8 @@ public extension Collection where Element: Tile,
                      max: max)
     }
     
-    func transpose(_ from: Element.S,
-                   _ to: Element.S) -> [Element] {
+    func transpose(_ from: Scale,
+                   _ to: Scale) -> [Element] {
         map {
             
             $0.transpose(from,
@@ -149,8 +150,8 @@ public extension Collection where Element: Tile,
         }
     }
     
-    func unique(_ from: Element.S,
-                _ to: Element.S) -> [Element] {
+    func unique(_ from: Scale,
+                _ to: Scale) -> [Element] {
         
         Array(Set(transpose(from,
                             to)))

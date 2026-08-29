@@ -39,6 +39,19 @@ public struct Hexagon: Tile {
 }
 
 public extension Hexagon {
+ 
+    static func size(for scale: Scale) -> Int {
+        
+        switch scale {
+        
+        case .tile: 1
+        case .chunk: 3
+        case .region: 7
+        }
+    }
+}
+
+public extension Hexagon {
     
     func contains(_ vector: Vector,
                   _ scale: Scale = .default) -> Bool {
@@ -134,9 +147,9 @@ public extension Hexagon {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let u = scale.size
+        let u = Self.size(for: scale)
         let v = u - 1
-        let t = scale == .tile ? 0 : 1
+        let t = scale == .tile ? 0 : (scale == .chunk ? 1 : -2)
         
         let dx = Vertex(u, t, -v)
         let dy = Vertex(-v, u, t)
@@ -327,31 +340,6 @@ public extension Hexagon {
 
 public extension Hexagon {
     
-    enum Scale: Int,
-                Deltille.Scale {
-        
-        public static let `default` = Self.tile
-        
-        case tile = 1
-        case chunk = 3
-        case region = 7
-        
-        public var id: String {
-            
-            switch self {
-            
-            case .tile: "Tile"
-            case .chunk: "Chunk"
-            case .region: "Region"
-            }
-        }
-        
-        public var size: Int {
-            
-            rawValue
-        }
-    }
-    
     func transpose(_ from: Scale,
                    _ to: Scale) -> Self {
         
@@ -359,11 +347,27 @@ public extension Hexagon {
             
         case (.tile, .chunk):
             
-            parent(to.size - 1)
+            parent(2)
+            
+        case (.tile, .region):
+            
+            parent(2).parent(1).rotate(.counterClockwise)
             
         case (.chunk, .tile):
             
-            child(from.size - 1)
+            child(2)
+            
+        case (.chunk, .region):
+            
+            parent(1).rotate(.counterClockwise)
+            
+        case (.region, .tile):
+            
+            child(1).child(2).rotate(.clockwise)
+            
+        case (.region, .chunk):
+            
+            child(1).rotate(.clockwise)
             
         default:
             

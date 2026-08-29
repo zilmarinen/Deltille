@@ -9,14 +9,25 @@ import Foundation
 
 // MARK: Scale
 
-public protocol Scale: Codable,
-                       Hashable,
-                       Identifiable,
-                       Sendable {
-    
-    static var `default`: Self { get }
-    
-    var id: String { get }
-    
-    var size: Int { get }
+public enum Scale: Int,
+                   Codable,
+                   Hashable,
+                   Identifiable,
+                   Sendable {
+           
+    public static let `default` = Self.tile
+
+    case tile
+    case chunk
+    case region
+
+    public var id: String {
+
+        switch self {
+
+        case .tile: "Tile"
+        case .chunk: "Chunk"
+        case .region: "Region"
+        }
+    }
 }

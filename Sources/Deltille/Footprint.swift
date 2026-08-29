@@ -12,10 +12,8 @@ import Euclid
 public protocol Footprint: Codable,
                            Hashable,
                            Rotatable,
-                           Sendable where T.V == V,
-                                          T.S == S {
+                           Sendable where T.V == V {
     
-    associatedtype S: Scale
     associatedtype T: Tile
     associatedtype V: Vertex
     
@@ -26,13 +24,13 @@ public protocol Footprint: Codable,
     
     func perimeter(_ size: Int) -> [T]
     
-    func vertices(_ scale: S) -> [V]
+    func vertices(_ scale: Scale) -> [V]
     
     func intersects(_ footprint: Self) -> Bool
     func intersects(_ tile: T) -> Bool
     
-    func unique(_ from: S,
-                _ to: S) -> [T]
+    func unique(_ from: Scale,
+                _ to: Scale) -> [T]
 }
 
 public extension Footprint {
@@ -72,14 +70,14 @@ public extension Footprint {
         return Array(surface.subtracting(footprint))
     }
     
-    func unique(_ from: S,
-                _ to: S) -> [T] {
+    func unique(_ from: Scale,
+                _ to: Scale) -> [T] {
         
         [origin] + tiles.unique(from,
                                 to)
     }
     
-    func vertices(_ scale: S) -> [V] {
+    func vertices(_ scale: Scale) -> [V] {
         
         Array(Set(footprint.flatMap {
             

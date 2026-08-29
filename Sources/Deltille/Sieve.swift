@@ -11,13 +11,12 @@ import Euclid
 
 public protocol Sieve: Sendable {
     
-    associatedtype S: Scale
     associatedtype T: Tile
     associatedtype V: Vertex
     
     var origin: T { get }
     
-    var scale: S { get }
+    var scale: Scale { get }
     
     var tiles: [T] { get }
     var vertices: [V] { get }

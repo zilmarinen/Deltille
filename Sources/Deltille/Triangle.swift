@@ -51,6 +51,19 @@ public struct Triangle: Tile {
 }
 
 public extension Triangle {
+ 
+    static func size(for scale: Scale) -> Int {
+        
+        switch scale {
+        
+        case .tile: 1
+        case .chunk: 7
+        case .region: 31
+        }
+    }
+}
+
+public extension Triangle {
     
     var isPointy: Bool {
         
@@ -139,7 +152,7 @@ public extension Triangle {
     func vertex(_ corner: Corner,
                 _ scale: Scale = .default) -> Vertex {
         
-        let size = scale.size
+        let size = Self.size(for: scale)
         let u = (size / 3) + 1
         let v = u / 2
         
@@ -308,31 +321,6 @@ public extension Triangle {
 
 public extension Triangle {
     
-    enum Scale: Int,
-                Deltille.Scale {
-        
-        public static let `default` = Self.tile
-        
-        case tile = 1
-        case chunk = 7
-        case region = 31
-        
-        public var id: String {
-            
-            switch self {
-                
-            case .tile: "Tile"
-            case .chunk: "Chunk"
-            case .region: "Region"
-            }
-        }
-        
-        public var size: Int {
-            
-            rawValue
-        }
-    }
-    
     func transpose(_ from: Scale,
                    _ to: Scale) -> Self {
         
@@ -417,7 +405,7 @@ public extension Triangle {
         var tiles: [Triangle] = []
         var vertices: [Vertex] = []
         
-        let size = scale.size
+        let size = Self.size(for: scale)
         let columns = size / 2
         let offset = -(size / 3) / 2
         let pointy = isPointy
