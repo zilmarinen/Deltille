@@ -13,6 +13,7 @@ public protocol Tile: Coordinate,
                       Rotatable {
     
     associatedtype C: Corner
+    associatedtype D: Tile
     associatedtype E: Edge
     associatedtype SI: Sieve
     associatedtype ST: Stencil
@@ -26,6 +27,9 @@ public protocol Tile: Coordinate,
     var adjacent: [Self] { get }
     
     var vertex: V { get }
+    
+    init(_ vector: Vector,
+         _ scale: Double)
     
     func contains(_ vector: Vector,
                   _ scale: Scale) -> Bool
@@ -142,18 +146,18 @@ public extension Collection where Element: Tile,
     }
     
     func transpose(_ from: Scale,
-                   _ to: Scale) -> [Element] {
-        map {
+                   _ to: Scale) -> Set<Element> {
+        Set(map {
             
             $0.transpose(from,
                          to)
-        }
+        })
     }
     
     func unique(_ from: Scale,
-                _ to: Scale) -> [Element] {
+                _ to: Scale) -> Set<Element> {
         
-        Array(Set(transpose(from,
-                            to)))
+        Set(transpose(from,
+                      to))
     }
 }

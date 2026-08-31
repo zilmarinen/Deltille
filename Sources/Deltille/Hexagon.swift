@@ -12,6 +12,8 @@ import Foundation
 
 public struct Hexagon: Tile {
     
+    public typealias D = Triangle
+    
     public let x: Int
     public let y: Int
     public let z: Int
