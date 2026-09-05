@@ -31,15 +31,15 @@ public extension Vector {
 public extension Vector {
     
     init(_ vertex: Hexagon.Vertex,
-         _ scale: Double = 1.0) {
+         _ lattice: Double = 1.0) {
         
         let dx = Double(vertex.x)
         let dy = Double(vertex.y)
         let dz = Double(vertex.z)
         
-        self.init((dx - 0.5 * dy - 0.5 * dz) * scale,
+        self.init((dx - 0.5 * dy - 0.5 * dz) * lattice,
                   0.0,
-                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale)
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * lattice)
     }
 }
 
@@ -48,41 +48,14 @@ public extension Vector {
 public extension Vector {
     
     init(_ vertex: Triangle.Vertex,
-         _ scale: Double = 1.0) {
+         _ lattice: Double = 1.0) {
         
         let dx = Double(vertex.x)
         let dy = Double(vertex.y)
         let dz = Double(vertex.z)
         
-        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale,
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * lattice,
                   0.0,
-                  (dx - 0.5 * dy - 0.5 * dz) * scale)
-    }
-}
-
-// MARK: Array
-
-public extension Array where Element == Vector {
-    
-    func firstIndex(closest vector: Vector) -> Int {
-        
-        var distance = Double.greatestFiniteMagnitude
-        var closestIndex = 0
-        
-        for index in indices {
-            
-            let other = self[index]
-            
-            let length = (other - vector).length
-            
-            if length < distance {
-                
-                closestIndex = index
-                
-                distance = length
-            }
-        }
-        
-        return closestIndex
+                  (dx - 0.5 * dy - 0.5 * dz) * lattice)
     }
 }

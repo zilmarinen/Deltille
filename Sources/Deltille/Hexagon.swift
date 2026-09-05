@@ -28,11 +28,11 @@ public struct Hexagon: Tile {
     }
     
     public init(_ vector: Vector,
-                _ scale: Double = 1.0) {
+                _ lattice: Double = 1.0) {
         
-        let i = ceil((vector.x - .sqrt3d3 * vector.z) / scale)
-        let j = floor((.sqrt3d3 * 2.0 * vector.z) / scale) + 1
-        let k = ceil((-vector.x - .sqrt3d3 * vector.z) / scale)
+        let i = ceil((vector.x - .sqrt3d3 * vector.z) / lattice)
+        let j = floor((.sqrt3d3 * 2.0 * vector.z) / lattice) + 1
+        let k = ceil((-vector.x - .sqrt3d3 * vector.z) / lattice)
         
         self.init(Int(round((i - k) / 3.0)),
                   Int(round((j - i) / 3.0)),
@@ -56,11 +56,12 @@ public extension Hexagon {
 public extension Hexagon {
     
     func contains(_ vector: Vector,
-                  _ scale: Scale = .default) -> Bool {
+                  _ scale: Scale = .default,
+                  _ lattice: Double = 1.0) -> Bool {
         
         let vertices = vertices(scale).map {
             
-            $0.vector
+            $0.vector(lattice)
         }
         
         var sign = 0.0
@@ -581,9 +582,10 @@ public extension Hexagon {
              self + ((.unitX + .unitY) * (equalToOne ? -1 : 1))]
         }
         
-        public var vector: Vector {
+        public func vector(_ lattice: Double = 1.0) -> Vector {
             
-            .init(self)
+            .init(self,
+                  lattice)
         }
     }
 }

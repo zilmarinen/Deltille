@@ -28,11 +28,11 @@ public struct Triangle: Tile {
     }
     
     public init(_ vector: Vector,
-                _ scale: Double = 1.0) {
+                _ lattice: Double = 1.0) {
         
-        let i = ceil((vector.z - .sqrt3d3 * vector.x) / scale)
-        let j = floor((.sqrt3d3 * 2.0 * vector.x) / scale) + 1
-        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / scale)
+        let i = ceil((vector.z - .sqrt3d3 * vector.x) / lattice)
+        let j = floor((.sqrt3d3 * 2.0 * vector.x) / lattice) + 1
+        let k = ceil((-vector.z - .sqrt3d3 * vector.x) / lattice)
         
         let triangle = Triangle(Int(round((i - k) / 3.0)),
                                 Int(round((j - i) / 3.0)),
@@ -42,8 +42,9 @@ public struct Triangle: Tile {
         
         let closest = triangles.first {
             
-            $0.contains(vector / scale,
-                        .tile)
+            $0.contains(vector,
+                        .tile,
+                        lattice)
         } ?? triangle
         
         self.init(closest.x,
@@ -81,14 +82,15 @@ public extension Triangle {
 public extension Triangle {
     
     func contains(_ vector: Vector,
-                  _ scale: Scale = .default) -> Bool {
+                  _ scale: Scale = .default,
+                  _ lattice: Double = 1.0) -> Bool {
         
         let c0 = vertex(.c0,
-                        scale).vector
+                        scale).vector(lattice)
         let c1 = vertex(.c1,
-                        scale).vector
+                        scale).vector(lattice)
         let c2 = vertex(.c2,
-                        scale).vector
+                        scale).vector(lattice)
         
         let v0 = c2 - c0
         let v1 = c1 - c0
@@ -634,9 +636,10 @@ public extension Triangle {
              self + (.unitZ - .unitY)]
         }
         
-        public var vector: Vector {
+        public func vector(_ lattice: Double = 1.0) -> Vector {
             
-            .init(self)
+            .init(self,
+                  lattice)
         }
     }
 }

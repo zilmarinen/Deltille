@@ -21,32 +21,34 @@ public protocol Tile: Coordinate,
     
     static func size(for scale: Scale) -> Int
     
-    var corners: C.AllCases { get }
-    var edges: E.AllCases { get }
+    var adjacent: OrderedSet<Self> { get }
     
-    var adjacent: [Self] { get }
+    var corners: OrderedSet<C> { get }
+    var edges: OrderedSet<E> { get }
     
     var vertex: V { get }
     
     init(_ vector: Vector,
-         _ scale: Double)
+         _ lattice: Double)
     
     func contains(_ vector: Vector,
-                  _ scale: Scale) -> Bool
+                  _ scale: Scale,
+                  _ lattice: Double) -> Bool
     
-    func disc(_ radius: Int) -> [Self]
+    func disc(_ radius: Int) -> Set<Self>
     
     func neighbour(_ edge: E) -> Self
     func vertex(_ corner: C,
                 _ scale: Scale) -> V
     
-    func vertices(_ scale: Scale) -> [V]
+    func vertices(_ scale: Scale) -> OrderedSet<V>
     
     func corner(_ vertex: V,
                 _ scale: Scale) -> C?
     
     func closest(vertex vector: Vector,
-                 _ scale: Scale) -> V
+                 _ scale: Scale,
+                 _ lattice: Double) -> V
     
     func child(_ size: Int) -> Self
     func parent(_ size: Int) -> Self
@@ -61,22 +63,22 @@ public protocol Tile: Coordinate,
 
 public extension Tile {
     
-    var adjacent: [Self] {
+    var adjacent: OrderedSet<Self> {
      
-        edges.map {
+        OrderedSet(edges.map {
             
             neighbour($0)
-        }
+        })
     }
     
-    var corners: C.AllCases {
+    var corners: OrderedSet<C> {
         
-        C.allCases
+        OrderedSet(C.allCases)
     }
     
-    var edges: E.AllCases {
+    var edges: OrderedSet<E> {
         
-        E.allCases
+        OrderedSet(E.allCases)
     }
     
     var vertex: V {
@@ -88,42 +90,62 @@ public extension Tile {
 public extension Tile {
     
     func closest(vertex vector: Vector,
-                 _ scale: Scale = .default) -> V {
+                 _ scale: Scale = .default,
+                 _ lattice: Double = 1.0) -> V {
         
         let vertices = vertices(scale)
         
-        let vectors = vertices.map {
+        var distance = Double.greatestFiniteMagnitude
+        var closest = vertices.first!
+        
+        for match in vertices {
             
-            $0.vector
+            let vertex = match.vector(lattice)
+            
+            let length = (vertex - vector).length
+            
+            if length < distance {
+                
+                closest = match
+                
+                distance = length
+            }
         }
         
-        let index = vectors.firstIndex(closest: vector)
-        
-        return vertices[index]
+        return closest
     }
     
     func corner(_ vertex: V,
                 _ scale: Scale = .default) -> C? {
         
-        guard let index = vertices(scale).firstIndex(of: vertex) else { return nil }
+        let pairs = zip(corners,
+                        vertices(scale))
         
-        return .init(rawValue: index)
+        for (corner, match) in pairs {
+            
+            guard vertex == match else { continue }
+            
+            return corner
+        }
+        
+        return nil
     }
     
-    func vertices(_ scale: Scale = .default) -> [V] {
+    func vertices(_ scale: Scale = .default) -> OrderedSet<V> {
         
-        corners.map {
+        OrderedSet(corners.map {
             
             vertex($0,
                    scale)
-        }
+        })
     }
 }
 
 public extension Collection where Element: Tile,
                                   Element.V: Vertex {
     
-    func bounds(_ scale: Scale = .default) -> Bounds {
+    func bounds(_ lattice: Double = 1.0,
+                _ scale: Scale = .default) -> Bounds {
         
         var min = Vector.zero
         var max = Vector.zero
@@ -132,7 +154,7 @@ public extension Collection where Element: Tile,
             
             for vertex in $0.vertices(scale) {
                 
-                let position = vertex.vector
+                let position = vertex.vector(lattice)
                 
                 min.x = min.x < position.x ? min.x : position.x
                 min.z = min.z < position.z ? min.z : position.z
