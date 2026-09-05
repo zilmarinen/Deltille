@@ -112,9 +112,9 @@ public extension Triangle {
         return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0)
     }
     
-    func disc(_ radius: Int) -> [Self] {
+    func disc(_ radius: Int) -> Set<Self> {
         
-        var tiles: [Self] = []
+        var tiles: Set<Self> = []
         
         for i in -radius...radius {
             
@@ -126,7 +126,7 @@ public extension Triangle {
                     
                     if abs(i) + abs(j) + abs(k) <= radius {
                         
-                        tiles.append(self + .init(i, j, k))
+                        tiles.insert(self + .init(i, j, k))
                     }
                 }
             }
@@ -389,13 +389,13 @@ public extension Triangle {
         
         public let origin: Triangle
         public let scale: Scale
-        public let tiles: [Triangle]
-        public let vertices: [Vertex]
+        public let tiles: Set<Triangle>
+        public let vertices: Set<Vertex>
         
         public init(_ origin: Triangle,
                     _ scale: Scale,
-                    _ tiles: [Triangle],
-                    _ vertices: [Vertex]) {
+                    _ tiles: Set<Triangle>,
+                    _ vertices: Set<Vertex>) {
             
             self.origin = origin
             self.scale = scale
@@ -406,8 +406,8 @@ public extension Triangle {
     
     func sieve(_ scale: Scale) -> Sieve {
         
-        var tiles: [Triangle] = []
-        var vertices: [Vertex] = []
+        var tiles: Set<Triangle> = []
+        var vertices: Set<Vertex> = []
         
         let size = Self.size(for: scale)
         let columns = size / 2
@@ -431,23 +431,23 @@ public extension Triangle {
                                                  pointy ? y : -z,
                                                  pointy ? z : -y)
                 
-                tiles.append(triangle)
+                tiles.insert(triangle)
                 
                 guard triangle.isPointy == pointy else { continue }
                 
-                vertices.append(.init(triangle.x,
+                vertices.insert(.init(triangle.x,
                                       triangle.y - (pointy ? 0 : 1),
                                       triangle.z + (pointy ? 1 : 0)))
                 
                 guard row == (rows - 1) else { continue }
                 
-                vertices.append(.init(triangle.x,
+                vertices.insert(.init(triangle.x,
                                       triangle.y + (pointy ? 1 : 0),
                                       triangle.z - (pointy ? 0 : 1)))
                 
                 guard column == columns else { continue }
                 
-                vertices.append(.init(triangle.x + (pointy ? 1 : -1),
+                vertices.insert(.init(triangle.x + (pointy ? 1 : -1),
                                       triangle.y,
                                       triangle.z))
             }

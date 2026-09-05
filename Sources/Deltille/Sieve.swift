@@ -18,6 +18,6 @@ public protocol Sieve: Sendable {
     
     var scale: Scale { get }
     
-    var tiles: [T] { get }
-    var vertices: [V] { get }
+    var tiles: Set<T> { get }
+    var vertices: Set<V> { get }
 }

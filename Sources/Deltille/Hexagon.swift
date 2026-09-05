@@ -92,9 +92,9 @@ public extension Hexagon {
         return true
     }
     
-    func disc(_ radius: Int) -> [Self] {
+    func disc(_ radius: Int) -> Set<Self> {
         
-        var tiles: [Self] = []
+        var tiles: Set<Self> = []
         
         for i in -radius...radius {
             
@@ -103,7 +103,7 @@ public extension Hexagon {
             
             for j in start..<end {
                 
-                tiles.append(self + .init(i, j, -i - j))
+                tiles.insert(self + .init(i, j, -i - j))
             }
         }
         
@@ -430,13 +430,13 @@ public extension Hexagon {
         
         public let origin: Hexagon
         public let scale: Scale
-        public let tiles: [Hexagon]
-        public let vertices: [Vertex]
+        public let tiles: Set<Hexagon>
+        public let vertices: Set<Vertex>
         
         public init(_ origin: Hexagon,
                     _ scale: Scale,
-                    _ tiles: [Hexagon],
-                    _ vertices: [Vertex]) {
+                    _ tiles: Set<Hexagon>,
+                    _ vertices: Set<Vertex>) {
             
             self.origin = origin
             self.scale = scale
@@ -447,11 +447,62 @@ public extension Hexagon {
     
     func sieve(_ scale: Scale) -> Sieve {
         
-        //TODO: Implement Hexagonal Sieve
-        .init(self,
-              scale,
-              [],
-              [])
+        func chunk(tile: Hexagon,
+                   scale: Scale) -> (tiles: Set<Hexagon>,
+                                      vertices: Set<Vertex>) {
+            
+            let disc = tile.disc(Self.size(for: scale) - 1)
+            
+            let vertices = Set(disc.flatMap {
+                
+                $0.vertices(.tile)
+            })
+            
+            return (disc,
+                    vertices)
+        }
+        
+        switch scale {
+            
+        case .tile,
+             .chunk:
+            
+            let tile = transpose(scale,
+                                 .tile)
+            
+            let (tiles, vertices) = chunk(tile: tile,
+                                          scale: scale)
+            
+            return .init(self,
+                         scale,
+                         tiles,
+                         vertices)
+            
+        case .region:
+            
+            let tile = transpose(scale,
+                                 .tile)
+            
+            let origin = tile.transpose(.tile,
+                                        .chunk)
+            
+            let chunks = (origin.adjacent + [origin]).transpose(.chunk,
+                                                                .tile)
+            
+            let (tiles, vertices) = chunks.reduce(into: (tiles: Set<Hexagon>(), vertices: Set<Hexagon.Vertex>())) { result, tile in
+                
+                let (tiles, vertices) = chunk(tile: tile,
+                                              scale: .chunk)
+                
+                result.tiles.formUnion(tiles)
+                result.vertices.formUnion(vertices)
+            }
+            
+            return .init(self,
+                         scale,
+                         tiles,
+                         vertices)
+        }
     }
 }
 

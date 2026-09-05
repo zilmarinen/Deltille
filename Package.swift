@@ -12,14 +12,20 @@ let package = Package(
                  targets: ["Deltille"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-collections.git",
+                 branch: "main"),
         .package(url: "https://github.com/nicklockwood/Euclid.git",
                  branch: "main"),
     ],
     targets: [
         .target(name: "Deltille",
-                dependencies: ["Euclid"]),
+                dependencies: [.product(name: "Collections",
+                                        package: "swift-collections"),
+                               "Euclid"]),
         .testTarget(name: "DeltilleTests",
-                    dependencies: ["Deltille",
+                    dependencies: [.product(name: "Collections",
+                                            package: "swift-collections"),
+                                   "Deltille",
                                    "Euclid"]),
     ]
 )

@@ -4,6 +4,7 @@
 //  Created by Zack Brown on 25/05/2024.
 //
 
+import Collections
 import Euclid
 import XCTest
 @testable import Deltille

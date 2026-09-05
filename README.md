@@ -46,6 +46,9 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 ```
 
 ## Dependencies
+
+[Swift Collections](https://github.com/apple/swift-collections/tree/main) is an open-source package of data structure implementations for the Swift programming language.
+
 [Euclid](https://github.com/nicklockwood/Euclid) is a Swift library for creating and manipulating 3D geometry and is used extensively within this project for mesh generation and vector operations.
 
 ## License

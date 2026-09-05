@@ -33,8 +33,6 @@ public protocol Coordinate: Codable,
     var equalToOne: Bool { get }
     var equalToNegativeOne: Bool { get }
     
-    var adjacent: [Self] { get }
-    
     var xyz: (x: Int,
               y: Int,
               z: Int) { get }
@@ -129,16 +127,6 @@ public extension Coordinate {
     var equalToNegativeOne: Bool {
         
         sum == -1
-    }
-    
-    var adjacent: [Self] {
-        
-        [self + .unitX,
-         self - .unitZ,
-         self + .unitY,
-         self - .unitX,
-         self + .unitZ,
-         self - .unitY]
     }
     
     var xyz: (x: Int,
