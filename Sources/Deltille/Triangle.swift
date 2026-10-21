@@ -270,7 +270,10 @@ public extension Triangle {
                     _ tiles: [Triangle]) {
          
             self.origin = origin
-            self.tiles = tiles
+            self.tiles = tiles.map {
+                
+                $0 + origin
+            }
         }
         
         public func rotate(_ rotation: Rotation) -> Self {

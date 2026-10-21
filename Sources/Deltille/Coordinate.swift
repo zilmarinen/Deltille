@@ -139,7 +139,7 @@ public extension Coordinate {
 
 public extension Coordinate {
     
-    public init(_ coordinate: any Coordinate) {
+    init(_ coordinate: any Coordinate) {
         
         self.init(coordinate.x,
                   coordinate.y,

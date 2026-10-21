@@ -1,13 +1,15 @@
 [![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac-lightgray.svg)]()
-[![Swift 6.1](https://img.shields.io/badge/swift-6.2-red.svg?style=flat)](https://developer.apple.com/swift)
+[![Swift 6.2](https://img.shields.io/badge/swift-6.2-red.svg?style=flat)](https://developer.apple.com/swift)
 [![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-red?style=flat)](https://www.swift.org/documentation/package-manager/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 - [Introduction](#deltille)
 - [Installation](#installation)
-- [Implementation](#implementation)
+- [Dependencies](#dependencies)
+- [Usage](#usage)
 - [Examples](#examples)
 - [Credits](#credits)
+- [License](#license)
 
 # Deltille
 Deltille is a Swift library for working with hexagonal and triangular grid systems. It provides robust data structures and utilities to make grid based development simple, accurate and efficient.
@@ -42,8 +44,12 @@ By supporting both grid types in a unified API, Deltille lets you take advantage
 To install using Swift Package Manager, add this to the `dependencies:` section in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/zilmarinen/Deltille.git", branch: "main"),
+.package(url: "https://github.com/zilmarinen/Deltille.git", branch: "main")
 ```
+
+## Requirements
+- Swift 6.2+
+- macOS 15+ / iOS 17+
 
 ## Dependencies
 
@@ -55,21 +61,19 @@ To install using Swift Package Manager, add this to the `dependencies:` section 
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-# Implementation
+# Usage
 Deltille defines a `Tile` archetype to which both `Triangle` and `Hexagon` conform to provide high level utility methods for grid based operations. Each `Tile` type defines a `Vertex` array which represents positions in grid space.
 
 ## Triangles & Hexagons
 Both `Triangle` and `Hexagon` `Tile` types can be used to model vertex positions along the `xz` plane.
 
 ```swift
-// MARK: Triangle
 let triangle = Triangle.zero
     
 let adjacent = Triangle(0, 1, -1)
 ```
 
 ```swift
-// MARK: Hexagon
 let hexagon = Hexagon.zero
 
 let adjacent = Hexagon(0, 1, -1)
@@ -79,7 +83,6 @@ let adjacent = Hexagon(0, 1, -1)
 Vertices are the basic building blocks for defining `Tile` types. Vertices define the perimeter of a tile and their relationships between neighbouring tiles and vertices. 
 
 ```swift
-// MARK: Vertex
 let triangle = Triangle.zero
 
 //explore neighbouring tiles
@@ -94,13 +97,14 @@ let vertices = vertex.vertices
 
 ## Scales
 Vertices can be translated to and from constrained grid sizes using the `Scale` types.
+- `.tile` — A single tile.
+- `.chunk` — A collection of 3 hexagon or 7 triangle tiles.
+- `.region` — A grouping of 7 hexagon or 16 triangle chunks.
 
 ```swift
-// MARK: Triangle
 //calculate tile vertices for the desired scale
 let vertices = triangle.vertices(.tile)
 
-// MARK: Hexagon
 //calculate a single corner vertex for the desired scale
 let vertex = hexagon.vertex(.c0, .chunk)
 ``` 
@@ -111,7 +115,6 @@ Both a `Stencil` or `Sieve` can be used to subdivide a triangle into individual 
  - `Sieve` calculates a dynamic range of subdivided triangles and their vertices in grid space.
 
 ```swift
-// MARK: Stencil
 let stencil = triangle.stencil(.tile)
 
 //gather perimeter vertices
@@ -122,7 +125,6 @@ let vector = stencil.vertex(.center)
 ```
 
 ```swift
-//MARK: Sieve
 let sieve = triangle.sieve(.chunk)
 
 //sub divided triangles in grid space
@@ -136,7 +138,6 @@ let vertices = sieve.vertices
 A `Tile` `Rotation` encodes a sequence of fixed step turns around the world origin, wrapped to a non-negative value.
 
 ```swift
-//MARK: Triangle
 let rotated = triangle.rotate(.init(1))  //one clockwise turn
 
 // MARK: Hexagon
@@ -148,7 +149,6 @@ let rotated = hexagon.rotate(.init(-1)) //wrapped to a non-negative value
 A `Footprint` defines a collection of tiles which can be intersected and rotated around a given origin.
 
 ```swift
-//MARK: Footprint
 let tiles: [Triangle] = [.zero,
                          -.unitX,
                          -.unitY,
