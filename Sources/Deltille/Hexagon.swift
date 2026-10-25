@@ -41,11 +41,11 @@ public struct Hexagon: Tile {
 }
 
 public extension Hexagon {
- 
+    
     static func size(for scale: Scale) -> Int {
         
         switch scale {
-        
+            
         case .tile: 1
         case .chunk: 3
         case .region: 7
@@ -78,17 +78,17 @@ public extension Hexagon {
             let pz = vector.z - c0.z
             
             let cross = dx * pz - dz * px
-
+            
             guard cross != 0.0 else { continue }
-
+            
             guard sign == 0.0 || (sign < 0.0) == (cross < 0.0) else {
-
+                
                 return false
             }
-
+            
             sign = cross
         }
-
+        
         return true
     }
     
@@ -113,12 +113,12 @@ public extension Hexagon {
     func distance(_ other: Self) -> Int {
         
         (abs(x - other.x) +
-         abs(y - other.y) +
-         abs(z - other.z)) / 2
+            abs(y - other.y) +
+            abs(z - other.z)) / 2
     }
     
     func neighbour(_ edge: Edge) -> Hexagon {
-    
+        
         switch edge {
             
         case .e0:
@@ -195,8 +195,7 @@ public extension Hexagon {
 
 public extension Hexagon {
     
-    enum Corner: Int,
-                 Deltille.Corner {
+    enum Corner: Int, Deltille.Corner {
         
         case c0, c1, c2, c3, c4, c5
         
@@ -237,8 +236,7 @@ public extension Hexagon {
 
 public extension Hexagon {
     
-    enum Edge: Int,
-               Deltille.Edge {
+    enum Edge: Int, Deltille.Edge {
         
         case e0, e1, e2, e3, e4, e5
         
@@ -286,7 +284,7 @@ public extension Hexagon {
         
         public init(_ origin: Hexagon,
                     _ tiles: [Hexagon]) {
-         
+            
             self.origin = origin
             self.tiles = tiles.map {
                 
@@ -295,7 +293,7 @@ public extension Hexagon {
         }
         
         public func rotate(_ rotation: Rotation) -> Self {
-        
+            
             let hexagons = tiles.map {
                 
                 let hexagon = $0 - origin
@@ -330,7 +328,7 @@ public extension Hexagon {
     func rotate(_ rotation: Rotation) -> Self {
         
         var rotated = self
-                
+        
         for _ in 0..<rotation.turns {
             
             rotated = .init(-rotated.z,
@@ -452,7 +450,7 @@ public extension Hexagon {
         
         func chunk(tile: Hexagon,
                    scale: Scale) -> (tiles: Set<Hexagon>,
-                                      vertices: Set<Vertex>) {
+                                     vertices: Set<Vertex>) {
             
             let disc = tile.disc(Self.size(for: scale) - 1)
             
@@ -492,7 +490,9 @@ public extension Hexagon {
             let chunks = (origin.adjacent + [origin]).transpose(.chunk,
                                                                 .tile)
             
-            let (tiles, vertices) = chunks.reduce(into: (tiles: Set<Hexagon>(), vertices: Set<Hexagon.Vertex>())) { result, tile in
+            let (tiles, vertices) = chunks.reduce(into: (tiles: Set<Hexagon>(),
+                                                         vertices: Set<Hexagon
+                                                             .Vertex>())) { result, tile in
                 
                 let (tiles, vertices) = chunk(tile: tile,
                                               scale: .chunk)
@@ -524,13 +524,13 @@ public extension Hexagon {
         //
         
         public enum Division: CaseIterable,
-                              Sendable {
-        
+            Sendable {
+            
             case d0, d1, d2, d3, d4, d5
         }
         
         public enum Vertex: CaseIterable,
-                            Sendable {
+            Sendable {
             
             case v0, v1, v2, v3, v4, v5
             case center
@@ -588,18 +588,18 @@ public extension Hexagon {
     
     func stencil(_ scale: Scale) -> Stencil {
         
-        return .init(v0: .init(vertex(.c0,
-                                      scale)),
-                     v1: .init(vertex(.c1,
-                                      scale)),
-                     v2: .init(vertex(.c2,
-                                      scale)),
-                     v3: .init(vertex(.c3,
-                                      scale)),
-                     v4: .init(vertex(.c4,
-                                      scale)),
-                     v5: .init(vertex(.c5,
-                                      scale)))
+        .init(v0: .init(vertex(.c0,
+                               scale)),
+              v1: .init(vertex(.c1,
+                               scale)),
+              v2: .init(vertex(.c2,
+                               scale)),
+              v3: .init(vertex(.c3,
+                               scale)),
+              v4: .init(vertex(.c4,
+                               scale)),
+              v5: .init(vertex(.c5,
+                               scale)))
     }
 }
 

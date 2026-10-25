@@ -10,8 +10,7 @@ import Euclid
 
 // MARK: Tile
 
-public protocol Tile: Coordinate,
-                      Rotatable {
+public protocol Tile: Coordinate, Rotatable {
     
     associatedtype C: Corner
     associatedtype D: Tile
@@ -65,7 +64,7 @@ public protocol Tile: Coordinate,
 public extension Tile {
     
     var adjacent: OrderedSet<Self> {
-     
+        
         OrderedSet(edges.map {
             
             neighbour($0)
@@ -83,7 +82,7 @@ public extension Tile {
     }
     
     var vertex: V {
-    
+        
         .init(x, y, z)
     }
 }
@@ -142,8 +141,7 @@ public extension Tile {
     }
 }
 
-public extension Collection where Element: Tile,
-                                  Element.V: Vertex {
+public extension Collection where Element: Tile, Element.V: Vertex {
     
     func bounds(_ lattice: Double = 1.0,
                 _ scale: Scale = .default) -> Bounds {

@@ -54,11 +54,11 @@ public struct Triangle: Tile {
 }
 
 public extension Triangle {
- 
+    
     static func size(for scale: Scale) -> Int {
         
         switch scale {
-        
+            
         case .tile: 1
         case .chunk: 7
         case .region: 31
@@ -119,7 +119,7 @@ public extension Triangle {
         for i in -radius...radius {
             
             for j in -radius...radius {
-             
+                
                 let s = -1 - (sum + i + j)
                 
                 for k in s...(s + 1) {
@@ -189,8 +189,7 @@ public extension Triangle {
 
 public extension Triangle {
     
-    enum Corner: Int,
-                 Deltille.Corner {
+    enum Corner: Int, Deltille.Corner {
         
         case c0, c1, c2
         
@@ -200,7 +199,7 @@ public extension Triangle {
         }
         
         public var corners: [Corner] {
-                    
+            
             switch self {
                 
             case .c0: [.c1, .c2]
@@ -225,8 +224,7 @@ public extension Triangle {
 
 public extension Triangle {
     
-    enum Edge: Int,
-               Deltille.Edge {
+    enum Edge: Int, Deltille.Edge {
         
         case e0, e1, e2
         
@@ -246,9 +244,9 @@ public extension Triangle {
         }
         
         public var edges: [Edge] {
-           
+            
             switch self {
-               
+                
             case .e0: [.e1, .e2]
             case .e1: [.e2, .e0]
             case .e2: [.e0, .e1]
@@ -268,7 +266,7 @@ public extension Triangle {
         
         public init(_ origin: Triangle,
                     _ tiles: [Triangle]) {
-         
+            
             self.origin = origin
             self.tiles = tiles.map {
                 
@@ -312,7 +310,7 @@ public extension Triangle {
     func rotate(_ rotation: Rotation) -> Self {
         
         var rotated = self
-                
+        
         for _ in 0..<rotation.turns {
             
             rotated = .init(rotated.y,
@@ -358,7 +356,7 @@ public extension Triangle {
     }
     
     func child(_ size: Int = 4) -> Self {
-     
+        
         .init(x * size + (isPointy ? 0 : 1),
               y * size + (isPointy ? 0 : 1),
               z * size + (isPointy ? 0 : 1))
@@ -455,7 +453,7 @@ public extension Triangle {
                                       triangle.z))
             }
         }
-
+        
         return .init(self,
                      scale,
                      tiles,
@@ -482,13 +480,13 @@ public extension Triangle {
         //
         
         public enum Division: CaseIterable,
-                              Sendable {
-        
+            Sendable {
+            
             case d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15
         }
         
         public enum Vertex: CaseIterable,
-                            Sendable {
+            Sendable {
             
             case v0, v1, v2
             case v5, v7, v13
@@ -586,14 +584,14 @@ public extension Triangle {
     }
     
     func stencil(_ scale: Scale) -> Stencil {
-
+        
         let v0 = Vector(vertex(.c0,
                                scale))
         let v1 = Vector(vertex(.c1,
                                scale))
         let v2 = Vector(vertex(.c2,
                                scale))
-
+        
         return .init(v0: v0,
                      v1: v1,
                      v2: v2)

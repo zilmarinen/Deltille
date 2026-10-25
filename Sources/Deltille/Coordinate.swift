@@ -10,11 +10,7 @@ import Foundation
 
 // MARK: Coordinate
 
-public protocol Coordinate: Codable,
-                            Equatable,
-                            Hashable,
-                            Identifiable,
-                            Sendable {
+public protocol Coordinate: Codable, Equatable, Hashable, Identifiable, Sendable {
     
     var x: Int { get }
     var y: Int { get }
@@ -41,7 +37,7 @@ public protocol Coordinate: Codable,
 }
 
 public extension Coordinate {
- 
+    
     static var zero: Self {
         
         .init(0, 0, 0)
@@ -70,35 +66,36 @@ public extension Coordinate {
 
 public extension Coordinate {
     
-    static func +(lhs: Self,
-                  rhs: Self) -> Self {
+    static func + (lhs: Self,
+                   rhs: Self) -> Self {
         
         .init(lhs.x + rhs.x,
               lhs.y + rhs.y,
               lhs.z + rhs.z)
     }
     
-    static func -(lhs: Self,
-                  rhs: Self) -> Self {
+    static func - (lhs: Self,
+                   rhs: Self) -> Self {
         
         .init(lhs.x - rhs.x,
               lhs.y - rhs.y,
               lhs.z - rhs.z)
     }
     
-    static prefix func -(rhs: Self) -> Self {
+    static prefix func - (rhs: Self) -> Self {
         
         .init(-rhs.x,
               -rhs.y,
               -rhs.z)
     }
     
-    static func *(lhs: Self,
-                  rhs: Int) -> Self {
+    static func * (lhs: Self,
+                   rhs: Int) -> Self {
         
         .init(lhs.x * rhs,
               lhs.y * rhs,
-              lhs.z * rhs) }
+              lhs.z * rhs)
+    }
 }
 
 public extension Coordinate {
@@ -122,7 +119,6 @@ public extension Coordinate {
         
         sum == 1
     }
-    
     
     var equalToNegativeOne: Bool {
         
@@ -148,8 +144,8 @@ public extension Coordinate {
     
     func distance(_ other: Self) -> Int {
         
-        (abs(x - other.x) +
-         abs(y - other.y) +
-         abs(z - other.z))
+        abs(x - other.x) +
+            abs(y - other.y) +
+            abs(z - other.z)
     }
 }

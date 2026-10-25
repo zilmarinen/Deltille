@@ -7,11 +7,7 @@
 
 // MARK: Edge
 
-public protocol Edge: CaseIterable,
-                      Codable,
-                      Hashable,
-                      Identifiable,
-                      Sendable {
+public protocol Edge: CaseIterable, Codable, Hashable, Identifiable, Sendable {
     
     associatedtype C: Corner
     

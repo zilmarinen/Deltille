@@ -9,10 +9,7 @@ import Euclid
 
 // MARK: Footprint
 
-public protocol Footprint: Codable,
-                           Hashable,
-                           Rotatable,
-                           Sendable where T.V == V {
+public protocol Footprint: Codable, Hashable, Rotatable, Sendable where T.V == V {
     
     associatedtype T: Tile
     associatedtype V: Vertex
@@ -56,7 +53,7 @@ public extension Footprint {
     func intersects(_ tile: T) -> Bool {
         
         tiles.contains(tile) ||
-        tile == origin
+            tile == origin
     }
     
     func perimeter(_ size: Int) -> [T] {
@@ -85,4 +82,3 @@ public extension Footprint {
         }))
     }
 }
-

@@ -7,9 +7,7 @@
 
 // MARK: Rotation
 
-public protocol Rotation: Codable,
-                          Hashable,
-                          Sendable {
+public protocol Rotation: Codable, Hashable, Sendable {
     
     static var turns: Int { get }
     

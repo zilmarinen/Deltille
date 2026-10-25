@@ -1,0 +1,43 @@
+--swift-version 6.4
+
+# Indentation & whitespace
+--indent 4
+--indent-case false
+--indent-blank-lines true
+--trim-whitespace nonblank-lines
+--ifdef indent
+
+# Wrapping: once a list wraps, every element goes on its own line, aligned
+# under the first element (e.g. parameters aligned after the opening paren).
+--max-width 100
+--wrap-arguments after-first
+--wrap-parameters after-first
+--wrap-collections after-first
+--wrap-conditions after-first
+--wrap-type-aliases after-first
+--allow-partial-wrapping false
+--closing-paren same-line
+--call-site-paren same-line
+
+# Syntax preferences
+--extension-acl on-extension
+--ranges no-space
+--trailing-commas never
+--self init-only
+--semicolons never
+--else-position same-line
+--guard-else same-line
+--import-grouping alpha
+--header ignore
+
+# Blank lines are a deliberate part of this style; keep them as written.
+--scope-blank-lines preserve
+--type-blank-lines preserve
+
+# blankLinesAtStartOfScope:     every scope opens with a blank line
+# wrapMultilineStatementBraces: `{` stays on the last wrapped line
+# wrapPropertyBodies:           allows `var center: Vector { ... }` on one line
+# wrapIfStatementBodies:        allows `if x { return false }` on one line
+# docComments:                  `// Corners` style grouping comments are intentional
+# redundantInternal:            explicit `internal` access control is kept
+--disable blankLinesAtStartOfScope,wrapMultilineStatementBraces,wrapPropertyBodies,wrapIfStatementBodies,docComments,redundantInternal

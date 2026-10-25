@@ -17,7 +17,7 @@ Deltille is a Swift library for working with hexagonal and triangular grid syste
 Hexagonal and triangular grids are deeply related through duality:
 
 - Every hexagonal grid can be subdivided into equilateral triangles forming a triangular grid.
-- Conversely; The dual graph of a triangular grid is a hexagonal grid and vice versa.
+- Conversely, The dual graph of a triangular grid is a hexagonal grid and vice versa.
 - This makes them complementary representations of the same underlying space. You can often solve problems easily by switching between them.
 
 By supporting both grid types in a unified API, Deltille lets you take advantage of this relationship making it easier to build flexible systems for geometry, navigation, or procedural generation.
@@ -140,7 +140,6 @@ A `Tile` `Rotation` encodes a sequence of fixed step turns around the world orig
 ```swift
 let rotated = triangle.rotate(.init(1))  //one clockwise turn
 
-// MARK: Hexagon
 let rotated = hexagon.rotate(.init(-1)) //wrapped to a non-negative value
 
 ```

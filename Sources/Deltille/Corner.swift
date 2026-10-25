@@ -7,12 +7,7 @@
 
 // MARK: Corner
 
-public protocol Corner: CaseIterable,
-                        Codable,
-                        Hashable,
-                        Identifiable,
-                        Sendable,
-                        RawRepresentable {
+public protocol Corner: CaseIterable, Codable, Hashable, Identifiable, Sendable, RawRepresentable {
     
     associatedtype E: Edge
     

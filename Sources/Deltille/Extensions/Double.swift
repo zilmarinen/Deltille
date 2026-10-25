@@ -7,9 +7,9 @@
 
 public extension Double {
     
-    static let sqrt3 = 1.7320508076     // sqrt(3.0)
-    static let sqrt3d2 = 0.8660254038   // sqrt(3.0) / 2.0
-    static let sqrt3d3 = 0.5773502692   // sqrt(3.0) / 3.0
+    static let sqrt3 = 1.7320508076 // sqrt(3.0)
+    static let sqrt3d2 = 0.8660254038 // sqrt(3.0) / 2.0
+    static let sqrt3d3 = 0.5773502692 // sqrt(3.0) / 3.0
     
     static let tau = .pi * 2.0
 }
