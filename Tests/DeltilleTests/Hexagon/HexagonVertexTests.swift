@@ -5,17 +5,19 @@
 //
 
 import Collections
-import Euclid
-import XCTest
 @testable import Deltille
+import Euclid
+import Testing
 
-final class HexagonVertexTests: XCTestCase {
+@Suite
+struct HexagonVertexTests {
     
     typealias Vertex = Hexagon.Vertex
     
     // MARK: Tiles
     
-    func testVertexPositiveTiles() throws {
+    @Test
+    func vertexPositiveTiles() {
         
         let vertex = Vertex(-12, 7, 6)
         
@@ -23,11 +25,11 @@ final class HexagonVertexTests: XCTestCase {
                                 .init(-12, 6, 6),
                                 .init(-12, 7, 5)]
         
-        XCTAssertEqual(vertex.tiles,
-                       tiles)
+        #expect(vertex.tiles == tiles)
     }
     
-    func testVertexNegativeTiles() throws {
+    @Test
+    func vertexNegativeTiles() {
         
         let vertex = Vertex(-12, 6, 5)
         
@@ -35,13 +37,13 @@ final class HexagonVertexTests: XCTestCase {
                                 .init(-12, 7, 5),
                                 .init(-12, 6, 6)]
         
-        XCTAssertEqual(vertex.tiles,
-                       tiles)
+        #expect(vertex.tiles == tiles)
     }
     
     // MARK: Vertices
     
-    func testVertexPositiveVertices() throws {
+    @Test
+    func vertexPositiveVertices() {
         
         let vertex = Vertex(-12, 7, 6)
         
@@ -49,11 +51,11 @@ final class HexagonVertexTests: XCTestCase {
                                   .init(-13, 7, 5),
                                   .init(-13, 6, 6)]
         
-        XCTAssertEqual(vertex.vertices,
-                       vertices)
+        #expect(vertex.vertices == vertices)
     }
     
-    func testVertexNegativeVertices() throws {
+    @Test
+    func vertexNegativeVertices() {
         
         let vertex = Vertex(-12, 6, 5)
         
@@ -61,7 +63,6 @@ final class HexagonVertexTests: XCTestCase {
                                   .init(-11, 6, 6),
                                   .init(-11, 7, 5)]
         
-        XCTAssertEqual(vertex.vertices,
-                       vertices)
+        #expect(vertex.vertices == vertices)
     }
 }

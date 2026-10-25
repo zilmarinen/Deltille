@@ -5,17 +5,19 @@
 //
 
 import Collections
-import Euclid
-import XCTest
 @testable import Deltille
+import Euclid
+import Testing
 
-final class TriangleVertexTests: XCTestCase {
+@Suite
+struct TriangleVertexTests {
     
     typealias Vertex = Triangle.Vertex
     
     // MARK: Tiles
     
-    func testVertexTiles() throws {
+    @Test
+    func vertexTiles() {
         
         let vertex = Vertex(-7, -8, 16)
         
@@ -26,13 +28,13 @@ final class TriangleVertexTests: XCTestCase {
                                  .init(-7, -9, 15),
                                  .init(-7, -8, 15)]
         
-        XCTAssertEqual(vertex.tiles,
-                       tiles)
+        #expect(vertex.tiles == tiles)
     }
     
     // MARK: Vertices
     
-    func testVertexVertices() throws {
+    @Test
+    func vertexVertices() {
         
         let vertex = Vertex(-7, -8, 16)
         
@@ -43,7 +45,6 @@ final class TriangleVertexTests: XCTestCase {
                                   .init(-8, -8, 17),
                                   .init(-7, -9, 17)]
         
-        XCTAssertEqual(vertex.vertices,
-                       vertices)
+        #expect(vertex.vertices == vertices)
     }
 }

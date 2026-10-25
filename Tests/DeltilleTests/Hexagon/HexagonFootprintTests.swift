@@ -5,11 +5,12 @@
 //
 
 import Collections
-import Euclid
-import XCTest
 @testable import Deltille
+import Euclid
+import Testing
 
-final class HexagonFootprintTests: XCTestCase {
+@Suite
+struct HexagonFootprintTests {
     
     typealias Footprint = Hexagon.Footprint
     
@@ -22,8 +23,9 @@ final class HexagonFootprintTests: XCTestCase {
     
     // MARK: Translation
     
-    func testFootprintTranslation() throws {
-    
+    @Test
+    func footprintTranslation() {
+        
         let footprint = Footprint(hexagon,
                                   offsets)
         
@@ -32,13 +34,13 @@ final class HexagonFootprintTests: XCTestCase {
                                 .init(3, -2, -1),
                                 .init(2, -1, -1)]
         
-        XCTAssertEqual(footprint.tiles,
-                       tiles)
+        #expect(footprint.tiles == tiles)
     }
     
     // MARK: Rotation
     
-    func testFootprintRotation() throws {
+    @Test
+    func footprintRotation() {
         
         let footprint = Footprint(hexagon,
                                   offsets)
@@ -46,8 +48,8 @@ final class HexagonFootprintTests: XCTestCase {
         let clockwiseRotation = footprint.rotate(.clockwise)
         let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
-        let singleTurnClockwiseRotation = footprint.rotate(.clockwise)
-        let singleTurnCounterClockwiseRotation = footprint.rotate(.counterClockwise)
+        let singleTurnClockwise = footprint.rotate(.clockwise)
+        let singleTurnCounterClockwise = footprint.rotate(.counterClockwise)
         
         let clockwiseTiles: [Hexagon] = [.init(1, -2, 1),
                                          .init(2, -3, 1),
@@ -59,14 +61,10 @@ final class HexagonFootprintTests: XCTestCase {
                                                 .init(1, 0, -1),
                                                 .init(0, 0, 0)]
         
-        XCTAssertEqual(clockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(counterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(clockwiseRotation.tiles == clockwiseTiles)
+        #expect(counterClockwiseRotation.tiles == counterClockwiseTiles)
         
-        XCTAssertEqual(singleTurnClockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(singleTurnCounterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(singleTurnClockwise.tiles == clockwiseTiles)
+        #expect(singleTurnCounterClockwise.tiles == counterClockwiseTiles)
     }
 }
