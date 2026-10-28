@@ -145,7 +145,7 @@ public extension Coordinate {
     func distance(_ other: Self) -> Int {
         
         abs(x - other.x) +
-            abs(y - other.y) +
-            abs(z - other.z)
+        abs(y - other.y) +
+        abs(z - other.z)
     }
 }

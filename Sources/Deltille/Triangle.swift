@@ -270,7 +270,7 @@ public extension Triangle {
             self.origin = origin
             self.tiles = tiles.map {
                 
-                $0 + origin
+                origin + (origin.isPointy ? $0 : -$0)
             }
         }
         
@@ -278,11 +278,9 @@ public extension Triangle {
             
             let triangles = tiles.map {
                 
-                let triangle = $0 - origin
+                let relative = origin.isPointy ? ($0 - origin) : (origin - $0)
                 
-                let rotated = triangle.rotate(rotation)
-                
-                return rotated + origin
+                return relative.rotate(rotation)
             }
             
             return .init(origin,

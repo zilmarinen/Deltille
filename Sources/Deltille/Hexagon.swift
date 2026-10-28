@@ -296,11 +296,9 @@ public extension Hexagon {
             
             let hexagons = tiles.map {
                 
-                let hexagon = $0 - origin
+                let relative = $0 - origin
                 
-                let rotated = hexagon.rotate(rotation)
-                
-                return rotated + origin
+                return relative.rotate(rotation)
             }
             
             return .init(origin,
@@ -355,7 +353,7 @@ public extension Hexagon {
             
         case (.tile, .region):
             
-            parent(2).parent(1).rotate(.counterClockwise)
+            parent(2).parent().rotate(.counterClockwise)
             
         case (.chunk, .tile):
             
@@ -363,15 +361,15 @@ public extension Hexagon {
             
         case (.chunk, .region):
             
-            parent(1).rotate(.counterClockwise)
+            parent().rotate(.counterClockwise)
             
         case (.region, .tile):
             
-            child(1).child(2).rotate(.clockwise)
+            child(2).child().rotate(.clockwise)
             
         case (.region, .chunk):
             
-            child(1).rotate(.clockwise)
+            child().rotate(.clockwise)
             
         default:
             

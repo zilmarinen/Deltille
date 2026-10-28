@@ -1,77 +1,53 @@
 # CHANGELOG
 
-## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.4.0) (30/05/2026)
+## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.4.0) (2026-05-30)
 
-- Refactor `Hexagon.Scale` transposition for parent / child grouping
-
+- Refactor `Hexagon.Scale` transposition for parent/child grouping
 - Redefine `Hexagon.Scale` cases and lengths
 
-## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (21/04/2026)
+## [0.3.0](https://github.com/zilmarinen/Deltille/releases/tag/0.3.0) (2026-04-21)
 
 - Remove `Grid` enum namespace
-
 - Introduce methods for `Hexagon` chunking
-
 - Introduce `.default` property for `Scale`
-
-- Introduce `perimeter` property for `Stencil` 
-
+- Introduce `perimeter` property for `Stencil`
 - Introduce `Tile` methods for distance and proximity
-
 - Introduce `Array` extensions for `Vertex` collections
-
 - Refactor `Rotation` implementation for `Tile`
+- Introduce codified `Stencil` subdivisions
 
-- Introduce codified `Stencil` subdivisions 
-
-## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (31/08/2025)
+## [0.2.0](https://github.com/zilmarinen/Deltille/releases/tag/0.2.0) (2025-08-31)
 
 - Introduce `Hexagon` type
-    - Add `Scale` enum to define hexagon edge lengths
-
+  - Add `Scale` enum to define hexagon edge lengths
 - Introduce `Corner` protocol
-
 - Introduce `Edge` protocol
-
 - Introduce `Rotation` protocol
-
 - Introduce `Scale` protocol
-
 - Introduce `Tile` protocol
-    
 - Introduce `Vertex` protocol
-
 - Introduce `Sieve` type for triangle subdivisions
-
 - Introduce `Hexagon` unit tests
-
 - Remove `Canopy` enum
-
 - Remove `Kite` enum
-
 - Remove `Septomino` enum
 
-## [0.1.0](https://github.com/zilmarinen/Deltille/releases/tag/0.1.0) (27/05/2024)
+## [0.1.0](https://github.com/zilmarinen/Deltille/releases/tag/0.1.0) (2024-05-27)
 
 - Introduce `Grid` enum namespace
-	- Add `Axis` enum to define world axis
-	- Add `Scale` enum to define triangle edge lengths
-
+  - Add `Axis` enum to define world axis
+  - Add `Scale` enum to define triangle edge lengths
 - Introduce `Coordinate` type
-	- Add `Corner` enum
-	- Add `Edge` enum
-	- Add `Rotation` enum
-
+  - Add `Corner` enum
+  - Add `Edge` enum
+  - Add `Rotation` enum
 - Introduce `Triangle` type
-	- Add `Stencil` type for triangle subdivisions
-
+  - Add `Stencil` type for triangle subdivisions
 - Introduce `Footprint` protocol
-	- Add `Canopy` enum with wound edge perimeters
-	- Add `Septomino` enum with known patterns
-
+  - Add `Canopy` enum with wound edge perimeters
+  - Add `Septomino` enum with known patterns
 - Introduce `Kite` enum
-	- Add `Pattern` enum to define `Kite` tessellations
-
+  - Add `Pattern` enum to define `Kite` tessellations
 - Introduce `Coordinate` unit tests
 - Introduce `Triangle` unit tests
 - Introduce `Footprint` unit tests
