@@ -113,8 +113,8 @@ public extension Hexagon {
     func distance(_ other: Self) -> Int {
         
         (abs(x - other.x) +
-            abs(y - other.y) +
-            abs(z - other.z)) / 2
+         abs(y - other.y) +
+         abs(z - other.z)) / 2
     }
     
     func neighbour(_ edge: Edge) -> Hexagon {

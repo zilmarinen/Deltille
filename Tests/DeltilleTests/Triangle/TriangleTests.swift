@@ -14,6 +14,8 @@ struct TriangleTests {
     
     typealias Vertex = Triangle.Vertex
     
+    private let precision = 0.9999
+    
     // MARK: Edges
     
     @Test
@@ -158,13 +160,15 @@ struct TriangleTests {
         let corner0 = lhs.vertex(.c2)
         let center0 = lhs.vertex.vector()
         let target0 = Vector(corner0)
-        let vector0 = center0.lerp(target0, 0.9)
+        let vector0 = center0.lerp(target0,
+                                   precision)
         let result0 = Triangle(vector0)
         
         let corner1 = rhs.vertex(.c1)
         let center1 = rhs.vertex.vector()
         let target1 = Vector(corner1)
-        let vector1 = center1.lerp(target1, 0.9)
+        let vector1 = center1.lerp(target1,
+                                   precision)
         let result1 = Triangle(vector1)
         
         #expect(lhs.vertex.vector() == result0.vertex.vector())
