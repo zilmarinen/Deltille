@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.4.0) (2026-11-26)
+## [0.4.0](https://github.com/zilmarinen/Deltille/releases/tag/0.4.0) (2026-11-28)
 
 - Promote `Coordinate` to a protocol
 - Make `Tile` conform to `Coordinate`
