@@ -9,7 +9,6 @@ import Collections
 import Euclid
 import Testing
 
-@Suite
 struct HexagonFootprintTests {
     
     typealias Footprint = Hexagon.Footprint

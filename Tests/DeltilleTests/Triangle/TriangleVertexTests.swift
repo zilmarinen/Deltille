@@ -9,7 +9,6 @@ import Collections
 import Euclid
 import Testing
 
-@Suite
 struct TriangleVertexTests {
     
     typealias Vertex = Triangle.Vertex

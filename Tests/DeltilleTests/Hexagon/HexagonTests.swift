@@ -9,7 +9,6 @@ import Collections
 import Euclid
 import Testing
 
-@Suite
 struct HexagonTests {
     
     typealias Vertex = Hexagon.Vertex

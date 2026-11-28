@@ -9,7 +9,7 @@
 
 # Wrapping: once a list wraps, every element goes on its own line, aligned
 # under the first element (e.g. parameters aligned after the opening paren).
---max-width 100
+--max-width 140
 --wrap-arguments after-first
 --wrap-parameters after-first
 --wrap-collections after-first
@@ -29,6 +29,7 @@
 --guard-else same-line
 --import-grouping alpha
 --header ignore
+--test-case-name-format preserve
 
 # Blank lines are a deliberate part of this style; keep them as written.
 --scope-blank-lines preserve
