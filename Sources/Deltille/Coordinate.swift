@@ -1,81 +1,149 @@
 //
 //  Coordinate.swift
+//  Deltille
 //
 //  Created by Zack Brown on 23/05/2024.
 //
 
+import Euclid
+import Foundation
+
 // MARK: Coordinate
 
-public struct Coordinate: Codable,
-                          Hashable,
-                          Identifiable,
-                          Sendable {
+public protocol Coordinate: Codable, Equatable, Hashable, Identifiable, Sendable {
     
-    public static let zero = Self(0, 0, 0)
-    public static let one = Self(1, 1, 1)
-    public static let unitX = Self(1, 0, 0)
-    public static let unitY = Self(0, 1, 0)
-    public static let unitZ = Self(0, 0, 1)
+    var x: Int { get }
+    var y: Int { get }
+    var z: Int { get }
     
-    public let x: Int
-    public let y: Int
-    public let z: Int
+    init(_ x: Int,
+         _ y: Int,
+         _ z: Int)
     
-    public var id: String { "[\(x), \(y), \(z)]" }
+    init(_ coordinate: any Coordinate)
     
-    public var sum: Int { x + y + z }
-            
-    public var equalToZero: Bool { sum == 0 }
-    public var equalToOne: Bool { sum == 1 }
-    public var equalToNegativeOne: Bool { sum == -1 }
+    var id: String { get }
     
-    public init(_ x: Int,
-                _ y: Int,
-                _ z: Int) {
+    var sum: Int { get }
+    var equalToZero: Bool { get }
+    var equalToOne: Bool { get }
+    var equalToNegativeOne: Bool { get }
+    
+    var xyz: (x: Int,
+              y: Int,
+              z: Int) { get }
+    
+    func distance(_ other: Self) -> Int
+}
+
+public extension Coordinate {
+    
+    static var zero: Self {
         
-        self.x = x
-        self.y = y
-        self.z = z
+        .init(0, 0, 0)
+    }
+    
+    static var one: Self {
+        
+        .init(1, 1, 1)
+    }
+    
+    static var unitX: Self {
+        
+        .init(1, 0, 0)
+    }
+    
+    static var unitY: Self {
+        
+        .init(0, 1, 0)
+    }
+    
+    static var unitZ: Self {
+        
+        .init(0, 0, 1)
     }
 }
 
-extension Coordinate {
+public extension Coordinate {
     
-    public static func -(lhs: Self,
-                         rhs: Self) -> Self {
-        
-        .init(lhs.x - rhs.x,
-              lhs.y - rhs.y,
-              lhs.z - rhs.z)
-    }
-    
-    public static func +(lhs: Self,
-                         rhs: Self) -> Self {
+    static func + (lhs: Self,
+                   rhs: Self) -> Self {
         
         .init(lhs.x + rhs.x,
               lhs.y + rhs.y,
               lhs.z + rhs.z)
     }
     
-    public static prefix func -(rhs: Self) -> Self {
+    static func - (lhs: Self,
+                   rhs: Self) -> Self {
+        
+        .init(lhs.x - rhs.x,
+              lhs.y - rhs.y,
+              lhs.z - rhs.z)
+    }
+    
+    static prefix func - (rhs: Self) -> Self {
         
         .init(-rhs.x,
               -rhs.y,
               -rhs.z)
     }
     
-    public static func *(lhs: Self,
-                         rhs: Int) -> Self {
+    static func * (lhs: Self,
+                   rhs: Int) -> Self {
         
         .init(lhs.x * rhs,
               lhs.y * rhs,
-              lhs.z * rhs) }
+              lhs.z * rhs)
+    }
 }
 
-extension Coordinate {
+public extension Coordinate {
     
-    public var xyz: (x: Int, y: Int, z: Int) {
+    var id: String {
+        
+        "[\(x), \(y), \(z)]"
+    }
+    
+    var sum: Int {
+        
+        x + y + z
+    }
+    
+    var equalToZero: Bool {
+        
+        sum == 0
+    }
+    
+    var equalToOne: Bool {
+        
+        sum == 1
+    }
+    
+    var equalToNegativeOne: Bool {
+        
+        sum == -1
+    }
+    
+    var xyz: (x: Int,
+              y: Int,
+              z: Int) {
         
         (x, y, z)
+    }
+}
+
+public extension Coordinate {
+    
+    init(_ coordinate: any Coordinate) {
+        
+        self.init(coordinate.x,
+                  coordinate.y,
+                  coordinate.z)
+    }
+    
+    func distance(_ other: Self) -> Int {
+        
+        abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
     }
 }

@@ -4,165 +4,474 @@
 //  Created by Zack Brown on 12/06/2024.
 //
 
-import Euclid
-import XCTest
+import Collections
 @testable import Deltille
+import Euclid
+import Testing
 
-final class HexagonTests: XCTestCase {
+struct HexagonTests {
     
     typealias Vertex = Hexagon.Vertex
     
-    private let hexagon = Hexagon(Coordinate(2, -1, -1))
+    private let precision = 0.9999
     
     // MARK: Edges
     
-    func testEdges() throws {
+    @Test
+    func testEdges() {
+        
+        let hexagon = Hexagon.zero
         
         for edge in hexagon.edges {
             
             let adjacent = hexagon.neighbour(edge)
             
-            let vertices = Set(edge.corners.map { hexagon.vertex($0) })
+            let vertices = Set(edge.corners.map {
+                
+                hexagon.vertex($0)
+            })
             
-            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+            #expect(vertices.isSubset(of: adjacent.vertices()))
         }
     }
     
     // MARK: Distance
     
-    func testDistance() throws {
+    @Test
+    func testDistance() {
         
-        XCTAssertEqual(hexagon.distance(hexagon), 0)
-        XCTAssertEqual(hexagon.distance(.zero), 2)
+        let lhs = Hexagon(2, -2, 0)
+        let rhs = Hexagon(-1, 2, -1)
+        
+        #expect(lhs.distance(lhs) == 0)
+        #expect(lhs.distance(rhs) == 4)
     }
     
-    func testDisc() throws {
+    @Test
+    func testDisc() {
         
-        XCTAssertEqual(hexagon.disc(0).count, 1)
-        XCTAssertEqual(hexagon.disc(1).count, 7)
-        XCTAssertEqual(hexagon.disc(2).count, 19)
-        XCTAssertEqual(hexagon.disc(3).count, 37)
+        let hexagon = Hexagon.zero
+        
+        #expect(hexagon.disc(0).count == 1)
+        #expect(hexagon.disc(1).count == 7)
+        #expect(hexagon.disc(2).count == 19)
+        #expect(hexagon.disc(3).count == 37)
     }
     
     // MARK: Contains Vector
     
-    func testHexagonContainsVector() throws {
+    @Test
+    func hexagonTileContainsVector() {
         
-        XCTAssertTrue(hexagon.contains(hexagon.position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c0).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c1).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c2).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c3).position(.tile),
-                                       .tile))
-        XCTAssertTrue(hexagon.contains(hexagon.vertex(.c4).position(.tile),
-                                       .tile))
+        let scale = Scale.tile
+        let hexagon = Hexagon(19, 0, -19)
+        let center = hexagon.vertex.vector()
+        let neighbour = hexagon.neighbour(.e0)
+        let outside = neighbour.vertex.vector()
         
-        XCTAssertFalse(hexagon.contains(.zero, .tile))
+        #expect(hexagon.contains(center,
+                                 scale))
+        
+        #expect(!hexagon.contains(.zero,
+                                  scale))
+        
+        #expect(!hexagon.contains(outside,
+                                  scale))
+        
+        for corner in hexagon.corners {
+            
+            let vertex = hexagon.vertex(corner,
+                                        scale)
+            
+            #expect(hexagon.contains(vertex.vector(),
+                                     scale))
+        }
     }
     
-    // MARK: Neighbours / Adjacency / Perimeter
+    @Test
+    func hexagonChunkContainsVector() {
+        
+        let scale = Scale.chunk
+        let hexagon = Hexagon(5, -3, -2)
+        let center = hexagon.transpose(scale,
+                                       .tile).vertex.vector()
+        let neighbour = hexagon.neighbour(.e0)
+        let outside = neighbour.transpose(scale,
+                                          .tile).vertex.vector()
+        
+        #expect(hexagon.contains(center,
+                                 scale))
+        
+        #expect(!hexagon.contains(.zero,
+                                  scale))
+        
+        #expect(!hexagon.contains(outside,
+                                  scale))
+        
+        for corner in hexagon.corners {
+            
+            let vertex = hexagon.vertex(corner,
+                                        scale)
+            
+            #expect(hexagon.contains(vertex.vector(),
+                                     scale))
+        }
+    }
     
-    func testNeighbours() throws {
+    @Test
+    func hexagonRegionContainsVector() {
         
-        let tiles: [Hexagon] = [.init(3, -1, -2),
-                                .init(2, 0, -2),
-                                .init(1, 0, -1),
-                                .init(1, -1, 0),
-                                .init(2, -2, 0),
-                                .init(3, -2, -1)]
+        let scale = Scale.region
+        let hexagon = Hexagon(2, -1, -1)
+        let center = hexagon.transpose(scale,
+                                       .tile).vertex.vector()
+        let neighbour = hexagon.neighbour(.e0)
+        let outside = neighbour.transpose(scale,
+                                          .tile).vertex.vector()
         
-        let neighbours = hexagon.edges.map { hexagon.neighbour($0) }
+        #expect(hexagon.contains(center,
+                                 scale))
         
-        XCTAssertEqual(neighbours, tiles)
-        XCTAssertEqual(hexagon.adjacent, tiles)
-        XCTAssertEqual(hexagon.perimeter, tiles)
+        #expect(!hexagon.contains(.zero,
+                                  scale))
+        
+        #expect(!hexagon.contains(outside,
+                                  scale))
+        
+        for corner in hexagon.corners {
+            
+            let vertex = hexagon.vertex(corner,
+                                        scale)
+            
+            #expect(hexagon.contains(vertex.vector(),
+                                     scale))
+        }
+    }
+    
+    @Test
+    func vertexConversion() {
+        
+        let lhs = Hexagon(3, -2, -1)
+        let rhs = Hexagon(-5, 2, 3)
+        
+        let corner0 = lhs.vertex(.c2)
+        let center0 = lhs.vertex.vector()
+        let target0 = corner0.vector()
+        let vector0 = center0.lerp(target0,
+                                   precision)
+        let result0 = Hexagon(vector0)
+        
+        let corner1 = rhs.vertex(.c1)
+        let center1 = rhs.vertex.vector()
+        let target1 = corner1.vector()
+        let vector1 = center1.lerp(target1,
+                                   precision)
+        let result1 = Hexagon(vector1)
+        
+        #expect(lhs.vertex.vector() == result0.vertex.vector())
+        
+        #expect(rhs.vertex.vector() == result1.vertex.vector())
+    }
+    
+    @Test
+    func closestTileVertex() {
+        
+        let scale = Scale.tile
+        let tile = Hexagon(19, 0, -19)
+        
+        let center = tile.vertex.vector()
+        let vertex = tile.vertex(.c0,
+                                 scale)
+        
+        let vector = center.mid(vertex.vector())
+        
+        #expect(tile.closest(vertex: vector,
+                             scale) == vertex)
+    }
+    
+    @Test
+    func closestChunkVertex() {
+        
+        let scale = Scale.chunk
+        let tile = Hexagon(-3, 2, 1)
+        
+        let center = tile.transpose(scale,
+                                    .tile).vertex.vector()
+        let vertex = tile.vertex(.c0,
+                                 scale)
+        
+        let vector = center.mid(vertex.vector())
+        
+        #expect(tile.closest(vertex: vector,
+                             scale) == vertex)
+    }
+    
+    @Test
+    func closestRegionVertex() {
+        
+        let scale = Scale.region
+        let tile = Hexagon(2, -1, -1)
+        
+        let center = tile.transpose(scale,
+                                    .tile).vertex.vector()
+        let vertex = tile.vertex(.c0,
+                                 scale)
+        
+        let vector = center.mid(vertex.vector())
+        
+        #expect(tile.closest(vertex: vector,
+                             scale) == vertex)
+    }
+    
+    // MARK: Neighbours
+    
+    @Test
+    func testNeighbours() {
+        
+        let hexagon = Hexagon(2, -1, -1)
+        
+        let tiles: OrderedSet<Hexagon> = [.init(3, -1, -2),
+                                          .init(2, 0, -2),
+                                          .init(1, 0, -1),
+                                          .init(1, -1, 0),
+                                          .init(2, -2, 0),
+                                          .init(3, -2, -1)]
+        
+        let neighbours = OrderedSet(hexagon.edges.map {
+            
+            hexagon.neighbour($0)
+        })
+        
+        #expect(neighbours == tiles)
+        
+        #expect(hexagon.adjacent == tiles)
     }
     
     // MARK: Vertices / Corners
     
-    func testVertices() throws {
+    @Test
+    func tileVerticesAndCorners() {
         
-        let vertices: [Vertex] = [.init(3, -1, -1),
-                                  .init(2, -1, -2),
-                                  .init(2, 0, -1),
-                                  .init(1, -1, -1),
-                                  .init(2, -1, 0),
-                                  .init(2, -2, -1)]
+        let hexagon = Hexagon(-3, 2, 1)
         
-        let hexagonCorners = vertices.map { hexagon.corner($0) }
-        let hexagonVertices = hexagon.corners.map { hexagon.vertex($0) }
+        let vertices: OrderedSet<Vertex> = [.init(-2, 2, 1),
+                                            .init(-3, 2, 0),
+                                            .init(-3, 3, 1),
+                                            .init(-4, 2, 1),
+                                            .init(-3, 2, 2),
+                                            .init(-3, 1, 1)]
         
-        XCTAssertEqual(hexagonCorners, hexagon.corners)
-        XCTAssertEqual(hexagonVertices, vertices)
-        XCTAssertEqual(hexagonVertices, hexagon.vertices)
-        XCTAssertEqual(nil, hexagon.corner(.zero))
+        let hexagonCorners = OrderedSet(vertices.map {
+            
+            hexagon.corner($0,
+                           .tile)!
+        })
+        
+        let hexagonVertices = OrderedSet(hexagon.corners.map {
+            
+            hexagon.vertex($0,
+                           .tile)
+        })
+        
+        #expect(hexagonCorners == hexagon.corners)
+        
+        #expect(hexagonVertices == vertices)
+        
+        #expect(hexagonVertices == hexagon.vertices(.tile))
+        
+        #expect(hexagon.corner(.zero) == nil)
+    }
+    
+    @Test
+    func chunkVerticesAndCorners() {
+        
+        let hexagon = Hexagon(5, -3, -2)
+        
+        let vertices: OrderedSet<Vertex> = [.init(22, 1, -21),
+                                            .init(18, 2, -22),
+                                            .init(17, 3, -18),
+                                            .init(16, -1, -17),
+                                            .init(20, -2, -16),
+                                            .init(21, -3, -20)]
+        
+        let hexagonCorners = OrderedSet(vertices.map {
+            
+            hexagon.corner($0,
+                           .chunk)!
+        })
+        
+        let hexagonVertices = OrderedSet(hexagon.corners.map {
+            
+            hexagon.vertex($0,
+                           .chunk)
+        })
+        
+        #expect(hexagonCorners == hexagon.corners)
+        
+        #expect(hexagonVertices == vertices)
+        
+        #expect(hexagonVertices == hexagon.vertices(.chunk))
+        
+        #expect(hexagon.corner(.zero) == nil)
     }
     
     // MARK: Transposing
     
-    func testTransposeToParent() throws {
+    @Test
+    func transposeRegionToTile() {
         
-        let tiles: [Hexagon] = [.zero,
-                                .init(0, 1, -1),
-                                .init(-1, 0, 1),
-                                .init(1, -1, 0),
-                                .init(-2, -1, 3),
-                                .init(-3, 2, 1),
-                                .init(-1, 3, -2),
-                                .init(2, 1, -3),
-                                .init(3, -2, -1),
-                                .init(1, -3, 2)]
+        // Regions at the corner of a region
+        let regions: Set<Hexagon> = [.init(1, 0, -1),
+                                     .init(1, -1, 0),
+                                     .init(2, -1, -1)]
         
-        let transposed = tiles.map {
-            
-            $0.parent()
-        }
+        let transposed = regions.transpose(.region,
+                                           .tile)
         
-        let chunks: [Hexagon] = [.zero,
-                                 .zero,
-                                 .zero,
-                                 .zero,
-                                 .init(-1, 0, 1),
-                                 .init(-1, 1, 0),
-                                 .init(0, 1, -1),
-                                 .init(1, 0, -1),
-                                 .init(1, -1, 0),
-                                 .init(0, -1, 1)]
+        // Tiles in the center of a region
+        let tiles: Set<Hexagon> = [.init(9, 4, -13),
+                                   .init(13, -9, -4),
+                                   .init(22, -5, -17)]
         
-        XCTAssertEqual(transposed,
-                       chunks)
+        #expect(transposed == tiles)
     }
     
-    func testTransposeToChild() throws {
+    @Test
+    func transposeRegionToChunk() {
         
-        let chunks: [Hexagon] = [.zero,
-                                .init(-1, 0, 1),
-                                .init(-1, 1, 0),
-                                .init(0, 1, -1),
-                                .init(1, 0, -1),
-                                .init(1, -1, 0),
-                                .init(0, -1, 1)]
+        // Regions at the corner of a region
+        let regions: Set<Hexagon> = [.init(1, 0, -1),
+                                     .init(1, -1, 0),
+                                     .init(2, -1, -1)]
         
-        let transposed = chunks.map {
-            
-            $0.child()
-        }
+        let transposed = regions.transpose(.region,
+                                           .chunk)
         
-        let tiles: [Hexagon] = [.zero,
-                                .init(-1, -2, 3),
-                                .init(-3, 1, 2),
-                                .init(-2, 3, -1),
-                                .init(1, 2, -3),
-                                .init(3, -1, -2),
-                                .init(2, -3, 1)]
+        // Chunks in the center of a region
+        let chunks: Set<Hexagon> = [.init(3, -1, -2),
+                                    .init(2, -3, 1),
+                                    .init(5, -4, -1)]
         
-        XCTAssertEqual(transposed,
-                       tiles)
+        #expect(transposed == chunks)
+    }
+    
+    @Test
+    func transposeChunkToRegion() {
+        
+        // Chunks at the corner of a region
+        let chunks: Set<Hexagon> = [.init(3, -2, -1),
+                                    .init(3, -3, 0),
+                                    .init(4, -3, -1)]
+        
+        let transposed = chunks.transpose(.chunk,
+                                          .region)
+        
+        // Regions at the corner of a region
+        let regions: Set<Hexagon> = [.init(1, 0, -1),
+                                     .init(1, -1, 0),
+                                     .init(2, -1, -1)]
+        
+        #expect(transposed == regions)
+    }
+    
+    @Test
+    func transposeChunkToTile() {
+        
+        // Chunks at the corner of a region
+        let chunks: Set<Hexagon> = [.init(3, -2, -1),
+                                    .init(3, -3, 0),
+                                    .init(4, -3, -1)]
+        
+        let transposed = chunks.transpose(.chunk,
+                                          .tile)
+        
+        // Tiles in the center of a chunk
+        let tiles: Set<Hexagon> = [.init(12, -1, -11),
+                                   .init(15, -6, -9),
+                                   .init(17, -3, -14)]
+        
+        #expect(transposed == tiles)
+    }
+    
+    @Test
+    func transposeTileToChunk() {
+        
+        // Tiles at the corner of a chunk
+        let tiles: Set<Hexagon> = [.init(14, -3, -11),
+                                   .init(15, -4, -11),
+                                   .init(15, -3, -12)]
+        
+        let transposed = tiles.transpose(.tile,
+                                         .chunk)
+        
+        // Chunks at the corner of a region
+        let chunks: Set<Hexagon> = [.init(3, -2, -1),
+                                    .init(3, -3, 0),
+                                    .init(4, -3, -1)]
+        
+        #expect(transposed == chunks)
+    }
+    
+    @Test
+    func transposeTileToRegion() {
+        
+        // Tiles at the corner of a chunk
+        let tiles: Set<Hexagon> = [.init(14, -3, -11),
+                                   .init(15, -4, -11),
+                                   .init(15, -3, -12)]
+        
+        let transposed = tiles.transpose(.tile,
+                                         .region)
+        
+        // Regions at the corner of a region
+        let regions: Set<Hexagon> = [.init(1, 0, -1),
+                                     .init(1, -1, 0),
+                                     .init(2, -1, -1)]
+        
+        #expect(transposed == regions)
+    }
+    
+    // MARK: Sieve
+    
+    @Test
+    func tileSieve() {
+        
+        let hexagon = Hexagon.zero
+        let sieve = hexagon.sieve(.tile)
+        
+        #expect(sieve.origin == hexagon)
+        
+        #expect(sieve.scale == .tile)
+        #expect(sieve.tiles.count == 1)
+        #expect(sieve.vertices.count == 6)
+        #expect(sieve.tiles.contains(hexagon))
+    }
+    
+    @Test
+    func chunkSieve() {
+        
+        let hexagon = Hexagon.zero
+        let sieve = hexagon.sieve(.chunk)
+        
+        #expect(sieve.origin == hexagon)
+        
+        #expect(sieve.scale == .chunk)
+        #expect(sieve.tiles.count == 19)
+        #expect(sieve.vertices.count == 54)
+        #expect(sieve.tiles.contains(hexagon))
+    }
+    
+    @Test
+    func regionSieve() {
+        
+        let hexagon = Hexagon.zero
+        let sieve = hexagon.sieve(.region)
+        
+        #expect(sieve.origin == hexagon)
+        
+        #expect(sieve.scale == .region)
+        #expect(sieve.tiles.count == 133)
+        #expect(sieve.vertices.count == 312)
+        #expect(sieve.tiles.contains(hexagon))
     }
 }

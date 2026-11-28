@@ -1,5 +1,6 @@
 //
 //  Vector.swift
+//  Deltille
 //
 //  Created by Zack Brown on 24/05/2024.
 //
@@ -11,12 +12,15 @@ import Foundation
 
 extension Vector: @retroactive Identifiable {
     
-    public var id: String { "[\(x), \(y), \(z)]" }
+    public var id: String {
+        
+        "[\(x), \(y), \(z)]"
+    }
 }
 
-extension Vector {
+public extension Vector {
     
-    public func mid(_ lhs: Self) -> Self {
+    func mid(_ lhs: Self) -> Self {
         
         lerp(lhs, 0.5)
     }
@@ -24,61 +28,34 @@ extension Vector {
 
 // MARK: Hexagon
 
-extension Vector {
+public extension Vector {
     
-    public init(_ vertex: Hexagon.Vertex,
-                _ scale: Hexagon.Scale) {
+    init(_ vertex: Hexagon.Vertex,
+         _ lattice: Double = 1.0) {
         
-        let dx = Double(vertex.position.x)
-        let dy = Double(vertex.position.y)
-        let dz = Double(vertex.position.z)
+        let dx = Double(vertex.x)
+        let dy = Double(vertex.y)
+        let dz = Double(vertex.z)
         
-        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length,
+        self.init((dx - 0.5 * dy - 0.5 * dz) * lattice,
                   0.0,
-                  (dx - 0.5 * dy - 0.5 * dz) * scale.length)
+                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * lattice)
     }
 }
 
 // MARK: Triangle
 
-extension Vector {
+public extension Vector {
     
-    public init(_ vertex: Triangle.Vertex,
-                _ scale: Triangle.Scale) {
+    init(_ vertex: Triangle.Vertex,
+         _ lattice: Double = 1.0) {
         
-        let dx = Double(vertex.position.y)
-        let dy = Double(vertex.position.x)
-        let dz = Double(vertex.position.z)
+        let dx = Double(vertex.x)
+        let dy = Double(vertex.y)
+        let dz = Double(vertex.z)
         
-        self.init((dx - 0.5 * dy - 0.5 * dz) * scale.length,
+        self.init(((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * lattice,
                   0.0,
-                  ((.sqrt3d2 * dy) - (.sqrt3d2 * dz)) * scale.length)
-    }
-}
-
-// MARK: Array
-
-extension Array where Element == Vector {
-    
-    public func firstIndexOf(closest vector: Vector) -> Int {
-        
-        var distance = Double.greatestFiniteMagnitude
-        var closestIndex = 0
-        
-        for index in indices {
-            
-            let other = self[index]
-            
-            let length = (other - vector).length
-            
-            if length < distance {
-                
-                closestIndex = index
-                
-                distance = length
-            }
-        }
-        
-        return closestIndex
+                  (dx - 0.5 * dy - 0.5 * dz) * lattice)
     }
 }

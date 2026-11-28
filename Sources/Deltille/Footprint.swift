@@ -1,5 +1,6 @@
 //
 //  Footprint.swift
+//  Deltille
 //
 //  Created by Zack Brown on 24/05/2024.
 //
@@ -8,60 +9,38 @@ import Euclid
 
 // MARK: Footprint
 
-public protocol Footprint: Codable,
-                           Hashable,
-                           Rotatable,
-                           Sendable where T.V == V,
-                                          V.S == S {
+public protocol Footprint: Codable, Hashable, Rotatable, Sendable where T.V == V {
     
-    associatedtype S: Scale
     associatedtype T: Tile
     associatedtype V: Vertex
     
     var origin: T { get }
     var tiles: [T] { get }
     
-    var perimeter: [T] { get }
-    var vertices: [V] { get }
+    var footprint: [T] { get }
     
-    func center(_ scale: S) -> Vector
+    func perimeter(_ size: Int) -> [T]
+    
+    func vertices(_ scale: Scale) -> [V]
+    
     func intersects(_ footprint: Self) -> Bool
     func intersects(_ tile: T) -> Bool
+    
+    func unique(_ from: Scale,
+                _ to: Scale) -> [T]
 }
 
-extension Footprint {
+public extension Footprint {
     
-    public var perimeter: [T] {
+    var footprint: [T] {
         
-        let unique = Set(tiles.flatMap { $0.perimeter })
-        
-        let edges = Array(unique.subtracting(tiles))
-        
-        return edges.filter { tile in
-            
-            let intersecting = tile.adjacent.filter {
-                
-                tiles.contains($0)
-            }
-            
-            return intersecting.count <= 1
-        }
-    }
-    
-    public var vertices: [V] {
-        
-        Array(Set(tiles.flatMap { $0.vertices }))
+        [origin] + tiles
     }
 }
 
-extension Footprint {
+public extension Footprint {
     
-    public func center(_ scale: S) -> Vector {
-        
-        vertices.center(scale)
-    }
-    
-    public func intersects(_ footprint: Self) -> Bool {
+    func intersects(_ footprint: Self) -> Bool {
         
         for tile in footprint.tiles {
             
@@ -71,9 +50,35 @@ extension Footprint {
         return intersects(footprint.origin)
     }
     
-    public func intersects(_ tile: T) -> Bool {
+    func intersects(_ tile: T) -> Bool {
         
         tiles.contains(tile) ||
-        tile == origin
+            tile == origin
+    }
+    
+    func perimeter(_ size: Int) -> [T] {
+        
+        let surface = Set(footprint.flatMap {
+            
+            $0.disc(size)
+            
+        })
+        
+        return Array(surface.subtracting(footprint))
+    }
+    
+    func unique(_ from: Scale,
+                _ to: Scale) -> [T] {
+        
+        [origin] + tiles.unique(from,
+                                to)
+    }
+    
+    func vertices(_ scale: Scale) -> [V] {
+        
+        Array(Set(footprint.flatMap {
+            
+            $0.vertices(scale)
+        }))
     }
 }

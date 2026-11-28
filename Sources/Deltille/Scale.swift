@@ -1,5 +1,6 @@
 //
 //  Scale.swift
+//  Deltille
 //
 //  Created by Zack Brown on 23/05/2024.
 //
@@ -8,13 +9,21 @@ import Foundation
 
 // MARK: Scale
 
-public protocol Scale: CaseIterable,
-                       Codable,
-                       Hashable,
-                       Identifiable,
-                       Sendable {
+public enum Scale: Int, Codable, Hashable, Identifiable, Sendable {
     
-    static var `default`: Self { get }
+    public static let `default` = Self.tile
     
-    var length: Double { get }
+    case tile
+    case chunk
+    case region
+    
+    public var id: String {
+        
+        switch self {
+            
+        case .tile: "Tile"
+        case .chunk: "Chunk"
+        case .region: "Region"
+        }
+    }
 }

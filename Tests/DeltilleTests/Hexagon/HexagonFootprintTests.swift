@@ -4,25 +4,27 @@
 //  Created by Zack Brown on 19/12/2024.
 //
 
-import Euclid
-import XCTest
+import Collections
 @testable import Deltille
+import Euclid
+import Testing
 
-final class HexagonFootprintTests: XCTestCase {
+struct HexagonFootprintTests {
     
     typealias Footprint = Hexagon.Footprint
     
-    private let hexagon = Hexagon(Coordinate(1, -2, 1))
+    private let hexagon = Hexagon(1, -2, 1)
     
-    private let offsets: [Coordinate] = [.init(0, 0, 0),
-                                         .init(1, 0, -1),
-                                         .init(2, 0, -2),
-                                         .init(1, 1, -2)]
+    private let offsets: [Hexagon] = [.init(0, 0, 0),
+                                      .init(1, 0, -1),
+                                      .init(2, 0, -2),
+                                      .init(1, 1, -2)]
     
     // MARK: Translation
     
-    func testFootprintTranslation() throws {
-    
+    @Test
+    func footprintTranslation() {
+        
         let footprint = Footprint(hexagon,
                                   offsets)
         
@@ -31,13 +33,13 @@ final class HexagonFootprintTests: XCTestCase {
                                 .init(3, -2, -1),
                                 .init(2, -1, -1)]
         
-        XCTAssertEqual(footprint.tiles,
-                       tiles)
+        #expect(footprint.tiles == tiles)
     }
     
     // MARK: Rotation
     
-    func testFootprintRotation() throws {
+    @Test
+    func footprintRotation() {
         
         let footprint = Footprint(hexagon,
                                   offsets)
@@ -45,8 +47,8 @@ final class HexagonFootprintTests: XCTestCase {
         let clockwiseRotation = footprint.rotate(.clockwise)
         let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
-        let singleTurnClockwiseRotation = footprint.rotate(.init(turns: 1))
-        let singleTurnCounterClockwiseRotation = footprint.rotate(.init(turns:-1))
+        let singleTurnClockwise = footprint.rotate(.clockwise)
+        let singleTurnCounterClockwise = footprint.rotate(.counterClockwise)
         
         let clockwiseTiles: [Hexagon] = [.init(1, -2, 1),
                                          .init(2, -3, 1),
@@ -58,14 +60,10 @@ final class HexagonFootprintTests: XCTestCase {
                                                 .init(1, 0, -1),
                                                 .init(0, 0, 0)]
         
-        XCTAssertEqual(clockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(counterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(clockwiseRotation.tiles == clockwiseTiles)
+        #expect(counterClockwiseRotation.tiles == counterClockwiseTiles)
         
-        XCTAssertEqual(singleTurnClockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(singleTurnCounterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(singleTurnClockwise.tiles == clockwiseTiles)
+        #expect(singleTurnCounterClockwise.tiles == counterClockwiseTiles)
     }
 }

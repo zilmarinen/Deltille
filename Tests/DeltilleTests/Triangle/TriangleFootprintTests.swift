@@ -4,28 +4,30 @@
 //  Created by Zack Brown on 25/05/2024.
 //
 
-import Euclid
-import XCTest
+import Collections
 @testable import Deltille
+import Euclid
+import Testing
 
-final class TriangleFootprintTests: XCTestCase {
+struct TriangleFootprintTests {
     
     typealias Footprint = Triangle.Footprint
     
     private let pointyTriangle = Triangle(1, -2, 1)
     private let flatTriangle = Triangle(2, -1, -2)
     
-    private let offsets: [Coordinate] = [.init(0, 0, 0),
-                                         .init(0, 0, -1),
-                                         .init(1, 0, -1),
-                                         .init(1, 0, -2),
-                                         .init(1, 1, -2),
-                                         .init(1, 1, -3),
-                                         .init(2, 1, -3)]
+    private let offsets: [Triangle] = [.init(0, 0, 0),
+                                       .init(0, 0, -1),
+                                       .init(1, 0, -1),
+                                       .init(1, 0, -2),
+                                       .init(1, 1, -2),
+                                       .init(1, 1, -3),
+                                       .init(2, 1, -3)]
     
     // MARK: Translation
     
-    func testFootprintTranslationPointy() throws {
+    @Test
+    func footprintTranslationPointy() {
         
         let footprint = Footprint(pointyTriangle,
                                   offsets)
@@ -38,11 +40,11 @@ final class TriangleFootprintTests: XCTestCase {
                                  .init(2, -1, -2),
                                  .init(3, -1, -2)]
         
-        XCTAssertEqual(footprint.tiles,
-                       tiles)
+        #expect(footprint.tiles == tiles)
     }
     
-    func testFootprintTranslationFlat() throws {
+    @Test
+    func footprintTranslationFlat() {
         
         let footprint = Footprint(flatTriangle,
                                   offsets)
@@ -55,13 +57,13 @@ final class TriangleFootprintTests: XCTestCase {
                                  .init(1, -2, 1),
                                  .init(0, -2, 1)]
         
-        XCTAssertEqual(footprint.tiles,
-                       tiles)
+        #expect(footprint.tiles == tiles)
     }
     
     // MARK: Rotation
     
-    func testFootprintRotationPointy() throws {
+    @Test
+    func footprintRotationPointy() {
         
         let footprint = Footprint(pointyTriangle,
                                   offsets)
@@ -85,13 +87,12 @@ final class TriangleFootprintTests: XCTestCase {
                                                  .init(-2, -1, 2),
                                                  .init(-2, 0, 2)]
         
-        XCTAssertEqual(clockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(counterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(clockwiseRotation.tiles == clockwiseTiles)
+        #expect(counterClockwiseRotation.tiles == counterClockwiseTiles)
     }
     
-    func testFootprintRotationFlat() throws {
+    @Test
+    func footprintRotationFlat() {
         
         let footprint = Footprint(flatTriangle,
                                   offsets)
@@ -99,8 +100,8 @@ final class TriangleFootprintTests: XCTestCase {
         let clockwiseRotation = footprint.rotate(.clockwise)
         let counterClockwiseRotation = footprint.rotate(.counterClockwise)
         
-        let singleTurnClockwiseRotation = footprint.rotate(.init(turns: 1))
-        let singleTurnCounterClockwiseRotation = footprint.rotate(.init(turns: -1))
+        let singleTurnClockwiseRotation = footprint.rotate(.clockwise)
+        let singleTurnCounterClockwiseRotation = footprint.rotate(.counterClockwise)
         
         let clockwiseTiles: [Triangle] = [.init(2, -1, -2),
                                           .init(2, 0, -2),
@@ -118,23 +119,20 @@ final class TriangleFootprintTests: XCTestCase {
                                                  .init(5, -2, -3),
                                                  .init(5, -3, -3)]
         
-        XCTAssertEqual(clockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(counterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(clockwiseRotation.tiles == clockwiseTiles)
+        #expect(counterClockwiseRotation.tiles == counterClockwiseTiles)
         
-        XCTAssertEqual(singleTurnClockwiseRotation.tiles,
-                       clockwiseTiles)
-        XCTAssertEqual(singleTurnCounterClockwiseRotation.tiles,
-                       counterClockwiseTiles)
+        #expect(singleTurnClockwiseRotation.tiles == clockwiseTiles)
+        #expect(singleTurnCounterClockwiseRotation.tiles == counterClockwiseTiles)
     }
     
     // MARK: Intersection
     
-    func testFootprintIntersection() throws {
+    @Test
+    func footprintIntersection() {
         
         let footprint = Footprint(.zero,
-                                  [Coordinate.zero])
+                                  [.zero])
         
         let lhs = Footprint(pointyTriangle,
                             offsets)
@@ -142,10 +140,9 @@ final class TriangleFootprintTests: XCTestCase {
         let rhs = Footprint(flatTriangle,
                             offsets)
         
-        XCTAssertFalse(footprint.intersects(lhs))
-        XCTAssertFalse(footprint.intersects(rhs))
-        XCTAssertTrue(lhs.intersects(rhs))
-        XCTAssertTrue(rhs.intersects(lhs))
+        #expect(!footprint.intersects(lhs))
+        #expect(!footprint.intersects(rhs))
+        #expect(lhs.intersects(rhs))
+        #expect(rhs.intersects(lhs))
     }
 }
-

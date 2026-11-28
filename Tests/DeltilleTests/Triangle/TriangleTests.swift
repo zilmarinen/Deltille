@@ -4,453 +4,632 @@
 //  Created by Zack Brown on 25/05/2024.
 //
 
-import Euclid
-import XCTest
+import Collections
 @testable import Deltille
+import Euclid
+import Testing
 
-final class TriangleTests: XCTestCase {
+struct TriangleTests {
     
     typealias Vertex = Triangle.Vertex
     
-    private let pointyTriangle = Triangle(4, -2, -2)
-    private let flatTriangle = Triangle(-2, -2, 3)
-    private let unitTriangle = Triangle(Vertex.zero)
-    private let x = Triangle(-.unitX)
-    private let y = Triangle(-.unitY)
-    private let z = Triangle(-.unitZ)
+    private let precision = 0.9999
     
     // MARK: Edges
     
-    func testEdges() throws {
+    @Test
+    func testEdges() {
         
-        for edge in unitTriangle.edges {
+        let triangle = Triangle.zero
+        
+        for edge in triangle.edges {
             
-            let adjacent = unitTriangle.neighbour(edge)
+            let adjacent = triangle.neighbour(edge)
             
-            let vertices = Set(edge.corners.map { unitTriangle.vertex($0) })
+            let vertices = Set(edge.corners.map {
+                
+                triangle.vertex($0)
+            })
             
-            XCTAssertTrue(vertices.isSubset(of: adjacent.vertices))
+            #expect(vertices.isSubset(of: adjacent.vertices()))
         }
     }
     
     // MARK: Distance
     
-    func testDistance() throws {
+    @Test
+    func testDistance() {
         
-        XCTAssertEqual(pointyTriangle.distance(pointyTriangle), 0)
-        XCTAssertEqual(flatTriangle.distance(flatTriangle), 0)
-        XCTAssertEqual(pointyTriangle.distance(unitTriangle), 8)
-        XCTAssertEqual(flatTriangle.distance(unitTriangle), 7)
+        let lhs = Triangle(-3, 2, 0)
+        let rhs = Triangle(2, -1, 2)
+        
+        #expect(lhs.distance(lhs) == 0)
+        #expect(rhs.distance(rhs) == 0)
+        #expect(lhs.distance(.zero) == 5)
+        #expect(lhs.distance(rhs) == 10)
     }
     
-    func testDisc() throws {
+    @Test
+    func testDisc() {
         
-        XCTAssertEqual(unitTriangle.disc(0).count, 1)
-        XCTAssertEqual(unitTriangle.disc(1).count, 4)
-        XCTAssertEqual(unitTriangle.disc(2).count, 10)
-        XCTAssertEqual(unitTriangle.disc(3).count, 19)
+        let triangle = Triangle.zero
+        
+        #expect(triangle.disc(0).count == 1)
+        #expect(triangle.disc(1).count == 4)
+        #expect(triangle.disc(2).count == 10)
+        #expect(triangle.disc(3).count == 19)
     }
     
     // MARK: Contains Vector
     
-    func testTriangleContainsVector() throws {
+    @Test
+    func triangleTileContainsVector() {
         
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.position(.tile),
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(.zero,
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c0).position(.tile),
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c1).position(.tile),
-                                            .tile))
-        XCTAssertTrue(unitTriangle.contains(unitTriangle.vertex(.c1).position(.tile),
-                                            .tile))
+        let scale = Scale.tile
+        let triangle = Triangle(-6, 11, -6)
+        let center = triangle.vertex.vector()
+        let neighbour = triangle.neighbour(.e0)
+        let outside = neighbour.vertex.vector()
         
-        XCTAssertTrue(flatTriangle.contains(flatTriangle.position(.tile),
-                                            .tile))
-        XCTAssertFalse(flatTriangle.contains(.zero,
-                                             .tile))
+        #expect(triangle.contains(center,
+                                  scale))
         
-        XCTAssertTrue(pointyTriangle.contains(pointyTriangle.position(.tile),
-                                              .tile))
-        XCTAssertFalse(pointyTriangle.contains(.zero,
-                                               .tile))
+        #expect(!triangle.contains(.zero,
+                                   scale))
+        
+        #expect(!triangle.contains(outside,
+                                   scale))
+        
+        for corner in triangle.corners {
+            
+            let vertex = triangle.vertex(corner,
+                                         scale)
+            
+            #expect(triangle.contains(vertex.vector(),
+                                      scale))
+        }
+    }
+    
+    @Test
+    func triangleChunkContainsVector() {
+        
+        let scale = Scale.chunk
+        let triangle = Triangle(-2, 3, -2)
+        let center = triangle.transpose(scale,
+                                        .tile).vertex.vector()
+        let neighbour = triangle.neighbour(.e0)
+        let outside = neighbour.transpose(scale,
+                                          .tile).vertex.vector()
+        
+        #expect(triangle.contains(center,
+                                  scale))
+        
+        #expect(!triangle.contains(.zero,
+                                   scale))
+        
+        #expect(!triangle.contains(outside,
+                                   scale))
+        
+        for corner in triangle.corners {
+            
+            let vertex = triangle.vertex(corner,
+                                         scale)
+            
+            #expect(triangle.contains(vertex.vector(),
+                                      scale))
+        }
+    }
+    
+    @Test
+    func triangleRegionContainsVector() {
+        
+        let scale = Scale.region
+        let triangle = Triangle(-1, 1, -1)
+        let center = triangle.transpose(scale,
+                                        .tile).vertex.vector()
+        let neighbour = triangle.neighbour(.e0)
+        let outside = neighbour.transpose(scale,
+                                          .tile).vertex.vector()
+        
+        #expect(triangle.contains(center,
+                                  scale))
+        
+        #expect(!triangle.contains(.zero,
+                                   scale))
+        
+        #expect(!triangle.contains(outside,
+                                   scale))
+        
+        for corner in triangle.corners {
+            
+            let vertex = triangle.vertex(corner,
+                                         scale)
+            
+            #expect(triangle.contains(vertex.vector(),
+                                      scale))
+        }
+    }
+    
+    @Test
+    func vertexConversion() {
+        
+        let lhs = Triangle.zero
+        let rhs = Triangle.zero
+        
+        let corner0 = lhs.vertex(.c2)
+        let center0 = lhs.vertex.vector()
+        let target0 = Vector(corner0)
+        let vector0 = center0.lerp(target0,
+                                   precision)
+        let result0 = Triangle(vector0)
+        
+        let corner1 = rhs.vertex(.c1)
+        let center1 = rhs.vertex.vector()
+        let target1 = Vector(corner1)
+        let vector1 = center1.lerp(target1,
+                                   precision)
+        let result1 = Triangle(vector1)
+        
+        #expect(lhs.vertex.vector() == result0.vertex.vector())
+        
+        #expect(rhs.vertex.vector() == result1.vertex.vector())
+    }
+    
+    @Test
+    func closestTileVertex() {
+        
+        let scale = Scale.tile
+        let tile = Triangle(-3, 2, 1)
+        
+        let center = tile.vertex.vector()
+        let vertex = tile.vertex(.c0,
+                                 scale)
+        
+        let vector = center.mid(vertex.vector())
+        
+        #expect(tile.closest(vertex: vector,
+                             scale) == vertex)
+    }
+    
+    @Test
+    func closestChunkVertex() {
+        
+        let scale = Scale.chunk
+        let tile = Triangle(-3, 2, 1)
+        
+        let center = tile.transpose(scale,
+                                    .tile).vertex.vector()
+        let vertex = tile.vertex(.c0,
+                                 scale)
+        
+        let vector = center.mid(vertex.vector())
+        
+        #expect(tile.closest(vertex: vector,
+                             scale) == vertex)
+    }
+    
+    @Test
+    func closestRegionVertex() {
+        
+        let scale = Scale.region
+        let tile = Triangle(-3, 2, 1)
+        
+        let center = tile.transpose(scale,
+                                    .tile).vertex.vector()
+        let vertex = tile.vertex(.c0,
+                                 scale)
+        
+        let vector = center.mid(vertex.vector())
+        
+        #expect(tile.closest(vertex: vector,
+                             scale) == vertex)
     }
     
     // MARK: Pointy / Flat
     
-    func testUnitTriangleIsPointy() throws {
+    @Test
+    func unitTriangleIsPointy() {
         
-        XCTAssertTrue(unitTriangle.isPointy)
-        XCTAssertTrue(pointyTriangle.isPointy)
-        XCTAssertFalse(flatTriangle.isPointy)
+        let lhs = Triangle.zero
+        let rhs = Triangle(-11, 5, 5)
+        
+        #expect(lhs.isPointy)
+        #expect(!rhs.isPointy)
     }
     
-    // MARK: Neighbours / Adjacency
+    // MARK: Neighbours
     
-    func testPointyNeighboursAdjacency() throws {
+    @Test
+    func pointyNeighboursAdjacency() {
         
-        let tiles: [Triangle] = [.init(3, -2, -2),
-                                 .init(4, -3, -2),
-                                 .init(4, -2, -3)]
+        let triangle = Triangle(-11, 5, 5)
         
-        let neighbours = pointyTriangle.edges.map { pointyTriangle.neighbour($0) }
+        let tiles: OrderedSet<Triangle> = [.init(-10, 5, 5),
+                                           .init(-11, 6, 5),
+                                           .init(-11, 5, 6)]
         
-        XCTAssertEqual(neighbours, tiles)
-        XCTAssertEqual(pointyTriangle.adjacent, tiles)
+        let neighbours = OrderedSet(triangle.edges.map {
+            
+            triangle.neighbour($0)
+        })
+        
+        #expect(neighbours == tiles)
+        
+        #expect(triangle.adjacent == tiles)
     }
     
-    func testFlatNeighboursAdjacency() throws {
+    @Test
+    func flatNeighboursAdjacency() {
         
-        let tiles: [Triangle] = [.init(-1, -2, 3),
-                                 .init(-2, -1, 3),
-                                 .init(-2, -2, 4)]
+        let triangle = Triangle(16, -16, 0)
         
-        let neighbours = flatTriangle.edges.map { flatTriangle.neighbour($0) }
+        let tiles: OrderedSet<Triangle> = [.init(15, -16, 0),
+                                           .init(16, -17, 0),
+                                           .init(16, -16, -1)]
         
-        XCTAssertEqual(neighbours, tiles)
-        XCTAssertEqual(flatTriangle.adjacent, tiles)
-    }
-    
-    // MARK: Perimeter
-    
-    func testPointyPerimeter() throws {
+        let neighbours = OrderedSet(triangle.edges.map {
+            
+            triangle.neighbour($0)
+        })
         
-        let perimeter: [Triangle] = [.init(pointyTriangle.vertex.position + .init(-1, 0, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, 1, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, 1, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(0, 1, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(0, 0, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(1, 0, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(1, -1, -1)),
-                                     .init(pointyTriangle.vertex.position + .init(1, -1, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(0, -1, 0)),
-                                     .init(pointyTriangle.vertex.position + .init(0, -1, 1)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, -1, 1)),
-                                     .init(pointyTriangle.vertex.position + .init(-1, 0, 1))]
+        #expect(neighbours == tiles)
         
-        let lhs = Set(perimeter)
-        let rhs = Set(pointyTriangle.perimeter)
-        
-        XCTAssertTrue(lhs.isSubset(of: rhs))
-        XCTAssertEqual(perimeter.count, pointyTriangle.perimeter.count)
-    }
-    
-    func testFlatPerimeter() throws {
-        
-        let perimeter: [Triangle] = [.init(flatTriangle.vertex.position + .init(1, 0, 0)),
-                                     .init(flatTriangle.vertex.position + .init(1, -1, 0)),
-                                     .init(flatTriangle.vertex.position + .init(1, -1, 1)),
-                                     .init(flatTriangle.vertex.position + .init(0, -1, 1)),
-                                     .init(flatTriangle.vertex.position + .init(0, 0, 1)),
-                                     .init(flatTriangle.vertex.position + .init(-1, 0, 1)),
-                                     .init(flatTriangle.vertex.position + .init(-1, 1, 1)),
-                                     .init(flatTriangle.vertex.position + .init(-1, 1, 0)),
-                                     .init(flatTriangle.vertex.position + .init(0, 1, 0)),
-                                     .init(flatTriangle.vertex.position + .init(0, 1, -1)),
-                                     .init(flatTriangle.vertex.position + .init(1, 1, -1)),
-                                     .init(flatTriangle.vertex.position + .init(1, 0, -1))]
-        
-        let lhs = Set(perimeter)
-        let rhs = Set(flatTriangle.perimeter)
-        
-        XCTAssertTrue(lhs.isSubset(of: rhs))
-        XCTAssertEqual(perimeter.count, flatTriangle.perimeter.count)
+        #expect(triangle.adjacent == tiles)
     }
     
     // MARK: Vertices / Corners
     
-    func testPointyVertices() throws {
+    @Test
+    func pointyVerticesAndCorners() {
         
-        let vertices: [Vertex] = [.init(5, -2, -2),
-                                  .init(4, -1, -2),
-                                  .init(4, -2, -1)]
+        let triangle = Triangle(-5, 10, -5)
         
-        let center = Vector(-3.0, 0.0, 5.1961)
-        let triangle = Triangle(center, .tile)
+        let vertices: OrderedSet<Vertex> = [.init(-4, 10, -5),
+                                            .init(-5, 11, -5),
+                                            .init(-5, 10, -4)]
         
-        let triangleCorners = vertices.map { pointyTriangle.corner($0) }
+        let triangleCorners = OrderedSet(vertices.map {
+            
+            triangle.corner($0,
+                            .tile)!
+        })
         
-        XCTAssertEqual(triangleCorners, pointyTriangle.corners)
-        XCTAssertEqual(triangle.vertex, pointyTriangle.vertex)
+        let triangleVertices = OrderedSet(triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .tile)
+        })
+        
+        #expect(triangle.isPointy)
+        
+        #expect(triangleCorners == triangle.corners)
+        
+        #expect(triangleVertices == vertices)
+        
+        #expect(triangleVertices == triangle.vertices(.tile))
+        
+        #expect(triangle.corner(.zero) == nil)
     }
-
-    func testFlatVertices() throws {
+    
+    @Test
+    func flatVerticesAndCorners() {
         
-        let vertices: [Vertex] = [.init(-2, -1, 4),
-                                  .init(-1, -2, 4),
-                                  .init(-1, -1, 3)]
+        let triangle = Triangle(-13, 8, 4)
         
-        let center = Vector(-2.5, 0.0, -4.3301)
-        let triangle = Triangle(center, .tile)
+        let vertices: OrderedSet<Vertex> = [.init(-13, 9, 5),
+                                            .init(-12, 8, 5),
+                                            .init(-12, 9, 4)]
         
-        let triangleCorners = vertices.map { flatTriangle.corner($0) }
+        let triangleCorners = OrderedSet(vertices.map {
+            
+            triangle.corner($0,
+                            .tile)!
+        })
         
-        XCTAssertEqual(triangleCorners, flatTriangle.corners)
-        XCTAssertEqual(triangle.vertex, flatTriangle.vertex)
+        let triangleVertices = OrderedSet(triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .tile)
+        })
         
+        #expect(!triangle.isPointy)
+        
+        #expect(triangleCorners == triangle.corners)
+        
+        #expect(triangleVertices == vertices)
+        
+        #expect(triangleVertices == triangle.vertices(.tile))
+        
+        #expect(triangle.corner(.zero) == nil)
+    }
+    
+    @Test
+    func pointyChunkVertices() {
+        
+        let triangle = Triangle(-4, 4, 0)
+        
+        let vertices: OrderedSet<Vertex> = [.init(-13, 15, -1),
+                                            .init(-17, 19, -1),
+                                            .init(-17, 15, 3)]
+        
+        let triangleVertices = OrderedSet(triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .chunk)
+        })
+        
+        #expect(triangle.isPointy)
+        
+        #expect(triangleVertices == vertices)
+        
+        #expect(triangleVertices == triangle.vertices(.chunk))
+    }
+    
+    @Test
+    func flatRegionVertices() {
+        
+        let triangle = Triangle(1, -1, -1)
+        
+        let vertices: OrderedSet<Vertex> = [.init(11, -5, -5),
+                                            .init(27, -21, -5),
+                                            .init(27, -5, -21)]
+        
+        let triangleVertices = OrderedSet(triangle.corners.map {
+            
+            triangle.vertex($0,
+                            .region)
+        })
+        
+        #expect(!triangle.isPointy)
+        
+        #expect(triangleVertices == vertices)
+        
+        #expect(triangleVertices == triangle.vertices(.region))
     }
     
     // MARK: Transposing
     
-    func testTransposeRegionToTile() throws {
+    @Test
+    func transposeRegionToTile() {
         
-        let regions = [unitTriangle,
-                       x,
-                       y,
-                       z]
-            
-        let transposed = regions.map {
-            
-            $0.transpose(.region,
-                         .tile)
-        }
+        // Regions at the corner of a region
+        let regions: Set<Triangle> = [.init(-1, 0, 0),
+                                      .init(-1, 1, 0),
+                                      .init(-1, 1, -1),
+                                      .init(0, 1, -1),
+                                      .init(0, 0, -1),
+                                      .zero]
         
-        let tiles: [Triangle] = [.init(0, 0, 0),
-                                 .init(-19, 9, 9),
-                                 .init(9, -19, 9),
-                                 .init(9, 9, -19)]
+        let transposed = regions.transpose(.region,
+                                           .tile)
         
-        XCTAssertEqual(transposed,
-                       tiles)
+        // Tiles in the center of a region
+        let tiles: Set<Triangle> = [.init(-11, 5, 5),
+                                    .init(-16, 16, 0),
+                                    .init(-11, 21, -11),
+                                    .init(0, 16, -16),
+                                    .init(5, 5, -11),
+                                    .zero]
+        
+        #expect(transposed == tiles)
     }
     
-    func testTransposeRegionToChunk() throws {
+    @Test
+    func transposeRegionToChunk() {
         
-        let regions = [unitTriangle,
-                       x,
-                       y,
-                       z]
-            
-        let transposed = regions.map {
-            
-            $0.transpose(.region,
-                         .chunk)
-        }
+        // Regions at the corner of a region
+        let regions: Set<Triangle> = [.init(-1, 0, 0),
+                                      .init(-1, 1, 0),
+                                      .init(-1, 1, -1),
+                                      .init(0, 1, -1),
+                                      .init(0, 0, -1),
+                                      .zero]
         
-        let chunks: [Triangle] = [.init(0, 0, 0),
-                                  .init(-3, 1, 1),
-                                  .init(1, -3, 1),
-                                  .init(1, 1, -3)]
+        let transposed = regions.transpose(.region,
+                                           .chunk)
         
-        XCTAssertEqual(transposed,
-                       chunks)
+        // Chunks in the center of a region
+        let chunks: Set<Triangle> = [.init(-3, 1, 1),
+                                     .init(-4, 4, 0),
+                                     .init(-3, 5, -3),
+                                     .init(0, 4, -4),
+                                     .init(1, 1, -3),
+                                     .zero]
+        
+        #expect(transposed == chunks)
     }
     
-    func testTransposeChunkToRegion() throws {
+    @Test
+    func transposeChunkToRegion() {
         
-        let chunks = [Triangle(0, 0, 0),
-                      x,
-                      y,
-                      z,
-                      Triangle(-3, 1, 1),
-                      Triangle(1, -3, 1),
-                      Triangle(1, 1, -3)]
-            
-        let transposed = chunks.map {
-            
-            $0.transpose(.chunk,
-                         .region)
-        }
+        // Chunks at the corner of a region
+        let chunks: Set<Triangle> = [.init(-2, 2, -1),
+                                     .init(-2, 3, -1),
+                                     .init(-2, 3, -2),
+                                     .init(-1, 3, -2),
+                                     .init(-1, 2, -2),
+                                     .init(-1, 2, -1)]
         
-        let regions = [unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       x,
-                       y,
-                       z]
+        let transposed = chunks.transpose(.chunk,
+                                          .region)
         
-        XCTAssertEqual(transposed,
-                       regions)
+        // Regions at the corner of a region
+        let regions: Set<Triangle> = [.init(-1, 0, 0),
+                                      .init(-1, 1, 0),
+                                      .init(-1, 1, -1),
+                                      .init(0, 1, -1),
+                                      .init(0, 0, -1),
+                                      .zero]
+        
+        #expect(transposed == regions)
     }
     
-    func testTransposeChunkToTile() throws {
+    @Test
+    func transposeChunkToTile() {
         
-        let chunks = [unitTriangle,
-                      x,
-                      y,
-                      z]
-            
-        let transposed = chunks.map {
-            
-            $0.transpose(.chunk,
-                         .tile)
-        }
+        // Chunks at the corner of a region
+        let chunks: Set<Triangle> = [.init(-2, 2, -1),
+                                     .init(-2, 3, -1),
+                                     .init(-2, 3, -2),
+                                     .init(-1, 3, -2),
+                                     .init(-1, 2, -2),
+                                     .init(-1, 2, -1)]
         
-        let tiles: [Triangle] = [.init(0, 0, 0),
-                                 .init(-5, 2, 2),
-                                 .init(2, -5, 2),
-                                 .init(2, 2, -5)]
+        let transposed = chunks.transpose(.chunk,
+                                          .tile)
         
-        XCTAssertEqual(transposed,
-                       tiles)
+        // Tiles in the center of a chunk
+        let tiles: Set<Triangle> = [.init(-7, 9, -3),
+                                    .init(-8, 12, -4),
+                                    .init(-7, 13, -7),
+                                    .init(-4, 12, -8),
+                                    .init(-3, 9, -7),
+                                    .init(-4, 8, -4)]
+        
+        #expect(transposed == tiles)
     }
     
-    func testTransposeTileToChunk() throws {
+    @Test
+    func transposeTileToChunk() {
         
-        let tiles = [Triangle(0, 0, 0),
-                     x,
-                     y,
-                     z,
-                     Triangle(-5, 2, 2),
-                     Triangle(2, -5, 2),
-                     Triangle(2, 2, -5)]
-            
-        let transposed = tiles.map {
-            
-            $0.transpose(.tile,
-                         .chunk)
-        }
+        // Tiles at the corner of a region
+        let tiles: Set<Triangle> = [.init(-6, 10, -5),
+                                    .init(-6, 11, -5),
+                                    .init(-6, 11, -6),
+                                    .init(-5, 11, -6),
+                                    .init(-5, 10, -6),
+                                    .init(-5, 10, -5)]
         
-        let chunks = [unitTriangle,
-                      unitTriangle,
-                      unitTriangle,
-                      unitTriangle,
-                      x,
-                      y,
-                      z]
-            
-        XCTAssertEqual(transposed,
-                       chunks)
+        let transposed = tiles.transpose(.tile,
+                                         .chunk)
+        
+        // Chunks at the corner of a region
+        let chunks: Set<Triangle> = [.init(-2, 2, -1),
+                                     .init(-2, 3, -1),
+                                     .init(-2, 3, -2),
+                                     .init(-1, 3, -2),
+                                     .init(-1, 2, -2),
+                                     .init(-1, 2, -1)]
+        
+        #expect(transposed == chunks)
     }
     
-    func testTransposeTileToRegion() throws {
+    @Test
+    func transposeTileToRegion() {
         
-        let tiles = [Triangle(0, 0, 0),
-                     x,
-                     y,
-                     z,
-                     Triangle(-19, 9, 9),
-                     Triangle(9, -19, 9),
-                     Triangle(9, 9, -19)]
-            
-        let transposed = tiles.map {
-            
-            $0.transpose(.tile,
-                         .region)
-        }
+        // Tiles at the corner of a region
+        let tiles: Set<Triangle> = [.init(-6, 10, -5),
+                                    .init(-6, 11, -5),
+                                    .init(-6, 11, -6),
+                                    .init(-5, 11, -6),
+                                    .init(-5, 10, -6),
+                                    .init(-5, 10, -5)]
         
-        let regions = [unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       unitTriangle,
-                       x,
-                       y,
-                       z]
+        let transposed = tiles.transpose(.tile,
+                                         .region)
         
-        XCTAssertEqual(transposed,
-                       regions)
+        // Regions at the corner of a region
+        let regions: Set<Triangle> = [.init(-1, 0, 0),
+                                      .init(-1, 1, 0),
+                                      .init(-1, 1, -1),
+                                      .init(0, 1, -1),
+                                      .init(0, 0, -1),
+                                      .zero]
+        
+        #expect(transposed == regions)
     }
     
     // MARK: Sieve
     
-    func testPointySierpinskiSieve() throws {
+    @Test
+    func pointyTileSieve() {
         
-        let sieve = pointyTriangle.sieve(for: .sierpinski)
-        let tile = pointyTriangle.transpose(.sierpinski,
-                                            .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.tile)
         
-        XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
-        XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.triangles.count, 1)
-        XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        #expect(sieve.origin == triangle)
+        
+        #expect(sieve.scale == .tile)
+        #expect(sieve.tiles.count == 1)
+        #expect(sieve.vertices.count == 3)
+        #expect(sieve.tiles.contains(triangle))
     }
     
-    func testFlatSierpinskiSieve() throws {
+    @Test
+    func flatTileSieve() {
         
-        let sieve = flatTriangle.sieve(for: .sierpinski)
-        let tile = flatTriangle.transpose(.sierpinski,
-                                          .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.tile)
         
-        XCTAssertEqual(sieve.origin,
-                       flatTriangle)
-        XCTAssertEqual(sieve.scale, .sierpinski)
-        XCTAssertEqual(sieve.triangles.count, 1)
-        XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        #expect(sieve.origin == triangle)
+        
+        #expect(sieve.scale == .tile)
+        #expect(sieve.tiles.count == 1)
+        #expect(sieve.vertices.count == 3)
+        #expect(sieve.tiles.contains(triangle))
     }
     
-    func testPointyTileSieve() throws {
+    @Test
+    func pointyChunkSieve() {
         
-        let sieve = pointyTriangle.sieve(for: .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.chunk)
+        let tile = triangle.transpose(.chunk,
+                                      .tile)
         
-        XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
-        XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.triangles.count, 1)
-        XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(pointyTriangle))
+        #expect(sieve.origin == triangle)
+        
+        #expect(sieve.scale == .chunk)
+        #expect(sieve.tiles.count == 16)
+        #expect(sieve.vertices.count == 15)
+        #expect(sieve.tiles.contains(tile))
     }
     
-    func testFlatTileSieve() throws {
+    @Test
+    func flatChunkSieve() {
         
-        let sieve = flatTriangle.sieve(for: .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.chunk)
+        let tile = triangle.transpose(.chunk,
+                                      .tile)
         
-        XCTAssertEqual(sieve.origin,
-                       flatTriangle)
-        XCTAssertEqual(sieve.scale, .tile)
-        XCTAssertEqual(sieve.triangles.count, 1)
-        XCTAssertEqual(sieve.vertices.count, 3)
-        XCTAssertTrue(sieve.triangles.contains(flatTriangle))
+        #expect(sieve.origin == triangle)
+        
+        #expect(sieve.scale == .chunk)
+        #expect(sieve.tiles.count == 16)
+        #expect(sieve.vertices.count == 15)
+        #expect(sieve.tiles.contains(tile))
     }
     
-    func testPointyChunkSieve() throws {
+    @Test
+    func pointyRegionSieve() {
         
-        let sieve = pointyTriangle.sieve(for: .chunk)
-        let tile = pointyTriangle.transpose(.chunk,
-                                            .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.region)
+        let tile = triangle.transpose(.region,
+                                      .tile)
         
-        XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
-        XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 49)
-        XCTAssertEqual(sieve.vertices.count, 36)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        #expect(sieve.origin == triangle)
+        
+        #expect(sieve.scale == .region)
+        #expect(sieve.tiles.count == 256)
+        #expect(sieve.vertices.count == 153)
+        #expect(sieve.tiles.contains(tile))
     }
     
-    func testFlatChunkSieve() throws {
+    @Test
+    func flatRegionSieve() {
         
-        let sieve = flatTriangle.sieve(for: .chunk)
-        let tile = flatTriangle.transpose(.chunk,
-                                          .tile)
+        let triangle = Triangle.zero
+        let sieve = triangle.sieve(.region)
+        let tile = triangle.transpose(.region,
+                                      .tile)
         
-        XCTAssertEqual(sieve.origin,
-                       flatTriangle)
-        XCTAssertEqual(sieve.scale, .chunk)
-        XCTAssertEqual(sieve.triangles.count, 49)
-        XCTAssertEqual(sieve.vertices.count, 36)
-        XCTAssertTrue(sieve.triangles.contains(tile))
-    }
-    
-    func testPointyRegionSieve() throws {
+        #expect(sieve.origin == triangle)
         
-        let sieve = pointyTriangle.sieve(for: .region)
-        let tile = pointyTriangle.transpose(.region,
-                                            .tile)
-        
-        XCTAssertEqual(sieve.origin,
-                       pointyTriangle)
-        XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 784)
-        XCTAssertEqual(sieve.vertices.count, 435)
-        XCTAssertTrue(sieve.triangles.contains(tile))
-    }
-    
-    func testFlatRegionSieve() throws {
-        
-        let sieve = flatTriangle.sieve(for: .region)
-        let tile = flatTriangle.transpose(.region,
-                                          .tile)
-        
-        XCTAssertEqual(sieve.origin,
-                       flatTriangle)
-        XCTAssertEqual(sieve.scale, .region)
-        XCTAssertEqual(sieve.triangles.count, 784)
-        XCTAssertEqual(sieve.vertices.count, 435)
-        XCTAssertTrue(sieve.triangles.contains(tile))
+        #expect(sieve.scale == .region)
+        #expect(sieve.tiles.count == 256)
+        #expect(sieve.vertices.count == 153)
+        #expect(sieve.tiles.contains(tile))
     }
 }
-

@@ -1,13 +1,22 @@
 {
-  "originHash" : "09dd89dedf6ced49eb81146d73a32b5e9604fccb82461142b02c8eae235bb493",
+  "originHash" : "2682ad236fe7953622a35dc136da2e1114acf08a5c1cf287a5dea4b823a7b812",
   "pins" : [
     {
       "identity" : "euclid",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:nicklockwood/Euclid.git",
+      "location" : "https://github.com/nicklockwood/Euclid.git",
       "state" : {
         "branch" : "main",
         "revision" : "1aeb8a7c36c22d31c74d4bd2c7e4529e3d43c097"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "57cf0d71d73b9fe5098f3158c47b2eeec1f1a98f"
       }
     }
   ],
